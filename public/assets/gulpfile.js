@@ -17,7 +17,7 @@ gulp.task('less', function() {
 });
 
 var third_party = [
-
+    'theme_components/bower/jquery/dist/jquery.min.js'
 ];
 
 gulp.task('js', function() {
