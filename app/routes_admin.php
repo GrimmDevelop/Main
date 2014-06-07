@@ -1,6 +1,6 @@
 <?php
 
-Route::group(array('prefix' => 'admin', 'before' => 'auth'), function() {
+Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function() {
     Route::get('/', function() {
         return View::make('grimm::test');
     });
