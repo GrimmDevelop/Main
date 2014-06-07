@@ -44,6 +44,12 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
+Route::filter('grimm_auth', function()
+{
+    if (Request::ajax() && !Sentry::check()) return Response::make('Grimm Unauthorized', 401);
+    if (!Sentry::check()) return Redirect::guest('login');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter
