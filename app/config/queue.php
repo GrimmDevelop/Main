@@ -36,7 +36,7 @@ return array(
 
 		'beanstalkd' => array(
 			'driver' => 'beanstalkd',
-			'host'   => 'friedrichs-macbook-pro',
+			'host'   => 'localhost',
 			'queue'  => 'default',
 		),
 

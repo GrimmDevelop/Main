@@ -4,6 +4,8 @@ namespace Grimm\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
+use Grimm\Models\Letter\Information;
+
 class Letter extends Eloquent {
     protected $table = 'letters';
     
@@ -16,6 +18,10 @@ class Letter extends Eloquent {
         }
 
         return $hasMany;
+    }
+
+    public function scropeInformationCodes() {
+        return Information::codes();
     }
 
     public function sender() {
