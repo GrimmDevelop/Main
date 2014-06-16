@@ -3,6 +3,7 @@
 namespace Grimm\Controller\Admin;
 
 use Grimm\Auth\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Sentry;
 use View;
 
@@ -19,7 +20,7 @@ class UserController extends \Controller {
             return \Redirect::to('admin')->with('error', 'auth.permission');
         }
 		return View::make('admin.users.index', array(
-            'users' => User::all()
+            'models' => User::all()
         ));
 	}
 
@@ -57,9 +58,16 @@ class UserController extends \Controller {
         if(!Sentry::getUser()->hasPermission('users.view')) {
             return \Redirect::to('admin')->with('error', 'auth.permission');
         }
-        return View::make('admin.users.show', array(
-            'user' => User::findOrFail($id)
-        ));
+
+        try {
+            $user = User::findOrFail($id);
+
+            return View::make('admin.users.show', array(
+                'model' => $user
+            ));
+        } catch(ModelNotFoundException $e) {
+            return \Redirect::to('admin/users')->with('error', 'mode.notfound');
+        }
 	}
 
 
@@ -75,9 +83,15 @@ class UserController extends \Controller {
             return \Redirect::to('admin')->with('error', 'auth.permission');
         }
 
-        return View::make('admin.users.edit', array(
-            'user' => User::findOrFail($id)
-        ));
+        try {
+            $user = User::findOrFail($id);
+
+            return View::make('admin.users.show', array(
+                'model' => $user
+            ));
+        } catch(ModelNotFoundException $e) {
+            return \Redirect::to('admin/users')->with('error', 'mode.notfound');
+        }
 	}
 
 
@@ -93,7 +107,13 @@ class UserController extends \Controller {
             return \Redirect::to('admin')->with('error', 'auth.permission');
         }
 
-        $user = User::findOrFail($id);
+        try {
+            $user = User::findOrFail($id);
+
+            $user->save();
+        } catch(ModelNotFoundException $e) {
+            return \Redirect::to('admin/users')->with('error', 'mode.notfound');
+        }
 	}
 
 
@@ -111,6 +131,4 @@ class UserController extends \Controller {
 
         return User::destroy($id);
 	}
-
-
 }
