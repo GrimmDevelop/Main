@@ -10,4 +10,6 @@ return array(
     'user_banned'       => 'This user was banned!',
     'logout_success'    => 'Logout successful!',
     'login'				=> 'Login',
+
+    'permission'        => 'You do not have the required permissions',
 );

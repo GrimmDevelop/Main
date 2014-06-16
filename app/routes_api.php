@@ -3,10 +3,10 @@
 Route::group(array('prefix' => 'api'), function()
 {
 
-    Route::resource('letters', 'LetterController');
-    Route::get('letters/{year}/{month}/{day}', "LetterController@lettersChangedAfter");
+    Route::resource('letters', 'Grimm\Controller\Api\LetterController');
+    Route::get('letters/{year}/{month}/{day}', 'Grimm\Controller\Api\LetterController@lettersChangedAfter');
 
-    Route::resource('persons', 'PersonController');
-    Route::get('persons/{year}/{month}/{day}', "PersonController@personsChangedAfter");
+    Route::resource('persons', 'Grimm\Controller\Api\PersonController');
+    Route::get('persons/{year}/{month}/{day}', 'Grimm\Controller\Api\PersonController@personsChangedAfter');
 
 });

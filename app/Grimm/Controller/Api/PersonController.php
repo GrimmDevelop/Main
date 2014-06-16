@@ -1,8 +1,10 @@
 <?php
 
+namespace Grimm\Controller\Api;
+
 use Grimm\Models\Person;
 
-class PersonController extends \BaseController {
+class PersonController extends \Controller {
 
     /**
      * Display a listing of the resource.

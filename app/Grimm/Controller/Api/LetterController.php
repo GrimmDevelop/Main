@@ -1,8 +1,8 @@
 <?php
 
-use Grimm\Models\Letter;
+namespace Grimm\Controller\Api;
 
-class LetterController extends \BaseController {
+class LetterController extends \Controller {
 
     /**
      * Display a listing of the resource.
