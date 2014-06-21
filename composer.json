@@ -7,6 +7,10 @@
         {
             "url": "https://github.com/GrimmDevelop/LetterParser.git",
             "type": "vcs"
+        },
+        {
+            "url": "https://github.com/GrimmDevelop/Assets.git",
+            "type": "vcs"
         }
     ],
 	"name": "grimm/letters",
@@ -16,10 +20,11 @@
 	"require": {
 		"laravel/framework": "4.1.*",
 		"cartalyst/sentry": "2.1.*",
-		"pda/pheanstalk": "*",
+		"pda/pheanstalk": "2.1.*",
         "hisamu/php-xbase": "*@dev",
         "grimmtools/locationparser": "*@dev",
         "grimmtools/letterparser": "*@dev",
+        "grimmtools/assets": "*@dev",
         "barryvdh/laravel-ide-helper": "1.*"
 	},
 	"autoload": {

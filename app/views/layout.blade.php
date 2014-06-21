@@ -7,16 +7,10 @@
     <title>Grimmdatenbank</title>
 
     <link rel="stylesheet" href="{{ url('assets/css/main.css') }}" />
+    @asset('css')
 
     @yield('head')
 
-    <style type="text/css">
-
-        .alert {
-            margin-bottom: 0;
-        }
-
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-default" role="navigation">
@@ -58,8 +52,8 @@
         </div>
     </div>
 
-    @section('script')
     <script src="{{ url('assets/js/main.js') }}"></script>
+    @asset('js')
     <script>
 
         angular.module('grimmApp').constant('BASE_URL', '{{ url() }}');
@@ -68,6 +62,5 @@
             $('.toggle_popover').popover();
         });
     </script>
-    @show
 </body>
 </html>

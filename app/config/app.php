@@ -112,6 +112,7 @@ return array(
 
         'GrimmTools\LocationParser\LocationParserServiceProvider',
         'GrimmTools\LetterParser\LetterParserServiceProvider',
+        'GrimmTools\Assets\AssetsServiceProvider',
 
 		'Grimm\BootServiceProvider',
 	),
