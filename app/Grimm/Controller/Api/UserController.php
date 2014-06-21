@@ -2,9 +2,10 @@
 
 namespace Grimm\Controller\Api;
 
-use Grimm\Models\Person;
+use Grimm\Models\User;
+use Sentry;
 
-class PersonController extends \Controller {
+class UserController extends \Controller {
 
     /**
      * Display a listing of the resource.
@@ -13,20 +14,11 @@ class PersonController extends \Controller {
      */
     public function index()
     {
-        return $this->lettersChangedAfter(0, 0, 0);
-    }
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.view'))) {
+            return \App::abort(403, 'Unauthorized action.');
+        }
 
-
-    /**
-     * Display a listing of letters changed after given date
-     * @param  int $year
-     * @param  int $month
-     * @param  int $day
-     * @return Response
-     */
-    public function lettersChangedAfter($year, $month, $day)
-    {
-        return Person::where('updated_at', '>=', \Carbon\Carbon::createFromDate($year, $month, $day))->get()->toJson();
+        return User::all();
     }
 
 
@@ -37,11 +29,17 @@ class PersonController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.create'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.create'))) {
             return \App::abort(403, 'Unauthorized action.');
         }
 
+        $data = Input::only(array(
+            'username', 'password', 'email'
+        ));
 
+        $user = new User($data);
+
+        $user->save();
     }
 
 
@@ -52,9 +50,11 @@ class PersonController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.create'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.create'))) {
             return \App::abort(403, 'Unauthorized action.');
         }
+
+
     }
 
 
@@ -66,7 +66,11 @@ class PersonController extends \Controller {
      */
     public function show($id)
     {
-        return Person::find($id)->toJson();
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.view'))) {
+            return \App::abort(403, 'Unauthorized action.');
+        }
+
+        return User::find($id)->toJson();
     }
 
 
@@ -78,9 +82,11 @@ class PersonController extends \Controller {
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.edit'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.edit'))) {
             return \App::abort(403, 'Unauthorized action.');
         }
+
+        return null;
     }
 
 
@@ -92,9 +98,19 @@ class PersonController extends \Controller {
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.edit'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.edit'))) {
             return \App::abort(403, 'Unauthorized action.');
         }
+
+        $data = Input::only(array(
+            'username', 'password', 'email'
+        ));
+
+        $user = User::find($id);
+
+        // ...
+
+        $user->save();
     }
 
 
@@ -106,9 +122,11 @@ class PersonController extends \Controller {
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.delete'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.delete'))) {
             return \App::abort(403, 'Unauthorized action.');
         }
+
+        User::destroy($id);
     }
 
 

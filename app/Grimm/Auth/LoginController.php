@@ -57,8 +57,8 @@ class LoginController extends Controller
 
     public function logout()
     {
-        if (Auth::check()) {
-            Auth::logout();
+        if (Sentry::check()) {
+            Sentry::logout();
         }
 
         return Redirect::to('login')->with('auth_msg', 'logout_success');

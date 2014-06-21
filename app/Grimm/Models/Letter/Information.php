@@ -9,7 +9,7 @@ use Grimm\Models\Letter;
 class Information extends Eloquent {
     protected $table = 'letter_informations';
 
-    public function scopeCodes() {
+    public function codes() {
         return array(
             'code',
             'language',
@@ -19,7 +19,7 @@ class Information extends Eloquent {
             'concept',
             'facsimile',
             'transcription',
-            'dublicate',
+            'duplicate',
             /*
              * TODO: better code
              */

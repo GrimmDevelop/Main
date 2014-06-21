@@ -1,83 +1,54 @@
 @extends('layout')
 
 @section('body')
-<form action="{{ url('search') }}" method="post" class="form-horizontal">
-    <div class="control-group">
-        <span class="control-label">Datum</span>
-        <div class="controls">
-            <input type="text" class="" name="time[start]" value="{{ Input::get('time.start') }}" placeholder="von" />
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Das Startdatum muss im Format dd.mm.jjjj eingegeben werden (z.B.: 13.06.1790)."><i class="glyphicon glyphicon-info-sign"></i></button>
-            <br style="margin-bottom: 10px;" />
-            <input type="text" name="time[end]" value="{{ Input::get('time.end') }}" placeholder="bis" />
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Das Enddatum muss im Format dd.mm.jjjj eingegeben werden (z.B.: 13.06.1790)."><i class="glyphicon glyphicon-info-sign"></i></button>
-        </div>
-    </div>
-    <div class="control-group">
-        <span class="control-label">Absender</span>
-        <div class="controls">
-            <input type="text" name="send[name]" value="{{ Input::get('send.name') }}" placeholder="Name" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-chevron-down"></i></button>
-                <ul class="dropdown-menu">
-                    <li><a href="javascript:fill('send[name]', 'Grimm, Jacob');">Grimm, Jacob</a></li>
-                    <li><a href="javascript:fill('send[name]', 'Grimm, Wilhelm');">Grimm, Wilhelm</a></li>
-                </ul>
-            </div>
-            <br style="margin-bottom: 10px;" />
-            <input type="text" name="send[location]" value="{{ Input::get('send.location') }}" placeholder="Ort" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-        </div>
-    </div>
-    <div class="control-group">
-        <span class="control-label">Empfänger</span>
-        <div class="controls">
-            <input type="text" name="receive[name]" value="{{ Input::get('receive.name') }}" placeholder="Name" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-chevron-down"></i></button>
-                <ul class="dropdown-menu">
-                    <li><a href="javascript:fill('receive[name]', 'Grimm, Jacob');">Grimm, Jacob</a></li>
-                    <li><a href="javascript:fill('receive[name]', 'Grimm, Wilhelm');">Grimm, Wilhelm</a></li>
-                </ul>
-            </div>
-            <br style="margin-bottom: 10px;" />
-            <input type="text" name="receive[location]" value="{{ Input::get('receive.location') }}" placeholder="Ort" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-        </div>
-    </div>
-    <div class="control-group">
-        <span class="control-label">Allgemein</span>
-        <div class="controls">
-            <input type="text" name="letter[inc]" value="{{ Input::get('letter.inc') }}" placeholder="Briefbeginn" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Suche von einzelnen Teilwörtern im Briefbeginn. Die Teilwörter werden mit einem UND verknüpft!">
-                <i class="glyphicon glyphicon-info-sign"></i>
-            </button>
+<form action="{{ url('search') }}" method="post" role="form">
 
-            <br style="margin-bottom: 10px;" />
+    <a href="#" onclick="modelHelper.delete('asdf', 1)">Delete</a>
 
-            <input type="text" name="letter[prints]" value="{{ Input::get('letter.prints') }}" placeholder="Gedruckt in" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Vorgeschlagen werden vollständige Druckstandorte. Es können bei manueler Eingabe auch nur Städte (z.B. 'Berlin') angegeben werden.">
-                <i class="glyphicon glyphicon-info-sign"></i>
-            </button>
-        </div>
-    </div>
-    <div class="control-group">
-        <div class="controls">
-            <input type="text" name="letter[nr]" value="{{ Input::get('letter.nr') }}" placeholder="Briefnummer" />
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Suche nach einem bestimmten Brief per Nummer. Es werden evtl. mehrere Briefe angezeigt, falls in vorherigen Versionen Nummern anders vergeben waren. Alle anderen Sucheingaben werden ignoriert!">
-                <i class="glyphicon glyphicon-info-sign"></i>
-            </button>
+    @foreach($codes as $code)
+    {{ trans('letter.codes.' . $code) }}
+    @endforeach
 
-            <br style="margin-bottom: 10px;" />
+    <div class="form-group">
+        <label>Datum</label>
+        <input type="text" class="form-control" name="time[start]" value="{{ Input::get('time.start') }}" placeholder="von" data-toggle="tooltip" title="Das Startdatum muss im Format dd.mm.jjjj eingegeben werden (z.B.: 13.06.1790)."
+        <input type="text" class="form-control" name="time[end]" value="{{ Input::get('time.end') }}" placeholder="bis" data-toggle="tooltip" title="Das Enddatum muss im Format dd.mm.jjjj eingegeben werden (z.B.: 13.06.1790)." />
+    </div>
+    <div class="form-group">
+        <label>Absender</label>
+        <input type="text" class="form-control typeahead" name="send[name]" value="{{ Input::get('send.name') }}" placeholder="Name" autocomplete="off" />
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-chevron-down"></i></button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:fill('send[name]', 'Grimm, Jacob');">Grimm, Jacob</a></li>
+                <li><a href="javascript:fill('send[name]', 'Grimm, Wilhelm');">Grimm, Wilhelm</a></li>
+            </ul>
+        </div>
+        <input type="text" class="form-control typeahead" name="send[location]" value="{{ Input::get('send.location') }}" placeholder="Ort" autocomplete="off" />
+    </div>
+    <div class="form-group">
+        <label>Empfänger</label>
+        <input type="text" class="form-control typeahead" name="receive[name]" value="{{ Input::get('receive.name') }}" placeholder="Name" autocomplete="off" />
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-chevron-down"></i></button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:fill('receive[name]', 'Grimm, Jacob');">Grimm, Jacob</a></li>
+                <li><a href="javascript:fill('receive[name]', 'Grimm, Wilhelm');">Grimm, Wilhelm</a></li>
+            </ul>
+        </div>
+        <input type="text" class="form-control typeahead" name="receive[location]" value="{{ Input::get('receive.location') }}" placeholder="Ort" autocomplete="off" />
+    </div>
+    <div class="form-group">
+        <label>Allgemein</label>
+        <input type="text" class="form-control typeahead" name="letter[inc]" value="{{ Input::get('letter.inc') }}" placeholder="Briefbeginn" autocomplete="off" data-toggle="tooltip" title="Suche von einzelnen Teilwörtern im Briefbeginn. Die Teilwörter werden mit einem UND verknüpft!" />
 
-            <input type="text" name="letter[hw_location]" value="{{ Input::get('letter.hw_location') }}" placeholder="Handschriftenstandorte" autocomplete="off" class="typeahead" style="margin-top: 0;" />
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Vorgeschlagen werden vollständige Handschriftenstandorte. Es können bei manueler Eingabe auch nur Städte (z.B. 'Berlin') angegeben werden.">
-                <i class="glyphicon glyphicon-info-sign"></i>
-            </button>
-        </div>
+        <input type="text" class="form-control typeahead" name="letter[prints]" value="{{ Input::get('letter.prints') }}" placeholder="Gedruckt in" autocomplete="off" data-toggle="tooltip" title="Vorgeschlagen werden vollständige Druckstandorte. Es können bei manueler Eingabe auch nur Städte (z.B. 'Berlin') angegeben werden." />
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn btn-primary">Briefe suchen</button>
-        </div>
+    <div class="form-group">
+        <input type="text" class="form-control" name="letter[nr]" value="{{ Input::get('letter.nr') }}" placeholder="Briefnummer" data-toggle="tooltip" title="Suche nach einem bestimmten Brief per Nummer. Es werden evtl. mehrere Briefe angezeigt, falls in vorherigen Versionen Nummern anders vergeben waren. Alle anderen Sucheingaben werden ignoriert!" />
+        <input type="text" class="form-control typeahead" name="letter[hw_location]" value="{{ Input::get('letter.hw_location') }}" placeholder="Handschriftenstandorte" autocomplete="off" data-toggle="tooltip" title="Vorgeschlagen werden vollständige Handschriftenstandorte. Es können bei manueler Eingabe auch nur Städte (z.B. 'Berlin') angegeben werden." />
     </div>
+    <button type="submit" class="btn btn-primary">Briefe suchen</button>
 </form>
 
 @if(isset($result))
@@ -130,17 +101,5 @@ Es wurden {{ $count }} Briefe gefunden. <i class="icon-question-sign" data-toggl
         }
     }
 
-    $(function() {
-        $('.typeahead').each(function() {
-            var $this = $(this);
-            $this.typeahead({
-                source: function(query, process) {
-                    $.getJSON("{{ url('search/typeahead') }}?field=" + $this.attr('name') + "&query=" + query, function(data) {
-                        process(data);
-                    });
-                }
-            });
-        });
-    });
 </script>
 @stop

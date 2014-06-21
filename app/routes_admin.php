@@ -10,6 +10,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function() {
     Route::get('import', function() {
         Queue::push('Grimm\Controller\Queue\Letter@importLetters', array('source' => storage_path() . '/dbase.dbf'));
     });
+
+    Route::get('partials/{file}', 'Grimm\Controller\Admin\PartialsController@load');
 });
 
 Route::get('login', array('as' => 'login', 'uses' => 'Grimm\Auth\LoginController@loginForm'));

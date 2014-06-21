@@ -7,6 +7,8 @@
     </div>
     @endif
 
+    <div ng-view>kf</div>
+
     <div>
         @foreach($models as $user)
             <div>

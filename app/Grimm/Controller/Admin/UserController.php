@@ -86,7 +86,7 @@ class UserController extends \Controller {
         try {
             $user = User::findOrFail($id);
 
-            return View::make('admin.users.show', array(
+            return View::make('admin.users.edit', array(
                 'model' => $user
             ));
         } catch(ModelNotFoundException $e) {

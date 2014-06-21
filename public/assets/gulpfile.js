@@ -19,6 +19,8 @@ gulp.task('less', function() {
 var third_party = [
     "theme_components/bower/jquery/dist/jquery.min.js",
     "theme_components/bower/bootstrap/dist/js/bootstrap.min.js",
+    "theme_components/bower/angular/angular.js",
+    "theme_components/bower/angular-route/angular-route.js",
     "theme_components/bower/bootbox/bootbox.js"
 ];
 

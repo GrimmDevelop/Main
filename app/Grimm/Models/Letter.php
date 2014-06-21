@@ -5,12 +5,13 @@ namespace Grimm\Models;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Grimm\Models\Letter\Information;
+use App;
 
 class Letter extends Eloquent {
     protected $table = 'letters';
     
 
-    public function information($code = null) {
+    public function informations($code = null) {
         $hasMany = $this->hasMany('Grimm\Models\Letter\Information');
 
         if($code !== null) {
@@ -20,8 +21,25 @@ class Letter extends Eloquent {
         return $hasMany;
     }
 
-    public function scropeInformationCodes() {
-        return Information::codes();
+    public function codes() {
+        return App::make('Grimm\Models\Letter\Information')->codes();
+    }
+
+    public function scopeWithCodes($codes) {
+        $validCodes = $this->codes();
+        if(!is_array($codes)) {
+            $codes = array($codes);
+        }
+
+        foreach($codes as $code) {
+            if(!in_array($validCodes, $code)) {
+                throw new \InvalidArgumentException('Invalid letter information code: ' . $code);
+            }
+        }
+
+        return $this->with(array('informations' => function($query) use($codes) {
+                $query->whereIn('code', $codes);
+            }));
     }
 
     public function sender() {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="grimmApp">
 <head>
     <meta charset="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -61,6 +61,9 @@
     @section('script')
     <script src="{{ url('assets/js/main.js') }}"></script>
     <script>
+
+        angular.module('grimmApp').constant('BASE_URL', '{{ url() }}');
+
         $(function() {
             $('.toggle_popover').popover();
         });

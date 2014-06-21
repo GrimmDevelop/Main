@@ -1,8 +1,10 @@
 {
-    "name": "Grimm-Theme",
-    "dependencies": {
-        "jquery": "2.1.*",
-        "bootstrap": "3.1.*",
-        "bootbox": "4.2.*"
-    }
+  "name": "Grimm-Theme",
+  "dependencies": {
+    "jquery": "2.1.*",
+    "bootstrap": "3.1.*",
+    "bootbox": "4.2.*",
+    "angular": "~1.2.18",
+    "angular-route": "~1.2.18"
+  }
 }
