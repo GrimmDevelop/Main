@@ -24,39 +24,49 @@ jQuery(function($) {
     });*/
 });
 
-var grimmApp = angular.module('grimmApp', ['ngRoute']);
+var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps"]);
 
-grimmApp.controller('UserIndexCtrl',['$scope', '$http', 'BASE_URL', function ($scope, $http, BASE_URL) {
-    serviceBackend = BASE_URL + '/api/';
-
-    $http.get(serviceBackend + 'users').success(function(data) {
-        console.log(data);
-        $scope.users = data;
-    });
-}]);
-
-grimmApp.controller('UserShowCtrl',['$scope', '$http', '$routeParams', 'BASE_URL', function ($scope, $http, $routeParams, BASE_URL) {
-    serviceBackend = BASE_URL + '/api/';
-
-    $http.get(serviceBackend + 'users/' + $routeParams.userId).success(function(data) {
-        console.log(data);
-        $scope.user = data;
-    });
-}]);
-
-grimmApp.config(['$routeProvider',
-    function($routeProvider) {
+grimmApp.config(['$routeProvider', 'BASE_URL',
+    function($routeProvider, BASE_URL) {
         $routeProvider.
             when('/users', {
-                templateUrl: 'partials/users.index',
+                templateUrl: BASE_URL + '/admin/partials/users.index',
                 controller: 'UserIndexCtrl'
-            }).
-            when('/users/:userId', {
-                templateUrl: 'partials/users.show',
+            })
+            .when('/users/create', {
+                templateUrl: BASE_URL + '/admin/partials/users.create',
+                controller: 'UserCreateCtrl'
+            })
+            .when('/users/:userId', {
+                templateUrl: BASE_URL + '/admin/partials/users.show',
                 controller: 'UserShowCtrl'
-            }).
-            otherwise({
-                redirectTo: '/users'
+            })
+            .when('/users/:userId/edit', {
+                templateUrl: BASE_URL + '/admin/partials/users.edit',
+                controller: 'UserEditCtrl'
+            })
+            .when('/letters', {
+                templateUrl: BASE_URL + '/admin/partials/letters.index',
+                controller: 'LetterIndexCtrl'
+            })
+            .when('/locations', {
+                templateUrl: BASE_URL + '/admin/partials/locations.index',
+                controller: 'LocationIndexCtrl'
+            })
+            .when('/locations/:locationId', {
+                templateUrl: BASE_URL + '/admin/partials/locations.show',
+                controller: 'LocationShowCtrl'
+            })
+            .when('/', {
+                templateUrl: BASE_URL + '/admin/partials/dashbord.index',
+                controller: 'AdminIndexCtrl'
+            })
+            .otherwise({
+                redirectTo: '/'
             });
     }
 ]);
+
+grimmApp.run(['$http', function($http) {
+    $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+}]);

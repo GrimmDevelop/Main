@@ -30,7 +30,6 @@
             <div class="collapse navbar-collapse" id="mainnav">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('search') }}">Suche</a></li>
-                    <li class="divider"></li>
                     <li><a href="{{ url('admin') }}">Administration</a></li>
                 </ul>
             </div>
@@ -52,6 +51,7 @@
         </div>
     </div>
 
+    <script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
     <script src="{{ url('assets/js/main.js') }}"></script>
     @asset('js')
     <script>

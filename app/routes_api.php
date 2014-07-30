@@ -10,5 +10,6 @@ Route::group(array('prefix' => 'api'), function()
     Route::get('persons/{year}/{month}/{day}', 'Grimm\Controller\Api\PersonController@personsChangedAfter');
 
     Route::resource('users', 'Grimm\Controller\Api\UserController');
+    Route::resource('locations', 'Grimm\Controller\Api\LocationController');
 
 });

@@ -7,5 +7,5 @@
         </div>
     @endif
 
-    Index
+    <div ng-view></div>
 @stop

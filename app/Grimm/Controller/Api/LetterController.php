@@ -2,6 +2,8 @@
 
 namespace Grimm\Controller\Api;
 
+use Grimm\Models\Letter;
+
 class LetterController extends \Controller {
 
     /**

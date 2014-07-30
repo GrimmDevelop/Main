@@ -18,6 +18,10 @@ class UserTableSeeder extends Seeder {
                 'persons.create'=> 1,
                 'persons.edit'  => 1,
                 'persons.delete'=> 1,
+
+                'locations.create'=> 1,
+                'locations.edit'  => 1,
+                'locations.delete'=> 1,
             ),
         ));
 

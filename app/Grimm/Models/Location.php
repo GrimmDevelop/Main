@@ -11,7 +11,7 @@ class Location extends Eloquent {
         return $this->hasMany('Grimmm\Models\Letter', 'from_id');
     }
     public function lettersTo() {
-        return $this->belongsToMany('Grimmm\Models\Letter', 'to_id');
+        return $this->hasMany('Grimmm\Models\Letter', 'to_id');
     }
 
     public function letters() {
