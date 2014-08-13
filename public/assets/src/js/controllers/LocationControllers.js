@@ -15,7 +15,11 @@ grimmApp.controller('LocationShowCtrl',['$scope', '$http', '$routeParams', 'BASE
     serviceBackend = BASE_URL + '/api/';
 
     $scope.map = {
-
+        center: {
+            latitude: 0.0,
+            longitude: 0.0
+        },
+        zoom: 0
     };
 
     $http.get(serviceBackend + 'locations/' + $routeParams.locationId).success(function(data) {
@@ -23,10 +27,10 @@ grimmApp.controller('LocationShowCtrl',['$scope', '$http', '$routeParams', 'BASE
 
         $scope.map = {
             center: {
-                latitude: "42",
-                longitude: "-72"
+                latitude: 42.0,
+                longitude: -72.0
             },
-            zoom: 8
+            zoom: 10
         };
     });
 }]);
