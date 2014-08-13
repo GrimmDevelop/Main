@@ -1,5 +1,9 @@
 @extends('layout')
 
 @section('body')
-    Index
+    <div class="row">
+        <div class="col-md-12">
+            Index
+        </div>
+    </div>
 @stop

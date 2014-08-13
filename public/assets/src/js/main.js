@@ -1,14 +1,4 @@
 
-var modelHelper = {};
-
-modelHelper.delete = function(url, id) {
-    bootbox.confirm("Sure to delete this model?", function(result) {
-        if(result) {
-            console.log('delete ' + url + "/" + id);
-        }
-    });
-};
-
 jQuery(function($) {
     $('[data-toggle=tooltip]').tooltip();
 
@@ -24,38 +14,26 @@ jQuery(function($) {
     });*/
 });
 
-var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps", "flow"]);
+var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps", "flow", "dialogs", "ngDragDrop"]);
 
-grimmApp.config(['$routeProvider', 'BASE_URL',
-    function($routeProvider, BASE_URL) {
+grimmApp.config(['$routeProvider', 'BASE_URL', '$httpProvider', 'flowFactoryProvider',
+    function($routeProvider, BASE_URL, $httpProvider, flowFactoryProvider) {
         $routeProvider.
-            when('/users', {
+            when('/files', {
+                controller: 'filesController',
+                templateUrl: BASE_URL + '/admin/partials/files'
+            })
+            .when('/users', {
                 templateUrl: BASE_URL + '/admin/partials/users.index',
-                controller: 'UserIndexCtrl'
-            })
-            .when('/users/create', {
-                templateUrl: BASE_URL + '/admin/partials/users.create',
-                controller: 'UserCreateCtrl'
-            })
-            .when('/users/:userId', {
-                templateUrl: BASE_URL + '/admin/partials/users.show',
-                controller: 'UserShowCtrl'
-            })
-            .when('/users/:userId/edit', {
-                templateUrl: BASE_URL + '/admin/partials/users.edit',
-                controller: 'UserEditCtrl'
+                controller: 'userController'
             })
             .when('/letters', {
-                templateUrl: BASE_URL + '/admin/partials/letters.index',
-                controller: 'LetterIndexCtrl'
+                templateUrl: BASE_URL + '/admin/partials/letters',
+                controller: 'letterController'
             })
             .when('/locations', {
-                templateUrl: BASE_URL + '/admin/partials/locations.index',
-                controller: 'LocationIndexCtrl'
-            })
-            .when('/locations/:locationId', {
-                templateUrl: BASE_URL + '/admin/partials/locations.show',
-                controller: 'LocationShowCtrl'
+                templateUrl: BASE_URL + '/admin/partials/locations',
+                controller: 'locationsController'
             })
             .when('/', {
                 templateUrl: BASE_URL + '/admin/partials/dashbord.index',
@@ -64,6 +42,35 @@ grimmApp.config(['$routeProvider', 'BASE_URL',
             .otherwise({
                 redirectTo: '/'
             });
+
+        $httpProvider.interceptors.push(['$q', '$rootScope', '$location', 'BASE_URL', function($q, $rootScope, $location, BASE_URL) {
+            return {
+                'request': function(config) {
+                    $rootScope.$broadcast('loading-started');
+                    return config || $q.when(config);
+                },
+
+                'response': function(response) {
+                    $rootScope.$broadcast('loading-complete');
+                    return response || $q.when(response);
+                },
+
+                'responseError': function(rejection) {
+                    var status = rejection.status;
+                    $rootScope.$broadcast('loading-complete');
+                    if (status == 401 && rejection.data === 'ParkCMS Unauthorized') {
+                        $rootScope.$broadcast('auth-error');
+                        window.location.href = BASE_URL + "/login";
+                        return;
+                    }
+                    return $q.reject(rejection);
+                }
+            };
+        }]);
+
+        flowFactoryProvider.defaults = {
+            testChunks: false
+        };
     }
 ]);
 

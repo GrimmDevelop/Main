@@ -31,6 +31,18 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('search') }}">Suche</a></li>
                     <li><a href="{{ url('admin') }}">Administration</a></li>
+                    @if(Sentry::check())
+                        <li class="dropdown">
+                            <a href="#" data-toogle="dropdown" class="dropdown-toggle"><span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ url('admin') }}#/files">{{ trans('admin_default.files') }}</a></li>
+                                <li><a href="{{ url('admin') }}#/letters">{{ trans('admin_default.letters') }}</a></li>
+                                <li><a href="{{ url('admin') }}#/locations">{{ trans('admin_default.locations') }}</a></li>
+                                <li><a href="{{ url('admin') }}#/persons">{{ trans('admin_default.persons') }}</a></li>
+                                <li><a href="{{ url('admin') }}#/users">{{ trans('admin_default.users') }}</a></li>
+                            </ul>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>
@@ -39,16 +51,13 @@
     <div class="container">
         @foreach(Session::get('messages', []) as $type => $message)
         <div class="row">
-            <div class="col-md-8 col-md-offset-2 alert-{{ type }}">
+            <div class="col-md-12 alert-{{ type }}">
                 {{ message }}
             </div>
         </div>
         @endforeach
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                @yield('body')
-            </div>
-        </div>
+
+        @yield('body')
     </div>
 
     <script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>

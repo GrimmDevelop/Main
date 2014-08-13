@@ -27,6 +27,7 @@
         "grimmtools/letterparser": "*@dev",
         "grimmtools/assets": "*@dev",
         "flowjs/flow-php-server": "0.2.*",
+        "codeless/ziparchiveex": "1.0.*",
         "barryvdh/laravel-ide-helper": "1.*"
 	},
 	"autoload": {

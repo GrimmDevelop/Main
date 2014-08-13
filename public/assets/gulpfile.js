@@ -23,9 +23,12 @@ var third_party = [
     "theme_components/bower/angular-route/angular-route.js",
     "theme_components/bower/lodash/dist/lodash.underscore.min.js",
     "theme_components/bower/angular-google-maps/dist/angular-google-maps.min.js",
+    "theme_components/bower/angular-sanitize/angular-sanitize.min.js",
     "theme_components/bower/angular-bootstrap/ui-bootstrap.min.js",
     "theme_components/bower/angular-bootstrap/ui-bootstrap-tpls.min.js",
     "theme_components/bower/ng-flow/dist/ng-flow-standalone.min.js",
+    "theme_components/bower/angular-dialog-service/dialogs.min.js",
+    "theme_components/bower/angular-dragdrop-ganarajpr/draganddrop.js",
     "theme_components/bower/bootbox/bootbox.js"
 ];
 
