@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>ParkCMS Login</title>
+    <title>Login - Grimm Administration</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ url('assets/css/main.css') }}" rel="stylesheet">

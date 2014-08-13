@@ -24,7 +24,7 @@ jQuery(function($) {
     });*/
 });
 
-var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps"]);
+var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps", "flow"]);
 
 grimmApp.config(['$routeProvider', 'BASE_URL',
     function($routeProvider, BASE_URL) {
