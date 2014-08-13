@@ -12,9 +12,10 @@
     
     <span class="btn btn-default" flow-btn>Upload File</span>
 
-
-    <tr ng-repeat="file in $flow.files">
-        <td>@{{ $index + 1 }}</td>
-        <td>@{{ file.name }}</td>
-    </tr>
+    <table>
+        <tr ng-repeat="file in $flow.files">
+            <td>@{{ $index + 1 }}</td>
+            <td>@{{ file.name }}</td>
+        </tr>
+    </table>
 </div>
