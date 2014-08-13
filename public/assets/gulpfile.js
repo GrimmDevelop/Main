@@ -25,6 +25,7 @@ var third_party = [
     "theme_components/bower/angular-google-maps/dist/angular-google-maps.min.js",
     "theme_components/bower/angular-bootstrap/ui-bootstrap.min.js",
     "theme_components/bower/angular-bootstrap/ui-bootstrap-tpls.min.js",
+    "theme_components/bower/ng-flow/dist/ng-flow-standalone.min.js",
     "theme_components/bower/bootbox/bootbox.js"
 ];
 

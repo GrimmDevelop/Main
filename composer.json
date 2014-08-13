@@ -26,6 +26,7 @@
         "grimmtools/locationparser": "*@dev",
         "grimmtools/letterparser": "*@dev",
         "grimmtools/assets": "*@dev",
+        "flowjs/flow-php-server": "0.2.*",
         "barryvdh/laravel-ide-helper": "1.*"
 	},
 	"autoload": {
