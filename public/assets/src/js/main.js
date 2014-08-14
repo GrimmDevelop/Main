@@ -16,8 +16,8 @@ jQuery(function($) {
 
 var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps", "flow", "dialogs", "ngDragDrop"]);
 
-grimmApp.config(['$routeProvider', 'BASE_URL', '$httpProvider', 'flowFactoryProvider',
-    function($routeProvider, BASE_URL, $httpProvider, flowFactoryProvider) {
+grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider',
+    function($routeProvider, $httpProvider, flowFactoryProvider) {
         $routeProvider.
             when('/files', {
                 controller: 'filesController',
@@ -32,11 +32,11 @@ grimmApp.config(['$routeProvider', 'BASE_URL', '$httpProvider', 'flowFactoryProv
                 controller: 'letterController'
             })
             .when('/locations', {
-                templateUrl: BASE_URL + '/admin/partials/locations',
+                templateUrl: 'admin/partials/locations',
                 controller: 'locationsController'
             })
             .when('/', {
-                templateUrl: BASE_URL + '/admin/partials/dashboard',
+                templateUrl: 'admin/partials/dashboard',
                 controller: 'dashboardController'
             })
             .otherwise({
