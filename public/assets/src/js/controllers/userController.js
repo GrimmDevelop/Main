@@ -4,6 +4,11 @@ grimmApp.controller('userController', ['$scope', 'UsersService', function ($scop
     $scope.mode = 'index';
     $scope.currentUser = {};
 
+    $scope.message = {};
+    $scope.closeMessage = function() {
+        $scope.message = null;
+    };
+
     $scope.refresh = function() {
         users.all().success(function(data) {
             $scope.users = data;
@@ -20,6 +25,11 @@ grimmApp.controller('userController', ['$scope', 'UsersService', function ($scop
         $scope.currentUser = user;
     }
 
+    $scope.create = function() {
+        $scope.mode = 'create';
+        $scope.currentUser = {};
+    }
+
     $scope.save = function() {
         if($scope.mode == 'edit') {
             users.update($scope.currentUser)
@@ -31,9 +41,9 @@ grimmApp.controller('userController', ['$scope', 'UsersService', function ($scop
                     $scope.message = data;
                 });
         } else if($scope.mode == 'create') {
-            users.create($scope.newUser)
+            users.create($scope.currentUser)
                 .success(function(data) {
-
+                    $scope.message = data;
                 })
                 .error(function(data) {
                     $scope.message = data;

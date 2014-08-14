@@ -37,13 +37,6 @@ class UserController extends \Controller {
             return \App::abort(403, 'Unauthorized action.');
         }
 
-        $data = Input::only(array(
-            'username', 'password', 'email'
-        ));
-
-        $user = new User($data);
-
-        // $user->save();
     }
 
 
@@ -58,7 +51,16 @@ class UserController extends \Controller {
             return \App::abort(403, 'Unauthorized action.');
         }
 
+        $data = Input::only(array(
+            'username', 'password', 'email'
+        ));
 
+        $user = new User($data);
+
+
+        // $user->save();
+
+        return \Response::json(array('message' => 'Not implemented.'), 404);
     }
 
 
@@ -124,7 +126,7 @@ class UserController extends \Controller {
         $user->username = $data['username'];
         if($data['password'] != '') {
             if($data['password'] != $data['password_confirmation']) {
-                return \App::abort(500, 'Password and password confirmation didn\'t match.');
+                return \Response::json(array('message' => "Password and password confirmation didn\'t match."), 500);
             }
 
             $user->password = $data['password'];
@@ -141,9 +143,9 @@ class UserController extends \Controller {
         $user->email = $data['email'];
 
         if($user->save()) {
-            return "User successfully saved!";
+            return \Response::json(array('message' => "User successfully saved!"));
         } else {
-            return \App::abort(500, "Upps, something went wrong while saving!");
+            return \Response::json(array('message' => "Upps, something went wrong while saving!"), 500);
         }
     }
 

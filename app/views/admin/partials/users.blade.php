@@ -10,6 +10,7 @@
 
 <div class="row" ng-if="mode == 'index'">
     <div class="col-md-12">
+        <button class="btn btn-default" ng-click="create()">{{ trans('admin_default.users.create') }}</button>
         <table class="table">
             <tr ng-repeat="user in users" ng-click="edit(user)">
                 <td>@{{ user.username }}</td>
@@ -19,7 +20,7 @@
     </div>
 </div>
 
-<div class="row" ng-if="mode == 'edit'">
+<div class="row" ng-if="mode == 'edit' || mode == 'create'">
     <div class="col-md-12">
         <form role="form" ng-submit="save()">
             <div class="form-group">
@@ -58,9 +59,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Speichern</button>
-                <button class="btn btn-default" ng-click="cancel($event)">Abbrechen</button>
-                <button class="btn btn-danger" ng-click="delete($event)">Delete</button>
+                <button type="submit" class="btn btn-primary">{{ trans('admin_default.submit') }}</button>
+                <button class="btn btn-default" ng-click="cancel($event)">{{ trans('admin_default.cancel') }}</button>
+                <button class="btn btn-danger" ng-click="delete($event)" ng-if="mode == 'edit'">{{ trans('admin_default.delete_action') }}</button>
             </div>
         </form>
     </div>

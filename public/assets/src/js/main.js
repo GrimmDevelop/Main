@@ -21,14 +21,14 @@ grimmApp.config(['$routeProvider', 'BASE_URL', '$httpProvider', 'flowFactoryProv
         $routeProvider.
             when('/files', {
                 controller: 'filesController',
-                templateUrl: BASE_URL + '/admin/partials/files'
+                templateUrl: 'admin/partials/files'
             })
             .when('/users', {
-                templateUrl: BASE_URL + '/admin/partials/users.index',
+                templateUrl: 'admin/partials/users',
                 controller: 'userController'
             })
             .when('/letters', {
-                templateUrl: BASE_URL + '/admin/partials/letters',
+                templateUrl: 'admin/partials/letters',
                 controller: 'letterController'
             })
             .when('/locations', {
@@ -36,8 +36,8 @@ grimmApp.config(['$routeProvider', 'BASE_URL', '$httpProvider', 'flowFactoryProv
                 controller: 'locationsController'
             })
             .when('/', {
-                templateUrl: BASE_URL + '/admin/partials/dashbord.index',
-                controller: 'AdminIndexCtrl'
+                templateUrl: BASE_URL + '/admin/partials/dashboard',
+                controller: 'dashboardController'
             })
             .otherwise({
                 redirectTo: '/'
