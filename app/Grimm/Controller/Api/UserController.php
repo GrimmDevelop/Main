@@ -19,7 +19,7 @@ class UserController extends \Controller {
     public function index()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.view'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         return User::all();
@@ -34,7 +34,7 @@ class UserController extends \Controller {
     public function create()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.create'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
     }
@@ -48,7 +48,7 @@ class UserController extends \Controller {
     public function store()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.create'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         $data = Input::only(array(
@@ -73,7 +73,7 @@ class UserController extends \Controller {
     public function show($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.view'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         return User::find($id)->toJson();
@@ -89,7 +89,7 @@ class UserController extends \Controller {
     public function edit($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.edit'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         return null;
@@ -105,7 +105,7 @@ class UserController extends \Controller {
     public function update($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.edit'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         $data = Input::only(array(
@@ -159,7 +159,7 @@ class UserController extends \Controller {
     public function destroy($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.delete'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         User::destroy($id);

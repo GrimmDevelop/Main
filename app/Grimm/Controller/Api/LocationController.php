@@ -27,7 +27,7 @@ class LocationController extends \Controller {
     public function create()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.create'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         $data = Input::only(array(
@@ -48,7 +48,7 @@ class LocationController extends \Controller {
     public function store()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.create'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
 
@@ -76,7 +76,7 @@ class LocationController extends \Controller {
     public function edit($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.edit'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         return null;
@@ -92,7 +92,7 @@ class LocationController extends \Controller {
     public function update($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.edit'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         $location = Location::find($id);
@@ -109,7 +109,7 @@ class LocationController extends \Controller {
     public function destroy($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.delete'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
         Location::destroy($id);

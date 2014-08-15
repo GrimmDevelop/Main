@@ -38,7 +38,7 @@ class PersonController extends \Controller {
     public function create()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.create'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
 
 
@@ -53,7 +53,7 @@ class PersonController extends \Controller {
     public function store()
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.create'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
     }
 
@@ -79,7 +79,7 @@ class PersonController extends \Controller {
     public function edit($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.edit'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
     }
 
@@ -93,7 +93,7 @@ class PersonController extends \Controller {
     public function update($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.edit'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
     }
 
@@ -107,7 +107,7 @@ class PersonController extends \Controller {
     public function destroy($id)
     {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.delete'))) {
-            return \App::abort(403, 'Unauthorized action.');
+            return \Response::json('Unauthorized action.', 403);
         }
     }
 
