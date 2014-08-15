@@ -22,6 +22,9 @@ class UserTableSeeder extends Seeder {
                 'locations.create'=> 1,
                 'locations.edit'  => 1,
                 'locations.delete'=> 1,
+
+                'import.letters'  => 1,
+                'import.locations'=> 1
             ),
         ));
 
