@@ -4,6 +4,7 @@ namespace Grimm\Controller;
 
 use Grimm\Models\Letter;
 use View;
+use Input;
 
 class SearchController extends \Controller {
 
@@ -25,10 +26,10 @@ class SearchController extends \Controller {
          */
 
         if(Input::get('letter.nr') != '') {
-            $s = \Grimm\Models\Letter::where('id', '=', Input::get('letter.nr'))
+            $s = \Grimm\Models\Letter\Import::where('id', '=', Input::get('letter.nr'))
                 ->orWhere('nr_1997', '=', Input::get('letter.nr'));
         } else {
-            $s = \Grimm\Models\Letter::where(
+            $s = \Grimm\Models\Letter\Import::where(
                 function($query) {
                     $query->where('absendeort', 'like', '%' . Input::get('send.location') . '%')
                         ->orWhere('absort_ers', 'like', '%' . Input::get('send.location') . '%');
@@ -47,6 +48,7 @@ class SearchController extends \Controller {
         }
 
         return View::make('pages.search', array(
+            'codes' => $this->letter->codes(),
             'count' => $s->count(),
             'result' => $s->take(100)->get()
         ));
