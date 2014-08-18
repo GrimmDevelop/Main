@@ -3,6 +3,8 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', function ($sc
 
     $scope.mode = 'index';
 
+    $scope.selectedLetterFile = null;
+    $scope.selectedLocationFile = null;
 
     $scope.index = function(event) {
         $scope.mode = 'index';

@@ -4,6 +4,7 @@ grimmApp.controller('locationsController', ['$scope', 'Locations', function ($sc
     $scope.mode = 'index';
     $scope.locations = [];
     $scope.currentLocation = {};
+    $scope.zoom = 8;
 
     Locations.all().success(function(data) {
         $scope.locations = data;

@@ -18,6 +18,7 @@ return array(
     'rename_action'	=> 'Rename',
     'no_files'		=> 'No files available!',
     'no_files_desc'	=> 'Drag files from your computer here or click the Upload button!',
+    'no_files_and_drag_drop_desc'	=> 'Upload files via file browser in administration panel!',
     'uploads'		=> 'Uploads',
     'tbl_filename'	=> 'Name',
     'tbl_path'		=> 'Path',

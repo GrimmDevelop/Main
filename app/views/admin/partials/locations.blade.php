@@ -21,6 +21,6 @@
             </tr>
         </table>
 
-        <google-map center="currentLocation" zoom="8"></google-map>
+        <google-map center="currentLocation" zoom="zoom"></google-map>
     </div>
 </div>

@@ -47,7 +47,7 @@ grimmApp.directive("fileBrowser", ['FileBrowser', '$dialogs', function(BrowserSe
                 }
                 scope.selected = file.path;
 
-                if (typeof ev !== 'undefined') {
+                if (typeof $event !== 'undefined') {
                     $event.preventDefault();
                 }
             };
