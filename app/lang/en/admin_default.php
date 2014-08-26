@@ -1,9 +1,10 @@
 <?php
 
 return array(
-    'dashboard' => 'Dashboard',
-    'files'     => 'Files',
-    'users'     => 'Users',
+    'dashboard_nav' => 'Dashboard',
+    'files_nav'     => 'Files',
+    'users_nav'     => 'Users',
+
     'toggleNav' => 'Toggle navigation',
     'logout'    => 'Logout',
     'account_settings' => 'Account settings',
@@ -37,5 +38,9 @@ return array(
     'rename_file'       => 'Rename file <code>{{ file.src }}</code>',
     'new_name'          => 'New Name',
     'rename_help'       => 'Insert the new file name',
-    'loading'           => 'Loading...'
+    'loading'           => 'Loading...',
+
+    'users'             => array(
+        'create'        => 'Create new user'
+    )
 );

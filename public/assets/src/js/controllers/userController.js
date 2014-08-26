@@ -58,7 +58,7 @@ grimmApp.controller('userController', ['$scope', 'UsersService', function ($scop
         event.preventDefault();
     }
 
-    $scope.delete = function() {
+    $scope.delete = function(event) {
         bootbox.confirm("Sure to delete " + $scope.currentUser.username + "?", function(result) {
             if(result) {
                 console.log('delete ' + $scope.currentUser.username);

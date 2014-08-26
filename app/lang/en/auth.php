@@ -1,6 +1,8 @@
 <?php
 
 return array(
+    'login_title'       => 'Login',
+
     'login_required'    => 'The login field is required!',
     'password_required' => 'You have to insert a password!',
     'wrong_password'    => 'The given user and password do not match to an existing user!',
@@ -9,7 +11,9 @@ return array(
     'user_suspended'    => 'This user is currently suspended!',
     'user_banned'       => 'This user was banned!',
     'logout_success'    => 'Logout successful!',
-    'login'				=> 'Login',
+    'stay_logged_in'    => 'Stay logged in',
+    'login'             => 'Login',
+    'back'              => 'Back',
 
     'permission'        => 'You do not have the required permissions',
 );
