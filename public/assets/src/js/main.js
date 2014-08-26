@@ -62,7 +62,7 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider',
                 'responseError': function(rejection) {
                     var status = rejection.status;
                     $rootScope.$broadcast('loading-complete');
-                    if (status == 401 && rejection.data === 'ParkCMS Unauthorized') {
+                    if (status == 401 && rejection.data === 'Grimm Unauthorized') {
                         $rootScope.$broadcast('auth-error');
                         window.location.href = BASE_URL + "/login";
                         return;

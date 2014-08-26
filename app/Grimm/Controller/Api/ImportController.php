@@ -10,7 +10,7 @@ class ImportController extends \Controller {
 
     public function startLetterImport() {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('import.letters'))) {
-            return \Response::json(array('message' => 'Unauthorized action.'), 403);
+            return \Response::json(array('message' => 'Grimm Unauthorized'), 401);
         }
 
         $this->queue->push('importLetters', 'Grimm\Controller\Queue\Letter@importLetters');
@@ -20,7 +20,7 @@ class ImportController extends \Controller {
 
     public function startLocationImport() {
         if(!(Sentry::check() && Sentry::getUser()->hasPermission('import.locations'))) {
-            return \Response::json(array('message' => 'Unauthorized action.'), 403);
+            return \Response::json(array('message' => 'Grimm Unauthorized'), 401);
         }
 
         // start locations import
