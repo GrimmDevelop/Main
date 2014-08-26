@@ -28,7 +28,7 @@
 
 <div class="container">
     <form action="{{ url('login/auth') }}" method="post" class="col-md-4 col-md-offset-4" role="form">
-        <h2 class="form-signin-heading">Anmeldung</h2>
+        <h2 class="form-signin-heading">{{ trans('auth.login_title') }}</h2>
         @if (Session::has('auth_error'))
         <div class="alert alert-danger">{{ trans('auth.'.Session::get('auth_error')) }}</div>
         @endif
@@ -38,9 +38,10 @@
         <input type="text" name="username" class="form-control" placeholder="Benutzername" required autofocus>
         <input type="password" name="password" class="form-control" placeholder="Passwort" required>
         <label class="checkbox">
-            <input type="checkbox" name="remember-me" value="remember-me"> Angemeldet bleiben
+            <input type="checkbox" name="remember-me" value="remember-me"> {{ trans('auth.stay_logged_in') }}
         </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Anmelden</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{ trans('auth.login') }}</button>
+        <a href="{{ url('/') }}" class="btn btn-lg btn-default btn-block">{{ trans('auth.back') }}</a>
     </form>
 
 </div> <!-- /container -->

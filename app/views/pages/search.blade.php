@@ -4,10 +4,6 @@
     <div class="row">
         <div class="col-md-12">
             <form action="{{ url('search') }}" method="post" role="form">
-                @foreach($codes as $code)
-                    {{ trans('letter.codes.' . $code) }}
-                @endforeach
-
                 <div class="form-group">
                     <label>Datum</label>
                     <input type="text" class="form-control" name="time[start]" value="{{ Input::get('time.start') }}" placeholder="von" data-toggle="tooltip" title="Das Startdatum muss im Format dd.mm.jjjj eingegeben werden (z.B.: 13.06.1790)." />
