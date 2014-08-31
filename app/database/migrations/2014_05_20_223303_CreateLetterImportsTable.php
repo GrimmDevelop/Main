@@ -17,7 +17,7 @@ class CreateLetterImportsTable extends Migration {
 			$table->increments('id');
 
 			$table->string('gesehen_12');
-			$table->float('code');
+			$table->decimal('code', 12, 4);
 			$table->string('datum');
 			$table->string('absendeort');
 			$table->string('absort_ers');

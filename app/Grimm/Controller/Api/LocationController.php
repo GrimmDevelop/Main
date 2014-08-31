@@ -26,7 +26,7 @@ class LocationController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.create'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -47,7 +47,7 @@ class LocationController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.create'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -75,7 +75,7 @@ class LocationController extends \Controller {
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.edit'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -91,7 +91,7 @@ class LocationController extends \Controller {
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.edit'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -108,7 +108,7 @@ class LocationController extends \Controller {
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('locations.delete'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.delete'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 

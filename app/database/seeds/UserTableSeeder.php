@@ -6,25 +6,7 @@ class UserTableSeeder extends Seeder {
         $adminGroup = Sentry::createGroup(array(
             'name'        => 'Administrator',
             'permissions' => array(
-                'users.view'    => 1,
-                'users.create'  => 1,
-                'users.edit'    => 1,
-                'users.delete'  => 1,
-
-                'letters.create'=> 1,
-                'letters.edit'  => 1,
-                'letters.delete'=> 1,
-
-                'persons.create'=> 1,
-                'persons.edit'  => 1,
-                'persons.delete'=> 1,
-
-                'locations.create'=> 1,
-                'locations.edit'  => 1,
-                'locations.delete'=> 1,
-
-                'import.letters'  => 1,
-                'import.locations'=> 1
+                'superuser'    => 1
             ),
         ));
 

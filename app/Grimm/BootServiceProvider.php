@@ -20,7 +20,9 @@ class BootServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        // 
+        $this->app->bind('grimm.unauthorized', function() {
+            return \Response::json('Grimm Unauthorized', 401);
+        });
     }
 
     /**

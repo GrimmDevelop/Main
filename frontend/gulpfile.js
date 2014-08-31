@@ -6,13 +6,15 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var path = require('path');
 
+var BASE_PATH = '../public/assets/';
+
 gulp.task('less', function() {
     return gulp.src('src/less/main.less')
         .pipe(less({
             paths: [ path.join(__dirname, 'theme_components', 'bower', 'bootstrap', 'less') ]
         }))
         .pipe(minifycss())
-        .pipe(gulp.dest('css'))
+        .pipe(gulp.dest(BASE_PATH + 'css'))
         .pipe(notify({"message": "LESS compiled!"}));
 });
 
@@ -35,8 +37,8 @@ var third_party = [
 gulp.task('js', function() {
     return gulp.src(third_party.concat(['src/js/**/*.js']))
         .pipe(concat('main.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('js'))
+        //.pipe(uglify())
+        .pipe(gulp.dest(BASE_PATH + 'js'))
         .pipe(notify({"message": "JS compiled!"}));
 });
 

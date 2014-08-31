@@ -18,8 +18,8 @@ class UserController extends \Controller {
      */
     public function index()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.view'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
+            return \App::make('grimm.unauthorized');
         }
 
         return User::all();
@@ -33,8 +33,8 @@ class UserController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.create'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
+            return \App::make('grimm.unauthorized');
         }
 
     }
@@ -47,8 +47,8 @@ class UserController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.create'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
+            return \App::make('grimm.unauthorized');
         }
 
         $data = Input::only(array(
@@ -60,7 +60,7 @@ class UserController extends \Controller {
 
         // $user->save();
 
-        return \Response::json(array('message' => 'Not implemented.'), 404);
+        return \Response::json(array('error' => array('message' => 'Not implemented.')), 404);
     }
 
 
@@ -72,8 +72,8 @@ class UserController extends \Controller {
      */
     public function show($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.view'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
+            return \App::make('grimm.unauthorized');
         }
 
         return User::find($id)->toJson();
@@ -88,8 +88,8 @@ class UserController extends \Controller {
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.edit'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
+            return \App::make('grimm.unauthorized');
         }
 
         return null;
@@ -104,8 +104,8 @@ class UserController extends \Controller {
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.edit'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
+            return \App::make('grimm.unauthorized');
         }
 
         $data = Input::only(array(
@@ -126,7 +126,7 @@ class UserController extends \Controller {
         $user->username = $data['username'];
         if($data['password'] != '') {
             if($data['password'] != $data['password_confirmation']) {
-                return \Response::json(array('message' => "Password and password confirmation didn\'t match."), 500);
+                return \Response::json(array('error' => array('message' => "Password and password confirmation didn\'t match.")), 500);
             }
 
             $user->password = $data['password'];
@@ -143,9 +143,9 @@ class UserController extends \Controller {
         $user->email = $data['email'];
 
         if($user->save()) {
-            return \Response::json(array('message' => "User successfully saved!"));
+            return \Response::json(array('success' => array('message' => "User successfully saved!")));
         } else {
-            return \Response::json(array('message' => "Upps, something went wrong while saving!"), 500);
+            return \Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
         }
     }
 
@@ -158,8 +158,8 @@ class UserController extends \Controller {
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('users.delete'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.delete'))) {
+            return \App::make('grimm.unauthorized');
         }
 
         User::destroy($id);

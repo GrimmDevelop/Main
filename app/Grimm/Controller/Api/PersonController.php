@@ -37,7 +37,7 @@ class PersonController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.create'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -52,7 +52,7 @@ class PersonController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.create'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
@@ -78,7 +78,7 @@ class PersonController extends \Controller {
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.edit'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
@@ -92,7 +92,7 @@ class PersonController extends \Controller {
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.edit'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
@@ -106,7 +106,7 @@ class PersonController extends \Controller {
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasPermission('persons.delete'))) {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.delete'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
