@@ -32,16 +32,16 @@
                     <li><a href="{{ url('search') }}">Suche</a></li>
 @if(Sentry::check())
                     <li><a href="{{ url('admin') }}">Administration</a></li>
-                        <li class="dropdown">
-                            <a href="#" data-toogle="dropdown" class="dropdown-toggle"><span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('admin') }}#/files">{{ trans('admin_default.files_nav') }}</a></li>
-                                <li><a href="{{ url('admin') }}#/letters">{{ trans('admin_default.letters_nav') }}</a></li>
-                                <li><a href="{{ url('admin') }}#/locations">{{ trans('admin_default.locations_nav') }}</a></li>
-                                <li><a href="{{ url('admin') }}#/persons">{{ trans('admin_default.persons_nav') }}</a></li>
-                                <li><a href="{{ url('admin') }}#/users">{{ trans('admin_default.users_nav') }}</a></li>
-                            </ul>
-                        </li>
+                    <li class="dropdown">
+                        <a href="#" data-toogle="dropdown" class="dropdown-toggle"><span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ url('admin') }}#/files">{{ trans('admin_default.files_nav') }}</a></li>
+                            <li><a href="{{ url('admin') }}#/letters">{{ trans('admin_default.letters_nav') }}</a></li>
+                            <li><a href="{{ url('admin') }}#/locations">{{ trans('admin_default.locations_nav') }}</a></li>
+                            <li><a href="{{ url('admin') }}#/persons">{{ trans('admin_default.persons_nav') }}</a></li>
+                            <li><a href="{{ url('admin') }}#/users">{{ trans('admin_default.users_nav') }}</a></li>
+                        </ul>
+                    </li>
 @endif
                 </ul>
                 <ul class="nav navbar-nav pull-right">
