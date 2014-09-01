@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        Import
+        <h1>Import</h1>
 
         <h3 ng-click="importLetters = !importLetters">Letter</h3>
         <div ng-show="importLetters">
@@ -19,9 +19,15 @@
         </div>
 
         <h3 ng-click="importLocations = !importLocations">Locations</h3>
-        <div ng-if="importLocations">
+        <div ng-show="importLocations">
             <p>@{{ selectedLocationFile }}</p>
             <file-browser types="['text/plain']" select-files="true" select-directories="false" enable-drag-drop="false" ng-model="selectedLocationFile"></file-browser>
+        </div>
+
+        <h3 ng-click="importPersons = !importPersons">Persons</h3>
+        <div ng-show="importPersons">
+            <p>@{{ selectedLocationFile }}</p>
+            <file-browser types="['application/x-dbf']" select-files="true" select-directories="false" enable-drag-drop="false" ng-model="selectedLocationFile"></file-browser>
         </div>
     </div>
 </div>
