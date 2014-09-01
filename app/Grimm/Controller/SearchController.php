@@ -21,6 +21,12 @@ class SearchController extends \Controller {
     }
 
     public function searchResult() {
+        if(\Config::get('grimm.api.use_imported_letters')) {
+            return $this->searchResultImportedLetters();
+        }
+    }
+
+    public function searchResultImportedLetters() {
         /*
          * TODO: update to new data structure
          */
