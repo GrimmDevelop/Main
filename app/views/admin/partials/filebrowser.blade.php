@@ -20,10 +20,10 @@
                     <p>@{{ file.filename }}</p>
                 </div>
             </div>
-            <div class="no-files" ng-if="files.length === 0">
+            <div class="no-files" ng-if="(files|bytype:types).length === 0">
                 <h3>{{ trans('admin_default.no_files') }}</h3>
-                <p ng-if="enableDrapDrop">{{ trans('admin_default.no_files_desc') }}</p>
-                <p ng-if="!enableDrapDrop">{{ trans('admin_default.no_files_and_drag_drop_desc') }}</p>
+                <p ng-show="enableDrapDrop">{{ trans('admin_default.no_files_desc') }}</p>
+                <p ng-show="!enableDrapDrop">{{ trans('admin_default.no_files_and_drag_drop_desc') }}</p>
             </div>
         </div>
     </div>
