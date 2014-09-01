@@ -8,4 +8,9 @@
     @endif
 
     <div ng-view></div>
+
+    <!-- Partials -->
+@if(View::exists('admin.compiled'))
+    @include('admin.compiled')
+@endif
 @stop
