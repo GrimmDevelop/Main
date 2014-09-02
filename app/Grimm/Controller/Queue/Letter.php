@@ -17,6 +17,11 @@ class Letter extends \Controller {
         \Eloquent::unguard();
 
         foreach(Parser::parse() as $record) {
+            if($record['nr'] == '') {
+                continue;
+            }
+
+            echo $record['nr'] . "\n";
             if($letter = Import::find($record['nr'])) {
                 if($updated = $this->updateLetter($record, $letter)) {
                     // success
@@ -40,9 +45,10 @@ class Letter extends \Controller {
     public function updateLetter($record, Import $letter) {
         foreach($record as $index => $value) {
             $old = $letter->{$index};
+            $value = $index == 'code' ? floatval(str_replace(',', '.', $value)) : $value;
             
             if($index != 'nr' && $old != $value) {
-                $letter->{$index} = floatval($value);
+                $letter->{$index} = $value;
                 echo "$index: $old -> $value\n";
             }
         }

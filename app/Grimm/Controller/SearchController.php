@@ -15,6 +15,10 @@ class SearchController extends \Controller {
     }
 
     public function searchForm() {
+        if(\Config::get('grimm.api.use_imported_letters')) {
+            return View::make('pages.searchimport');
+        }
+
         return View::make('pages.search', array(
             'codes' => $this->letter->codes()
         ));
@@ -24,6 +28,8 @@ class SearchController extends \Controller {
         if(\Config::get('grimm.api.use_imported_letters')) {
             return $this->searchResultImportedLetters();
         }
+
+
     }
 
     public function searchResultImportedLetters() {
@@ -53,7 +59,7 @@ class SearchController extends \Controller {
                 ->where('hs', 'like', '%' . Input::get('letter.hw_location') . '%');
         }
 
-        return View::make('pages.search', array(
+        return View::make('pages.searchimport', array(
             'codes' => $this->letter->codes(),
             'count' => $s->count(),
             'result' => $s->take(100)->get()
