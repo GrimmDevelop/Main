@@ -59,6 +59,7 @@ class Letter extends \Controller {
     public function createLetter($record) {
         $record['id'] = $record['nr'];
         unset($record['nr']);
+        $record['code'] = floatval(str_replace(',', '.', $record['code']));
         return Import::create($record);
     }
 }
