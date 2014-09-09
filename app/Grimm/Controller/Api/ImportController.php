@@ -30,4 +30,14 @@ class ImportController extends \Controller {
         return \Response::json(array('success' => array('message' => 'Start importing geo locations.')));
     }
 
+    public function startPersonImport() {
+        if(!(Sentry::check() && Sentry::getUser()->hasAccess('import.letters'))) {
+            return \App::make('grimm.unauthorized');
+        }
+
+        // Queue::push('Grimm\Controller\Queue\Person@importPersons', array('source' => Input::get('data')));
+
+        return \Response::json(array('success' => array('message' => 'Start importing persons.')));
+    }
+
 }
