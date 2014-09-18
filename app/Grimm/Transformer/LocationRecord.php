@@ -35,6 +35,10 @@ class LocationRecord implements RecordTransformer {
         $record['timezone'] = $data[17];
         $record['modification_date'] = $data[18];
 
+        if($record['feature_class'] != 'P') {
+            return null;
+        }
+
         return $record;
     }
 }

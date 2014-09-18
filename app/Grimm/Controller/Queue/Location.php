@@ -30,7 +30,7 @@ class Location extends \Controller
 
         foreach ($this->converter->parse() as $record) {
             if ($location = $this->firstOrCreate($record)) {
-                echo $record['id'] . "\n";
+                // echo $record['id'] . "\n";
             }
         }
 
