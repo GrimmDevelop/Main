@@ -30,9 +30,8 @@ class Letter extends \Controller
 
         foreach ($this->converter->parse() as $record) {
             if ($letter = $this->firstOrCreate($record)) {
-                echo $record->id . "\n";
                 foreach ($this->compareAndUpdate($record, $letter) as $updated) {
-                    echo $updated . "\n";
+                    // echo $updated . "\n";
                 }
             }
         }

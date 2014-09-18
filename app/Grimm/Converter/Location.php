@@ -4,6 +4,7 @@ namespace Grimm\Converter;
 
 use Grimm\Contract\Converter;
 use Grimm\Contract\RecordTransformer;
+use League\Csv\Reader;
 
 class Location implements Converter
 {
@@ -52,8 +53,12 @@ class Location implements Converter
     {
         $this->cache = array();
 
-        $handle = fopen($this->source, "r");
-        while ($record = fgetcsv($handle, 0, "	")) {
+        $handle = Reader::createFromPath($this->source);
+        $handle->setDelimiter("\t");
+
+        $read = $handle->query();
+
+        foreach ($read as $record) {
             $data = $this->recordTransformer->transform($record);
 
             if ($data != null) {
@@ -61,7 +66,6 @@ class Location implements Converter
                 yield $data;
             }
         }
-        fclose($handle);
     }
 
     /**

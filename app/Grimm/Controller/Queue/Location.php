@@ -4,6 +4,7 @@ namespace Grimm\Controller\Queue;
 
 use Grimm\Models\Location as Import;
 use Grimm\Converter\Location as Converter;
+use Illuminate\Database\QueryException;
 
 class Location extends \Controller
 {
@@ -41,6 +42,12 @@ class Location extends \Controller
 
     public function firstOrCreate($record)
     {
-        return Import::firstOrCreate($record);
+        try {
+            return Import::firstOrCreate($record);
+        } catch (QueryException $e) {
+            echo $e->getMessage() . "\n";
+            echo $e->getSql() . "\n";
+            print_r($e->getBindings());
+        }
     }
 } 
