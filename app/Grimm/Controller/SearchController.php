@@ -6,16 +6,19 @@ use Grimm\Models\Letter;
 use View;
 use Input;
 
-class SearchController extends \Controller {
+class SearchController extends \Controller
+{
 
     protected $letter;
 
-    public function __construct(Letter $letter) {
+    public function __construct(Letter $letter)
+    {
         $this->letter = $letter;
     }
 
-    public function searchForm() {
-        if(\Config::get('grimm.api.use_imported_letters')) {
+    public function searchForm()
+    {
+        if (\Config::get('grimm.api.use_imported_letters')) {
             return View::make('pages.searchimport');
         }
 
@@ -24,34 +27,36 @@ class SearchController extends \Controller {
         ));
     }
 
-    public function searchResult() {
-        if(\Config::get('grimm.api.use_imported_letters')) {
+    public function searchResult()
+    {
+        if (\Config::get('grimm.api.use_imported_letters')) {
             return $this->searchResultImportedLetters();
         }
 
 
     }
 
-    public function searchResultImportedLetters() {
+    public function searchResultImportedLetters()
+    {
         /*
          * TODO: update to new data structure
          */
 
-        if(Input::get('letter.nr') != '') {
+        if (Input::get('letter.nr') != '') {
             $s = \Grimm\Models\Letter\Import::where('id', '=', Input::get('letter.nr'))
                 ->orWhere('nr_1997', '=', Input::get('letter.nr'));
         } else {
             $s = \Grimm\Models\Letter\Import::where(
-                function($query) {
+                function ($query) {
                     $query->where('absendeort', 'like', '%' . Input::get('send.location') . '%')
                         ->orWhere('absort_ers', 'like', '%' . Input::get('send.location') . '%');
                 })
                 ->where('absender', 'like', '%' . Input::get('send.name') . '%')
                 ->where('empf_ort', 'like', '%' . Input::get('receive.location') . '%')
                 ->where('empfaenger', 'like', '%' . Input::get('receive.name') . '%')
-                ->where(function($query) {
-                    foreach(explode(' ', Input::get('letter.inc')) as $incPart) {
-                        if($incPart != '') {
+                ->where(function ($query) {
+                    foreach (explode(' ', Input::get('letter.inc')) as $incPart) {
+                        if ($incPart != '') {
                             $query->where('inc', 'like', '%' . $incPart . '%');
                         }
                     }

@@ -2,6 +2,7 @@
 
 namespace Grimm\Controller\Queue;
 
-class Person extends \Controller {
+class Person extends \Controller
+{
 
 }

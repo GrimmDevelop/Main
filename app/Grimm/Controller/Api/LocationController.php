@@ -6,7 +6,8 @@ use Grimm\Models\Location;
 use Input;
 use Sentry;
 
-class LocationController extends \Controller {
+class LocationController extends \Controller
+{
 
     /**
      * Display a listing of the resource.
@@ -26,12 +27,11 @@ class LocationController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
-        $data = Input::only(array(
-            // 'username', 'password', 'email'
+        $data = Input::only(array(// 'username', 'password', 'email'
         ));
 
         $location = new Location($data);
@@ -47,7 +47,7 @@ class LocationController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -58,7 +58,7 @@ class LocationController extends \Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function show($id)
@@ -70,12 +70,12 @@ class LocationController extends \Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -86,12 +86,12 @@ class LocationController extends \Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -103,12 +103,12 @@ class LocationController extends \Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('locations.delete'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.delete'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 

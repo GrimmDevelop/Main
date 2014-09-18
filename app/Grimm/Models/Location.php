@@ -4,17 +4,22 @@ namespace Grimm\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Location extends Eloquent {
+class Location extends Eloquent
+{
     protected $table = 'locations';
 
-    public function lettersFrom() {
+    public function lettersFrom()
+    {
         return $this->hasMany('Grimmm\Models\Letter', 'from_id');
     }
-    public function lettersTo() {
+
+    public function lettersTo()
+    {
         return $this->hasMany('Grimmm\Models\Letter', 'to_id');
     }
 
-    public function letters() {
+    public function letters()
+    {
         $from = $this->lettersFrom;
         $to = $this->lettersTo;
 

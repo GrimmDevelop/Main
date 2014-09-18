@@ -1,57 +1,31 @@
 <?php
 
-namespace Grimm\Converter;
+namespace Grimm\Transformer;
 
-use XBase\Table;
-use XBase\Record;
+use Grimm\Contract\RecordTransformer;
 use XBase\Column;
+use XBase\Record;
 
-class Letter implements ConverterInterface {
+class LetterRecord implements RecordTransformer
+{
 
-    protected $file;
-
-    protected $cache = null;
-
-    public function __construct(\File $file) {
-        $this->file = $file;
-    }
-
-    public function setSource($source) {
-        if(!file_exists($source)) {
-            throw new \InvalidArgumentException('Invalid source (file not found)');
-        }
-        $this->source = $source;
-        $this->cache = null;
-    }
-
-    public function setFilter(array $filter) {
-        $this->filter = $filter;
-    }
-
-    public function parse() {
-        $table = new Table($this->source);
-
-        $this->cache = array();
-        while($record = $table->nextRecord()) {
-            $data = $this->convert($record);
-            $this->cache[] = $data;
-            yield $data;
-        }
-    }
-
-    public function convert($data)
+    /**
+     * Transform record data to target data
+     * @param $data
+     * @return mixed
+     */
+    public function transform($data)
     {
-        $utf8DataArray = array_map(function($column) use($data) {
+        $utf8DataArray = array_map(function ($column) use ($data) {
             return $this->utf8Convert($data, $column);
         }, $data->getColumns());
-
 
         $senders = $this->senders($utf8DataArray['absender']);
         $receivers = $this->receivers($utf8DataArray['empfaenger']);
 
         $record = array(
             'id' => (int)$utf8DataArray['nr'],
-            'gesehen_12' => (int)$utf8DataArray['gesehen_12'],
+            'gesehen_12' => $utf8DataArray['gesehen_12'],
             'code' => (float)str_replace(',', '.', $utf8DataArray['code']),
             'datum' => $utf8DataArray['datum'],
             'absendeort' => $utf8DataArray['absendeort'],
@@ -120,21 +94,11 @@ class Letter implements ConverterInterface {
         $record['auktkat'] = array_filter($record['auktkat'], 'strlen');
         $record['zusatz'] = array_filter($record['zusatz'], 'strlen');
 
-        return $record;
-    }
-
-    public function toArray()
-    {
-        if(is_null($this->cache)) {
-            throw new \Exception("cache is null, run parse() first!");
+        if ($record['id'] == 0) {
+            return null;
         }
 
-        return $this->cache;
-    }
-
-    public function toJson()
-    {
-        return json_encode($this->toArray());
+        return (object)$record;
     }
 
     /**
@@ -143,7 +107,8 @@ class Letter implements ConverterInterface {
      * @param Column $column
      * @return bool|float|int|string
      */
-    protected function utf8Convert(Record $record, Column $column) {
+    protected function utf8Convert(Record $record, Column $column)
+    {
         $field = $record->{$column->getName()};
         return ($column->getType() == Record::DBFFIELD_TYPE_MEMO ||
             $column->getType() == Record::DBFFIELD_TYPE_CHAR) ?
@@ -156,7 +121,8 @@ class Letter implements ConverterInterface {
      * @param $string
      * @return array
      */
-    protected function senders($string) {
+    protected function senders($string)
+    {
         // TODO: Maybe there're differences between senders and receivers
         return $this->receivers($string);
     }
@@ -166,8 +132,8 @@ class Letter implements ConverterInterface {
      * @param $string
      * @return array
      */
-    protected function receivers($string) {
-
+    protected function receivers($string)
+    {
         $string = preg_replace("/;([\\/~><])/", ":$1", $string);
 
         // remove -(...) and -[...]

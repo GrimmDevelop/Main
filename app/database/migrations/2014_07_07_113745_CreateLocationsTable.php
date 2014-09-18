@@ -28,10 +28,10 @@ class CreateLocationsTable extends Migration {
             $table->string('admin1_code', 20);
             $table->string('admin2_code', 80);
             $table->string('admin3_code', 20);
-            $table->bigInteger('admin4_code');
+            $table->string('admin4_code', 20);
             $table->bigInteger('population');
             $table->integer('elevation')->unsigned();
-            $table->integer('dem')->unsigned();
+            $table->integer('dem');
             $table->string('timezone', 40);
             $table->date('modification_date');
 

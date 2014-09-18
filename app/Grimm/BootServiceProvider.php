@@ -2,6 +2,10 @@
 
 namespace Grimm;
 
+use Grimm\Converter\Letter;
+use Grimm\Converter\Location;
+use Grimm\Transformer\LetterRecord;
+use Grimm\Transformer\LocationRecord;
 use Illuminate\Support\ServiceProvider;
 
 class BootServiceProvider extends ServiceProvider {
@@ -22,6 +26,14 @@ class BootServiceProvider extends ServiceProvider {
     {
         $this->app->bind('grimm.unauthorized', function() {
             return \Response::json('Grimm Unauthorized', 401);
+        });
+
+        $this->app->bind(Letter::class, function() {
+            return new Letter($this->app->make(LetterRecord::class));
+        });
+
+        $this->app->bind(Location::class, function() {
+            return new Location($this->app->make(LocationRecord::class));
         });
     }
 

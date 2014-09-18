@@ -1,13 +1,13 @@
 <?php
 
-Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function() {
-    Route::get('/', function() {
+Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function () {
+    Route::get('/', function () {
         return View::make('admin.index');
     });
 
     // Route::resource('users', 'Grimm\Controller\Admin\UserController');
 
-    Route::get('test', function() {
+    Route::get('test', function () {
 
         $converter = \App::make('Grimm\Converter\Letter');
         $client = \App::make('Elasticsearch\Client');
@@ -19,8 +19,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function() {
         $bulk = array();
 
         $i = 0;
-        foreach($converter->parse() as $row) {
-            if($i++ > 100) {
+        foreach ($converter->parse() as $row) {
+            if ($i++ > 100) {
 
                 break;
             }
@@ -32,12 +32,12 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function() {
                     'id' => $row['id']
                 ));
                 var_dump($result);
-            } catch(\Elasticsearch\Common\Exceptions\Missing404Exception $e) {
+            } catch (\Elasticsearch\Common\Exceptions\Missing404Exception $e) {
                 var_dump($e->getMessage());
                 $result = $client->index(array(
                     'index' => 'grimm',
                     'type' => 'letter',
-                    'id'  => $row['id'],
+                    'id' => $row['id'],
                     'body' => $row
                 ));
 

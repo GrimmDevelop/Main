@@ -2,37 +2,37 @@
 
 namespace Grimm\Controller\Queue;
 
-use GrimmTools\LetterParser\Parser;
+use Grimm\Converter\Letter as Converter;
 use Grimm\Models\Letter\Import;
 
-class Letter extends \Controller {
+class Letter extends \Controller
+{
 
-    public function importLetters($job, $data) {
-        if(!isset($data['source']) || !file_exists(storage_path('upload') . $data['source'])) {
-            throw new \InvalidArgumentException('Cannot find source file' . storage_path('upload') . $data['source']);
+    /**
+     * @var Converter
+     */
+    private $converter;
+
+    public function __construct(Converter $converter)
+    {
+        $this->converter = $converter;
+    }
+
+    public function importLetters($job, $data)
+    {
+        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source'])) {
+            throw new \InvalidArgumentException('Cannot find source file ' . storage_path('upload') . $data['source']);
         }
 
-        Parser::setSource(storage_path('upload') . $data['source']);
+        $this->converter->setSource(storage_path('upload') . $data['source']);
 
         \Eloquent::unguard();
 
-        foreach(Parser::parse() as $record) {
-            if($record['nr'] == '') {
-                continue;
-            }
-
-            echo $record['nr'] . "\n";
-            if($letter = Import::find($record['nr'])) {
-                if($updated = $this->updateLetter($record, $letter)) {
-                    // success
-                } else {
-                    // error
-                }
-            } else {
-                if($letter = $this->createLetter($record)) {
-                    // success
-                } else {
-                    // error
+        foreach ($this->converter->parse() as $record) {
+            if ($letter = $this->firstOrCreate($record)) {
+                echo $record->id . "\n";
+                foreach ($this->compareAndUpdate($record, $letter) as $updated) {
+                    echo $updated . "\n";
                 }
             }
         }
@@ -42,25 +42,37 @@ class Letter extends \Controller {
         $job->delete();
     }
 
-    public function updateLetter($record, Import $letter) {
-        foreach($record as $index => $value) {
-            $old = $letter->{$index};
-            $value = $index == 'code' ? floatval(str_replace(',', '.', $value)) : $value;
-            
-            if($index != 'nr' && $old != $value) {
-                $letter->{$index} = $value;
-                echo "$index: $old -> $value\n";
+    public function compareAndUpdate($new, Import $old)
+    {
+        $updatedFields = array();
+        /*foreach ($new as $index => $value) {
+            if ($old->$index != $value) {
+                $old->{$index} = $value;
+                $updatedFields[] = $index;
             }
+        }*/
+
+        // Save only if something was updated
+        if (count($updatedFields)) {
+            $old->save();
         }
-        
-        return $letter->save();
+
+        return $updatedFields;
     }
 
-    public function createLetter($record) {
-        $record['id'] = $record['nr'];
-        unset($record['nr']);
-        $record['code'] = floatval(str_replace(',', '.', $record['code']));
-        return Import::create($record);
+    public function firstOrCreate($record)
+    {
+        if ($letter = Import::find($record->id)) {
+            return $letter;
+        }
+
+        $letter = new Import();
+        foreach ($record as $index => $value) {
+            $letter->$index = $value;
+        }
+        $letter->save();
+
+        return $letter;
     }
 }
 

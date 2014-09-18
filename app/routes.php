@@ -14,10 +14,17 @@
 require_once('routes_admin.php');
 require_once('routes_api.php');
 
-Route::get('/', function() {
+Route::get('/', function () {
     return Redirect::to(URL::to('search'));
 });
 
 Route::get('/search', 'Grimm\Controller\SearchController@searchForm');
-
 Route::post('/search', 'Grimm\Controller\SearchController@searchResult');
+
+App::missing(function ($exception) {
+    return Redirect::to('/')->withErrors(
+        array(
+            '404' => $exception->getMessage()
+        )
+    );
+});

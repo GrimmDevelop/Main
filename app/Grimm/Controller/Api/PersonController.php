@@ -4,7 +4,8 @@ namespace Grimm\Controller\Api;
 
 use Grimm\Models\Person;
 
-class PersonController extends \Controller {
+class PersonController extends \Controller
+{
 
     /**
      * Display a listing of the resource.
@@ -37,7 +38,7 @@ class PersonController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
 
@@ -52,7 +53,7 @@ class PersonController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
@@ -61,7 +62,7 @@ class PersonController extends \Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function show($id)
@@ -73,12 +74,12 @@ class PersonController extends \Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
@@ -87,12 +88,12 @@ class PersonController extends \Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }
@@ -101,12 +102,12 @@ class PersonController extends \Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('persons.delete'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.delete'))) {
             return \Response::json('Unauthorized action.', 403);
         }
     }

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Grimm\Models\Letter;
 
-class Information extends Eloquent {
+class Information extends Eloquent
+{
     protected $table = 'letter_informations';
 
-    public function codes() {
+    public function codes()
+    {
         return array(
             'code',
             'language',
@@ -49,7 +51,8 @@ class Information extends Eloquent {
         );
     }
 
-    public function letter() {
+    public function letter()
+    {
         return $this->belongsTo('Grimm\Models\Letter');
     }
 }

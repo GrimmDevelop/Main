@@ -9,7 +9,8 @@ use Grimm\Auth\Models\User;
 use Input;
 use Sentry;
 
-class UserController extends \Controller {
+class UserController extends \Controller
+{
 
     /**
      * Display a listing of the resource.
@@ -18,7 +19,7 @@ class UserController extends \Controller {
      */
     public function index()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
             return \App::make('grimm.unauthorized');
         }
 
@@ -33,7 +34,7 @@ class UserController extends \Controller {
      */
     public function create()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
             return \App::make('grimm.unauthorized');
         }
 
@@ -47,7 +48,7 @@ class UserController extends \Controller {
      */
     public function store()
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
             return \App::make('grimm.unauthorized');
         }
 
@@ -67,12 +68,12 @@ class UserController extends \Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function show($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
             return \App::make('grimm.unauthorized');
         }
 
@@ -83,12 +84,12 @@ class UserController extends \Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function edit($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
             return \App::make('grimm.unauthorized');
         }
 
@@ -99,12 +100,12 @@ class UserController extends \Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function update($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
             return \App::make('grimm.unauthorized');
         }
 
@@ -124,25 +125,25 @@ class UserController extends \Controller {
         $user->last_name = $data['last_name'];
 
         $user->username = $data['username'];
-        if($data['password'] != '') {
-            if($data['password'] != $data['password_confirmation']) {
+        if ($data['password'] != '') {
+            if ($data['password'] != $data['password_confirmation']) {
                 return \Response::json(array('error' => array('message' => "Password and password confirmation didn\'t match.")), 500);
             }
 
             $user->password = $data['password'];
         }
 
-        if(!$user->activated && $data['activated']) {
+        if (!$user->activated && $data['activated']) {
             $this->activation_code = null;
             $user->activated = true;
             $user->activated_at = new \DateTime();
-        } else if($user->activated && !$data['activated']) {
+        } else if ($user->activated && !$data['activated']) {
             $user->activated = false;
         }
 
         $user->email = $data['email'];
 
-        if($user->save()) {
+        if ($user->save()) {
             return \Response::json(array('success' => array('message' => "User successfully saved!")));
         } else {
             return \Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
@@ -153,12 +154,12 @@ class UserController extends \Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function destroy($id)
     {
-        if(!(Sentry::check() && Sentry::getUser()->hasAccess('users.delete'))) {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.delete'))) {
             return \App::make('grimm.unauthorized');
         }
 
