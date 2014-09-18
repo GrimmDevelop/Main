@@ -2,6 +2,7 @@
 
 namespace Grimm\Models\Letter;
 
+use Grimm\Models\Location;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Grimm\Models\Letter;
@@ -12,7 +13,17 @@ class Import extends Eloquent
 
     public function letter()
     {
-        return $this->belongsTo('Grimm\Models\Letter');
+        return $this->belongsTo(Letter::class);
+    }
+
+    public function sendLocations()
+    {
+        return $this->belongsToMany(Location::class, 'letter_location_send');
+    }
+
+    public function receiveLocations()
+    {
+        return $this->belongsToMany(Location::class, 'letter_location_recv');
     }
 
     public function getSendersAttribute($value)
