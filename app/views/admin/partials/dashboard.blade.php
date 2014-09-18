@@ -1,7 +1,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <a href="" ng-click="go('/users')">{{ trans('admin_default.files_nav') }}</a><br>
+        <a href="" ng-click="go('/files')">{{ trans('admin_default.files_nav') }}</a><br>
         <a href="" ng-click="go('/users')">{{ trans('admin_default.users_nav') }}</a><br>
         <a href="" ng-click="go('/letters')">{{ trans('admin_default.letters_nav') }}</a><br>
         <a href="" ng-click="go('/locations')">{{ trans('admin_default.locations_nav') }}</a><br>

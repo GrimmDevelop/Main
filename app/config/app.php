@@ -110,8 +110,6 @@ return array(
         'Cartalyst\Sentry\SentryServiceProvider',
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
-        'GrimmTools\LocationParser\LocationParserServiceProvider',
-        'GrimmTools\LetterParser\LetterParserServiceProvider',
         'GrimmTools\Assets\AssetsServiceProvider',
 
 		'Grimm\BootServiceProvider',
