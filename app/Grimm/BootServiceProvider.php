@@ -4,8 +4,10 @@ namespace Grimm;
 
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
+use Grimm\Converter\Person;
 use Grimm\Transformer\LetterRecord;
 use Grimm\Transformer\LocationRecord;
+use Grimm\Transformer\PersonRecord;
 use Illuminate\Support\ServiceProvider;
 
 class BootServiceProvider extends ServiceProvider {
@@ -34,6 +36,10 @@ class BootServiceProvider extends ServiceProvider {
 
         $this->app->bind(Location::class, function() {
             return new Location($this->app->make(LocationRecord::class));
+        });
+
+        $this->app->bind(Person::class, function() {
+            return new Person($this->app->make(PersonRecord::class));
         });
     }
 

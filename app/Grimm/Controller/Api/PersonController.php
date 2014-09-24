@@ -2,10 +2,10 @@
 
 namespace Grimm\Controller\Api;
 
+use App;
 use Grimm\Models\Person;
 
-class PersonController extends \Controller
-{
+class PersonController extends \Controller {
 
     /**
      * Display a listing of the resource.
@@ -28,6 +28,18 @@ class PersonController extends \Controller
     public function lettersChangedAfter($year, $month, $day)
     {
         return Person::where('updated_at', '>=', \Carbon\Carbon::createFromDate($year, $month, $day))->get()->toJson();
+    }
+
+    public function search()
+    {
+        $result = Person::with('informations')->where('name_2013', \Input::get('name'))->get();
+
+        if ($result->count() > 0) {
+            return $result->toJson();
+        }
+
+        return \Response::json(array('type' => 'danger', 'message' => 'Person not found'), 404);
+
     }
 
 

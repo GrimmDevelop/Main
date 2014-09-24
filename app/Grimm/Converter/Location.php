@@ -15,7 +15,7 @@ class Location implements Converter
     /**
      * @var RecordTransformer
      */
-    private $recordTransformer;
+    protected $recordTransformer;
 
     public function __construct(RecordTransformer $recordTransformer)
     {
@@ -90,6 +90,6 @@ class Location implements Converter
      */
     public function toJson($options = 0)
     {
-        return json_encode($this->toArray());
+        return json_encode($this->toArray(), $options);
     }
 }

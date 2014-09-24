@@ -2,10 +2,31 @@
 
 namespace Grimm\Controller\Api;
 
+use Carbon\Carbon;
+use Grimm\Assigner\LetterFrom;
+use Grimm\Assigner\LetterReceiver;
+use Grimm\Assigner\LetterSender;
 use Grimm\Models\Letter;
+use Grimm\Models\Person;
+use Illuminate\Http\JsonResponse;
+use Input;
+use Response;
+use Sentry;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class LetterController extends \Controller
-{
+class LetterController extends \Controller {
+
+    /**
+     * @var array Assigner
+     */
+    protected $assigner;
+
+    public function __construct(LetterSender $letterSenderAssigner, LetterReceiver $letterReceiverAssigner, LetterFrom $letterFromAssigner)
+    {
+        $this->assigner['senders'] = $letterSenderAssigner;
+        $this->assigner['receivers'] = $letterReceiverAssigner;
+        $this->assigner['from'] = $letterFromAssigner;
+    }
 
     /**
      * Display a listing of the resource.
@@ -14,7 +35,26 @@ class LetterController extends \Controller
      */
     public function index()
     {
-        return $this->lettersChangedAfter(0, 0, 0);
+        $result = $this->loadItems(
+            abs((int)Input::get('items_per_page', 25)),
+            Input::get('load', ['informations', 'senders', 'receivers', 'from', 'to'])
+        );
+
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
+
+        $return = new \stdClass();
+
+        $return->total = $result->getTotal();
+        $return->per_page = $result->getPerPage();
+        $return->current_page = $result->getCurrentPage();
+        $return->last_page = $result->getLastPage();
+        $return->from = $result->getFrom();
+        $return->to = $result->getTo();
+        $return->data = $result->getCollection()->toArray();
+
+        return json_encode($return);
     }
 
 
@@ -27,9 +67,63 @@ class LetterController extends \Controller
      */
     public function lettersChangedAfter($year, $month, $day)
     {
-        return Letter::where('updated_at', '>=', \Carbon\Carbon::createFromDate($year, $month, $day))->get()->toJson();
+        return Letter::where('updated_at', '>=', Carbon::createFromDate($year, $month, $day))->take(Input::get('take', 100))->get()->toJson();
     }
 
+    public function stream()
+    {
+        $result = $this->loadItems(
+            abs((int)Input::get('items_per_page', 25)),
+            Input::get('load', ['senders', 'receivers', 'from', 'to'])
+        );
+
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
+
+        foreach ($result as $row) {
+            echo $row->toJson() . "\n";
+            flush();
+        }
+    }
+
+    /**
+     * @param $totalItems
+     * @param array $with
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Pagination\Paginator
+     */
+    protected function loadItems($totalItems, array $with = [])
+    {
+        $totalItems = abs((int)$totalItems);
+
+        if ($totalItems > 500) {
+            $totalItems = 500;
+        }
+
+        $builder = Letter::query();
+
+        foreach ($with as $item) {
+            if (in_array($item, ['informations', 'senders', 'receivers', 'from', 'to'])) {
+                $builder->with($item);
+            }
+        }
+
+        if (Input::get('updated_after')) {
+            try {
+                $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', Input::get('updated_after'));
+            } catch (\InvalidArgumentException $e) {
+                try {
+                    $dateTime = Carbon::createFromFormat('Y-m-d', Input::get('updated_after'));
+                } catch (\InvalidArgumentException $e) {
+                    return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s]'), 500);
+                }
+            }
+
+            $builder->where('updated_at', '>=', $dateTime);
+        }
+
+        return $builder->paginate($totalItems);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -61,7 +155,11 @@ class LetterController extends \Controller
      */
     public function show($id)
     {
-        //
+        if ($letter = Letter::find($id)) {
+            return $letter->load('informations', 'senders', 'receivers', 'from', 'to')->toJson();
+        }
+
+        throw new NotFoundHttpException('Unkown letter id');
     }
 
 
@@ -88,6 +186,21 @@ class LetterController extends \Controller
         //
     }
 
+    public function assign($mode)
+    {
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('letters.edit'))) {
+            return Response::json('Unauthorized action.', 403);
+        }
+
+        if (!isset($this->assigner[$mode])) {
+            return Response::json(array('type' => 'danger', 'message' => 'Unkown method ' . $mode));
+        }
+
+        return $this->assigner[$mode]->assign(
+            Input::get('object_id'),
+            Input::get('item_id')
+        );
+    }
 
     /**
      * Remove the specified resource from storage.

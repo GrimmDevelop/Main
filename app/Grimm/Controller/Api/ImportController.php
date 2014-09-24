@@ -39,7 +39,7 @@ class ImportController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        // Queue::push('Grimm\Controller\Queue\Person@importPersons', array('source' => Input::get('data')));
+        Queue::push('Grimm\Controller\Queue\Person@import', array('source' => Input::get('data')));
 
         return \Response::json(array('success' => array('message' => 'Start importing persons.')));
     }

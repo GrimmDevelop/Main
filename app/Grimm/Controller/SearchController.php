@@ -6,8 +6,7 @@ use Grimm\Models\Letter;
 use View;
 use Input;
 
-class SearchController extends \Controller
-{
+class SearchController extends \Controller {
 
     protected $letter;
 
@@ -43,10 +42,15 @@ class SearchController extends \Controller
          */
 
         if (Input::get('letter.nr') != '') {
-            $s = \Grimm\Models\Letter\Import::where('id', '=', Input::get('letter.nr'))
-                ->orWhere('nr_1997', '=', Input::get('letter.nr'));
+            $id = abs((int)Input::get('letter.nr'));
+
+            $s = Letter::with('informations')
+                ->where('id', $id)
+                ->orWhereHas('informations', function ($q) use ($id) {
+                    return $q->where('code', 'nr_1997')->where('data', $id);
+                });
         } else {
-            $s = \Grimm\Models\Letter\Import::where(
+            $s = Letter::with('informations')->where(
                 function ($query) {
                     $query->where('absendeort', 'like', '%' . Input::get('send.location') . '%')
                         ->orWhere('absort_ers', 'like', '%' . Input::get('send.location') . '%');
@@ -63,6 +67,8 @@ class SearchController extends \Controller
                 })
                 ->where('hs', 'like', '%' . Input::get('letter.hw_location') . '%');
         }
+
+        echo $s->toSql();
 
         return View::make('pages.searchimport', array(
             'codes' => $this->letter->codes(),

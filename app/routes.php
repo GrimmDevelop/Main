@@ -21,6 +21,8 @@ Route::get('/', function () {
 Route::get('/search', 'Grimm\Controller\SearchController@searchForm');
 Route::post('/search', 'Grimm\Controller\SearchController@searchResult');
 
+Route::get('/api', 'Grimm\Controller\ApiController@overview');
+
 App::missing(function ($exception) {
     return Redirect::to('/')->withErrors(
         array(

@@ -30,6 +30,7 @@
             <div class="collapse navbar-collapse" id="mainnav">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('search') }}">Suche</a></li>
+                    <li><a href="{{ url('api') }}">Api</a></li>
 @if(Sentry::check())
                     <li><a href="{{ url('admin') }}">Administration</a></li>
                     <li class="dropdown">
@@ -40,6 +41,9 @@
                             <li><a href="{{ url('admin') }}#/locations">{{ trans('admin_default.locations_nav') }}</a></li>
                             <li><a href="{{ url('admin') }}#/persons">{{ trans('admin_default.persons_nav') }}</a></li>
                             <li><a href="{{ url('admin') }}#/users">{{ trans('admin_default.users_nav') }}</a></li>
+                            <li class="nav-divider"></li>
+                            <li><a href="{{ url('admin') }}#/import">{{ trans('admin_default.import_nav') }}</a></li>
+                            <li><a href="{{ url('admin') }}#/assign">{{ trans('admin_default.assign_locations') }}</a></li>
                         </ul>
                     </li>
 @endif
@@ -65,6 +69,11 @@
         @endforeach
 
         @yield('body')
+
+        @foreach(DB::getQueryLog() as $log)
+            <code>{{ $log['query'] }}</code>
+            <div>{{ implode(', ', $log['bindings']) }}</div>
+        @endforeach
     </div>
 
     <script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>

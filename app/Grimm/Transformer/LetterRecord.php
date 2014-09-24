@@ -23,11 +23,13 @@ class LetterRecord implements RecordTransformer
         $senders = $this->senders($utf8DataArray['absender']);
         $receivers = $this->receivers($utf8DataArray['empfaenger']);
 
-        $record = array(
-            'id' => (int)$utf8DataArray['nr'],
+        $transformedRecord['id'] = (int)$utf8DataArray['nr'];
+        $transformedRecord['code'] = (float)str_replace(',', '.', $utf8DataArray['code']);
+        $transformedRecord['language'] = $utf8DataArray['sprache'];
+        $transformedRecord['date'] = $utf8DataArray['datum'];
+
+        $transformedRecord['informations'] = array(
             'gesehen_12' => $utf8DataArray['gesehen_12'],
-            'code' => (float)str_replace(',', '.', $utf8DataArray['code']),
-            'datum' => $utf8DataArray['datum'],
             'absendeort' => $utf8DataArray['absendeort'],
             'absort_ers' => $utf8DataArray['absort_ers'],
             'empf_ort' => $utf8DataArray['empf_ort'],
@@ -40,7 +42,6 @@ class LetterRecord implements RecordTransformer
             'receivers' => $receivers[0],
             'receivers_contain_errors' => $receivers[1],
 
-            'sprache' => $utf8DataArray['sprache'],
             'hs' => $utf8DataArray['hs'],
             'inc' => $utf8DataArray['inc'],
             'dr' => array(
@@ -88,17 +89,19 @@ class LetterRecord implements RecordTransformer
             'del' => $utf8DataArray['del']
         );
 
-        $record['dr'] = array_filter($record['dr'], 'strlen');
-        $record['konzept'] = array_filter($record['konzept'], 'strlen');
-        $record['abschrift'] = array_filter($record['abschrift'], 'strlen');
-        $record['auktkat'] = array_filter($record['auktkat'], 'strlen');
-        $record['zusatz'] = array_filter($record['zusatz'], 'strlen');
+        $transformedRecord['informations']['dr'] = array_filter($transformedRecord['informations']['dr'], 'strlen');
+        $transformedRecord['informations']['konzept'] = array_filter($transformedRecord['informations']['konzept'], 'strlen');
+        $transformedRecord['informations']['abschrift'] = array_filter($transformedRecord['informations']['abschrift'], 'strlen');
+        $transformedRecord['informations']['auktkat'] = array_filter($transformedRecord['informations']['auktkat'], 'strlen');
+        $transformedRecord['informations']['zusatz'] = array_filter($transformedRecord['informations']['zusatz'], 'strlen');
 
-        if ($record['id'] == 0) {
+        $transformedRecord['informations'] = array_filter($transformedRecord['informations']);
+
+        if ($transformedRecord['id'] == 0) {
             return null;
         }
 
-        return (object)$record;
+        return $transformedRecord;
     }
 
     /**
@@ -153,6 +156,5 @@ class LetterRecord implements RecordTransformer
         $errors = (bool)str_contains($string, array("(", ")", "[", "]", ":", "?", ">", "<", ""));
 
         return array($persons, $errors);
-
     }
 }

@@ -14,7 +14,7 @@ class Letter extends Eloquent
 
     public function informations($code = null)
     {
-        $hasMany = $this->hasMany('Grimm\Models\Letter\Information');
+        $hasMany = $this->hasMany(Information::class);
 
         if ($code !== null) {
             $hasMany->where('code', $code);
@@ -25,7 +25,7 @@ class Letter extends Eloquent
 
     public function codes()
     {
-        return App::make('Grimm\Models\Letter\Information')->codes();
+        return App::make(Information::class)->codes();
     }
 
     public function scopeWithCodes($codes)
@@ -46,23 +46,23 @@ class Letter extends Eloquent
         }));
     }
 
-    public function sender()
+    public function senders()
     {
-        return $this->belongsToMany('Grimmm\Models\Person', 'letters_sender');
+        return $this->belongsToMany(Person::class, 'letter_sender');
     }
 
     public function receivers()
     {
-        return $this->belongsToMany('Grimmm\Models\Person', 'letters_receiver');
+        return $this->belongsToMany(Person::class, 'letter_receiver');
     }
 
     public function from()
     {
-        return $this->belongsTo('Grimm\Model\Location', 'from_id');
+        return $this->belongsTo(Location::class, 'from_id');
     }
 
     public function to()
     {
-        return $this->belongsTo('Grimm\Model\Location', 'to_id');
+        return $this->belongsTo(Location::class, 'to_id');
     }
 }

@@ -1,12 +1,22 @@
 
 <div class="row" ng-if="mode == 'index'">
     <div class="col-md-12">
+        <div class="col-md-2" style="margin: 20px 0;">
+            <select class="form-control" ng-model="itemsPerPage" ng-change="reload(itemsPerPage, currentPage)" ng-options="option for option in itemsPerPageOptions"></select>
+        </div>
+
+        <pagination total-items="locations.total" ng-model="currentPage" ng-change="reload(itemsPerPage, currentPage)" items-per-page="locations.per_page"
+            max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
+
         <table class="table">
-            <tr ng-repeat="location in locations" ng-click="show(location)">
+            <tr ng-repeat="location in locations.data" ng-click="show(location)">
                 <td>@{{ location.id }}</td>
                 <td>@{{ location.name }}</td>
             </tr>
         </table>
+
+        <pagination total-items="locations.total" ng-model="currentPage" ng-change="reload(itemsPerPage, currentPage)" items-per-page="locations.per_page"
+            max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
     </div>
 </div>
 
@@ -21,6 +31,8 @@
             </tr>
         </table>
 
-        <google-map center="currentLocation" zoom="zoom"></google-map>
+        <google-map center="currentLocation" zoom="zoom">
+            <marker idKey="currentLocation.id" coords="currentLocation"></marker>
+        </google-map>
     </div>
 </div>

@@ -7,6 +7,7 @@
         </div>
     @endif
 
+    <div class="loading-indicator" loading-indicator><img src="{{ url('assets/img/loader.gif') }}"></div>
     <div ng-view></div>
 
     <!-- Partials -->

@@ -3,10 +3,10 @@
 namespace Grimm\Controller\Queue;
 
 use Grimm\Converter\Letter as Converter;
-use Grimm\Models\Letter\Import;
+use Grimm\Models\Letter as Model;
+use Grimm\Models\Letter\Information;
 
-class Letter extends \Controller
-{
+class Letter extends \Controller {
 
     /**
      * @var Converter
@@ -29,10 +29,8 @@ class Letter extends \Controller
         \Eloquent::unguard();
 
         foreach ($this->converter->parse() as $record) {
-            if ($letter = $this->firstOrCreate($record)) {
-                foreach ($this->compareAndUpdate($record, $letter) as $updated) {
-                    // echo $updated . "\n";
-                }
+            if ($letter = $this->firstOrCreateAndUpdate($record)) {
+                // letter created and/or updated
             }
         }
 
@@ -41,37 +39,45 @@ class Letter extends \Controller
         $job->delete();
     }
 
-    public function compareAndUpdate($new, Import $old)
+    public function firstOrCreateAndUpdate($record)
     {
-        $updatedFields = array();
-        /*foreach ($new as $index => $value) {
-            if ($old->$index != $value) {
-                $old->{$index} = $value;
-                $updatedFields[] = $index;
-            }
-        }*/
+        $letter = Model::find($record['id']);
 
-        // Save only if something was updated
-        if (count($updatedFields)) {
-            $old->save();
+        if ($letter == null) {
+            $letter = Model::create(array(
+                'id' => $record['id'],
+                'code' => $record['code'],
+                'language' => $record['sprache'],
+                'date' => $record['datum']
+            ));
+        } else {
+            $letter->code = $record['code'];
+            $letter->language = $record['language'];
+            $letter->date = $record['date'];
+            $letter->save();
         }
 
-        return $updatedFields;
-    }
+        $letter->informations()->delete();
 
-    public function firstOrCreate($record)
-    {
-        if ($letter = Import::find($record->id)) {
-            return $letter;
+        foreach ($record['informations'] as $index => $value) {
+            $this->attachInformationToLetter($letter, $index, $value);
         }
-
-        $letter = new Import();
-        foreach ($record as $index => $value) {
-            $letter->$index = $value;
-        }
-        $letter->save();
 
         return $letter;
+    }
+
+    protected function attachInformationToLetter($letter, $code, $data)
+    {
+        if (is_array($data)) {
+            foreach ($data as $item) {
+                $this->attachInformationToLetter($letter, $code, $item);
+            }
+        } else {
+            $letter->informations()->save(new Information(array(
+                'code' => $code,
+                'data' => $data
+            )));
+        }
     }
 }
 

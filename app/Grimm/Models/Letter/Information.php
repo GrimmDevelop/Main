@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Grimm\Models\Letter;
 
-class Information extends Eloquent
-{
+class Information extends Eloquent {
     protected $table = 'letter_informations';
 
     public function codes()

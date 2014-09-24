@@ -54,12 +54,12 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', 'ImportLocati
         $scope.reset();
     }
 
-    $scope.startPersonImport = function(event) {
+    $scope.startPersonImport = function(event, selectedPersonFile) {
         if (typeof event !== 'undefined') {
             event.preventDefault();
         }
 
-        person.start($scope.selectedPersonFile)
+        person.start(selectedPersonFile)
             .success(function(data) {
                 $scope.message = data;
                 $scope.index();
