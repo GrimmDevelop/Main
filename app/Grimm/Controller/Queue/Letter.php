@@ -47,8 +47,8 @@ class Letter extends \Controller {
             $letter = Model::create(array(
                 'id' => $record['id'],
                 'code' => $record['code'],
-                'language' => $record['sprache'],
-                'date' => $record['datum']
+                'language' => $record['language'],
+                'date' => $record['date']
             ));
         } else {
             $letter->code = $record['code'];
