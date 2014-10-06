@@ -53,6 +53,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         modalInstance.result.then(function (result) {
             Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
                 $scope.message = result;
+                $scope.reload($scope.itemsPerPage, $scope.currentPage);
             }).error(function (result) {
                 $scope.message = result;
             });
@@ -79,6 +80,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         modalInstance.result.then(function (result) {
             Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
                 $scope.message = result;
+                $scope.reload($scope.itemsPerPage, $scope.currentPage);
             }).error(function (result) {
                 $scope.message = result;
             });

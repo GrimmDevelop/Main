@@ -4,6 +4,7 @@ namespace Grimm\Controller\Api;
 
 use Carbon\Carbon;
 use Grimm\Assigner\LetterFrom;
+use Grimm\Assigner\LetterTo;
 use Grimm\Assigner\LetterReceiver;
 use Grimm\Assigner\LetterSender;
 use Grimm\Models\Letter;
@@ -21,11 +22,12 @@ class LetterController extends \Controller {
      */
     protected $assigner;
 
-    public function __construct(LetterSender $letterSenderAssigner, LetterReceiver $letterReceiverAssigner, LetterFrom $letterFromAssigner)
+    public function __construct(LetterSender $letterSenderAssigner, LetterReceiver $letterReceiverAssigner, LetterFrom $letterFromAssigner, LetterTo $letterToAssigner)
     {
         $this->assigner['senders'] = $letterSenderAssigner;
         $this->assigner['receivers'] = $letterReceiverAssigner;
         $this->assigner['from'] = $letterFromAssigner;
+        $this->assigner['to'] = $letterToAssigner;
     }
 
     /**

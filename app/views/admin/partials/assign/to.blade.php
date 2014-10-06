@@ -4,7 +4,7 @@
 <div class="modal-body">
     <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
     <ul>
-    <li ng-repeat="information in letter.informations | filterCode:['absendeort', 'absort_ers']">
+    <li ng-repeat="information in letter.informations | filterCode:['empf_ort']">
         @{{ information.data }}
         <span>
             <a href ng-click="search(information.data)"><span class="glyphicon glyphicon-search"></span></a>

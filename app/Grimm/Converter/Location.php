@@ -59,6 +59,10 @@ class Location implements Converter
         $read = $handle->query();
 
         foreach ($read as $record) {
+            if(count($record) < 19) {
+                continue;
+            }
+
             $data = $this->recordTransformer->transform($record);
 
             if ($data != null) {

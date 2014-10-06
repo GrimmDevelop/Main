@@ -1,4 +1,4 @@
-grimmApp.controller('assignLocationController', ['$scope', 'Locations', '$modalInstance', 'letter', 'mode', function ($scope, Locations, $modalInstance, letter, mode) {
+grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations', '$modalInstance', 'letter', 'mode', function ($scope, $modal, Locations, $modalInstance, letter, mode) {
     $scope.letter = letter;
     $scope.mode = mode;
 
@@ -37,4 +37,16 @@ grimmApp.controller('assignLocationController', ['$scope', 'Locations', '$modalI
             message: "Location selected with geo id " + $scope.selectedItem
         };
     }
+
+    $scope.show = function (item) {
+        $modal.open({
+            templateUrl: 'admin/partials/locationPreview',
+            controller: 'locationPreviewController',
+            resolve: {
+                location: function () {
+                    return item;
+                }
+            }
+        });
+    };
 }]);

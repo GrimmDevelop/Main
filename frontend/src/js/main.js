@@ -35,6 +35,10 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider',
                 templateUrl: 'admin/partials/locations',
                 controller: 'locationsController'
             })
+            .when('/persons', {
+                templateUrl: 'admin/partials/persons',
+                controller: 'personsController'
+            })
             .when('/import', {
                 templateUrl: 'admin/partials/import',
                 controller: 'importController'

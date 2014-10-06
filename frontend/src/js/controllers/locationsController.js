@@ -1,8 +1,7 @@
-grimmApp.controller('locationsController', ['$scope', 'Locations', function ($scope, Locations) {
+grimmApp.controller('locationsController', ['$scope', '$modal', 'Locations', function ($scope, $modal, Locations) {
 
     $scope.mode = 'index';
     $scope.locations = [];
-    $scope.currentLocation = {};
     $scope.zoom = 13;
 
     $scope.itemsPerPage = 25;
@@ -17,16 +16,21 @@ grimmApp.controller('locationsController', ['$scope', 'Locations', function ($sc
 
     $scope.index = function (event) {
         $scope.mode = 'index';
-        $scope.currentLocation = {};
-
         if (typeof event !== 'undefined') {
             event.preventDefault();
         }
     };
 
     $scope.show = function (location) {
-        $scope.mode = 'show';
-        $scope.currentLocation = location;
+        $modal.open({
+            templateUrl: 'admin/partials/locationPreview',
+            controller: 'locationPreviewController',
+            resolve: {
+                location: function () {
+                    return location;
+                }
+            }
+        });
     };
 
     $scope.reload($scope.itemsPerPage, $scope.currentPage);

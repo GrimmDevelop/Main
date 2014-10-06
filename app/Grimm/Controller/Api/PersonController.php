@@ -3,6 +3,7 @@
 namespace Grimm\Controller\Api;
 
 use App;
+use Input;
 use Grimm\Models\Person;
 
 class PersonController extends \Controller {
@@ -14,7 +15,26 @@ class PersonController extends \Controller {
      */
     public function index()
     {
-        return $this->lettersChangedAfter(0, 0, 0);
+        $result = $this->loadItems(
+            abs((int)Input::get('items_per_page', 25)),
+            Input::get('load', ['informations'])
+        );
+
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
+
+        $return = new \stdClass();
+
+        $return->total = $result->getTotal();
+        $return->per_page = $result->getPerPage();
+        $return->current_page = $result->getCurrentPage();
+        $return->last_page = $result->getLastPage();
+        $return->from = $result->getFrom();
+        $return->to = $result->getTo();
+        $return->data = $result->getCollection()->toArray();
+
+        return json_encode($return);
     }
 
 
@@ -40,6 +60,44 @@ class PersonController extends \Controller {
 
         return \Response::json(array('type' => 'danger', 'message' => 'Person not found'), 404);
 
+    }
+
+    /**
+     * @param $totalItems
+     * @param array $with
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Pagination\Paginator
+     */
+    protected function loadItems($totalItems, array $with = [])
+    {
+        $totalItems = abs((int)$totalItems);
+
+        if ($totalItems > 500) {
+            $totalItems = 500;
+        }
+
+        $builder = Person::query();
+
+        foreach ($with as $item) {
+            if (in_array($item, ['informations', 'receivedLetters', 'sendedLetters'])) {
+                $builder->with($item);
+            }
+        }
+
+        if (Input::get('updated_after')) {
+            try {
+                $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', Input::get('updated_after'));
+            } catch (\InvalidArgumentException $e) {
+                try {
+                    $dateTime = Carbon::createFromFormat('Y-m-d', Input::get('updated_after'));
+                } catch (\InvalidArgumentException $e) {
+                    return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s]'), 500);
+                }
+            }
+
+            $builder->where('updated_at', '>=', $dateTime);
+        }
+
+        return $builder->paginate($totalItems);
     }
 
 

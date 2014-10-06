@@ -57,7 +57,7 @@
                         <div class="col-md-6">
                             <div ng-show="letter.to != null">@{{ letter.to.name }}</div>
                             <div ng-show="letter.to == null">
-                                <a href ng-click="" class="btn btn-primary" title="assign to location">
+                                <a href ng-click="openLocationModal(letter, 'to')" class="btn btn-primary" title="assign to location">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                     <span class="glyphicon glyphicon-arrow-right"></span>
                                     <span class="glyphicon glyphicon-map-marker"></span>
