@@ -20,7 +20,9 @@
                     <button type="button" class="btn btn-primary" ng-click="addFilter()">+</button>
                 </div>
                 <button type="submit" class="btn btn-primary">start search</button>
+@if(Sentry::check())
                 <button type="button" class="btn btn-default" ng-click="saveFilters()">save filters</button>
+@endif
             </form>
 
             <div class="result" ng-show="results.total > 0">
