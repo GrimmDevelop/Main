@@ -22,7 +22,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
     }
 
     $scope.loadFilters = function() {
-        Search.loadFilters($scope.filters).success(function(data) {
+        Search.loadFilters().success(function(data) {
             $scope.filters = data;
         });
     }

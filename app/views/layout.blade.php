@@ -13,7 +13,8 @@
 
 </head>
 <body>
-    <div class="loading-indicator" loading-indicator><img src="{{ url('assets/img/loader.gif') }}"></div>
+    <div class="loading-indicator" loading-indicator style="display: none;"><img src="{{ url('assets/img/loader.gif') }}"></div>
+
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -30,10 +31,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="mainnav">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('search') }}">Suche</a></li>
-                    <li><a href="{{ url('api') }}">Api</a></li>
+                    <li><a href="{{ url('search') }}">{{ trans('menu.search') }}</a></li>
+                    <li><a href="{{ url('api') }}">{{ trans('menu.api') }}</a></li>
+                    <li><a href="{{ url('impressum') }}">{{ trans('menu.impressum') }}</a></li>
 @if(Sentry::check())
-                    <li><a href="{{ url('admin') }}">Administration</a></li>
+                    <li><a href="{{ url('admin') }}">{{ trans('menu.admin') }}</a></li>
                     <li class="dropdown">
                         <a href="#" data-toogle="dropdown" class="dropdown-toggle"><span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -51,9 +53,9 @@
                 </ul>
                 <ul class="nav navbar-nav pull-right">
 @if(Sentry::check())
-                    <li><a href="{{ url('logout') }}">Logout</a></li>
+                    <li><a href="{{ url('logout') }}">{{ trans('menu.logout') }}</a></li>
 @else
-                    <li><a href="{{ url('login') }}">Login</a></li>
+                    <li><a href="{{ url('login') }}">{{ trans('menu.login') }}</a></li>
 @endif
                 </ul>
             </div>
@@ -70,11 +72,6 @@
         @endforeach
 
         @yield('body')
-
-        @foreach(DB::getQueryLog() as $log)
-            <code>{{ $log['query'] }}</code>
-            <div>{{ implode(', ', $log['bindings']) }}</div>
-        @endforeach
     </div>
 
     <script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>

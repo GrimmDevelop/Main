@@ -3,6 +3,7 @@
 namespace Grimm\Controller;
 
 use Grimm\Models\Letter;
+use Grimm\Models\User;
 use View;
 use Input;
 use Response;
@@ -87,12 +88,14 @@ class SearchController extends \Controller {
     }
 
     public function loadFilters() {
-        return json_encode(array());
 
-        if(Sentry::check() && $user = Sentry::getUser()) {
+        // Strange invalid catalog name bug fix...
+        User::find(1);
+
+        if(Sentry::check()) {
+            $user = Sentry::getUser();
+
             $search_filters = $user->search_filter;
-
-            echo $search_filters;
 
             if($search_filters == "") {
                 $search_filters = "[]";
@@ -100,6 +103,8 @@ class SearchController extends \Controller {
 
             return $search_filters;
         }
+
+        return json_encode(array());
     }
 
     public function saveFilters() {
