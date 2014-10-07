@@ -61,7 +61,7 @@
         </div>
         <div class="col-md-6">
             <p><strong>Request Sample</strong></p>
-            <pre><code>GET {{ url('api/letters') }}
+            <pre><code>GET {{ url('api/letters') }} 
 {
     items_per_page: 25,
     page: 1,
