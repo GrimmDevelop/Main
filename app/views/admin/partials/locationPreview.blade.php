@@ -4,9 +4,11 @@
 <div class="modal-body">
     @{{ location.latitude }} @{{ location.longitude }}
 
-    <google-map center="center" zoom="zoom">
-        <marker idKey="location.id" coords="location"></marker>
-    </google-map>
+    <div ng-if="showMap">
+        <google-map center="center" zoom="zoom">
+            <marker idKey="location.id" coords="location"></marker>
+        </google-map>
+    </div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="ok()">OK</button>
