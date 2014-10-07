@@ -34,22 +34,12 @@
                     <tr>
                         <td><code>load</code></td>
                         <td><em>array of strings</em></td>
-                        <td>array containing parts for eager loading (see <a href="#letter-object">letter</a> object)</loading>
+                        <td>array containing parts for eager loading (see <a href="#letter-object">letter</a> object)</td>
                     </tr>
                     <tr>
-                        <td><code>from</code></td>
-                        <td><em>integer</em></td>
-                        <td>total start <strong>offset</strong> of data objects</td>
-                    </tr>
-                    <tr>
-                        <td><code>to</code></td>
-                        <td><em>integer</em></td>
-                        <td>total end <strong>offset</strong> of data objects</td>
-                    </tr>
-                    <tr>
-                        <td><code>last_page</code></td>
-                        <td><em>array of <a href="#letter-object">letter</a> objects</em></td>
-                        <td>array containing all objects</td>
+                        <td><code>updated_after</code></td>
+                        <td><em>date (Y-m-d h:i:s or Y-m-d)</em></td>
+                        <td>only load letters with changes after the given date</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
