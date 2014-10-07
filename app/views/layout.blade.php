@@ -13,6 +13,7 @@
 
 </head>
 <body>
+    <div class="loading-indicator" loading-indicator><img src="{{ url('assets/img/loader.gif') }}"></div>
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->

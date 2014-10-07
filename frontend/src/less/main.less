@@ -12,33 +12,39 @@
 @dashboard-border-radius: 5px;
 
 .dashboard-statistics {
-  margin: 15px 0;
+    margin: 15px 0;
 
-  .statistic {
-    border: 1px solid @dashboard-border-color;
-    border-radius: @dashboard-border-radius;
+    .statistic {
+        border: 1px solid @dashboard-border-color;
+        border-radius: @dashboard-border-radius;
 
-    .title {
-      border-bottom: 1px solid @dashboard-border-color;
-      background-color: @dashboard-title-bg;
+        .title {
+            border-bottom: 1px solid @dashboard-border-color;
+            background-color: @dashboard-title-bg;
+        }
+
+        .title, .content {
+            padding: 5px;
+        }
     }
-
-    .title, .content {
-      padding: 5px;
-    }
-  }
 }
 
 .loading-indicator {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-top: -16px;
-  margin-left: -16px;
-  z-index: 100;
-  background-color: #ffffff;
-  padding: 5px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -16px;
+    margin-left: -16px;
+    z-index: 100;
+    background-color: #ffffff;
+    padding: 5px;
 
-  border: 1px solid @dashboard-border-color;
-  border-radius: @dashboard-border-radius;
+    border: 1px solid @dashboard-border-color;
+    border-radius: @dashboard-border-radius;
+}
+
+.result {
+    margin: 15px 0;
+    border-top: 1px solid @dashboard-border-color;
+    padding-top: 5px;
 }

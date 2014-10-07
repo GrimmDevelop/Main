@@ -20,6 +20,9 @@ Route::get('/', function () {
 
 Route::get('/search', 'Grimm\Controller\SearchController@searchForm');
 Route::post('/search', 'Grimm\Controller\SearchController@searchResult');
+Route::get('/search/codes', 'Grimm\Controller\SearchController@codes');
+Route::get('/search/filters', 'Grimm\Controller\SearchController@loadFilters');
+Route::put('/search/filters', 'Grimm\Controller\SearchController@saveFilters');
 
 Route::get('/api', 'Grimm\Controller\ApiController@overview');
 

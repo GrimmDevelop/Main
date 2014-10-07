@@ -5,6 +5,8 @@ namespace Grimm\Controller;
 use Grimm\Models\Letter;
 use View;
 use Input;
+use Response;
+use Sentry;
 
 class SearchController extends \Controller {
 
@@ -17,10 +19,6 @@ class SearchController extends \Controller {
 
     public function searchForm()
     {
-        if (\Config::get('grimm.api.use_imported_letters')) {
-            return View::make('pages.searchimport');
-        }
-
         return View::make('pages.search', array(
             'codes' => $this->letter->codes()
         ));
@@ -28,52 +26,90 @@ class SearchController extends \Controller {
 
     public function searchResult()
     {
-        if (\Config::get('grimm.api.use_imported_letters')) {
-            return $this->searchResultImportedLetters();
+        $s = Letter::with('informations');
+
+        foreach(Input::get('filters', []) as $filter) {
+            $this->buildWhere($s, $filter);
         }
 
+        $result = $s->paginate(100);
 
+        $return = new \stdClass();
+
+        $return->total = $result->getTotal();
+        $return->per_page = $result->getPerPage();
+        $return->current_page = $result->getCurrentPage();
+        $return->last_page = $result->getLastPage();
+        $return->from = $result->getFrom();
+        $return->to = $result->getTo();
+        $return->data = $result->getCollection()->toArray();
+
+        return json_encode($return);
     }
 
-    public function searchResultImportedLetters()
-    {
-        /*
-         * TODO: update to new data structure
-         */
-
-        if (Input::get('letter.nr') != '') {
-            $id = abs((int)Input::get('letter.nr'));
-
-            $s = Letter::with('informations')
-                ->where('id', $id)
-                ->orWhereHas('informations', function ($q) use ($id) {
-                    return $q->where('code', 'nr_1997')->where('data', $id);
-                });
-        } else {
-            $s = Letter::with('informations')->where(
-                function ($query) {
-                    $query->where('absendeort', 'like', '%' . Input::get('send.location') . '%')
-                        ->orWhere('absort_ers', 'like', '%' . Input::get('send.location') . '%');
-                })
-                ->where('absender', 'like', '%' . Input::get('send.name') . '%')
-                ->where('empf_ort', 'like', '%' . Input::get('receive.location') . '%')
-                ->where('empfaenger', 'like', '%' . Input::get('receive.name') . '%')
-                ->where(function ($query) {
-                    foreach (explode(' ', Input::get('letter.inc')) as $incPart) {
-                        if ($incPart != '') {
-                            $query->where('inc', 'like', '%' . $incPart . '%');
-                        }
-                    }
-                })
-                ->where('hs', 'like', '%' . Input::get('letter.hw_location') . '%');
+    protected function buildWhere($query, $filter) {
+        if($filter['code'] == '') {
+            return $query;
         }
 
-        echo $s->toSql();
+        return $query->whereHas('informations', function($q) use($filter) {
+            $compare = $this->getCompare($filter['compare'], $filter['value']);
 
-        return View::make('pages.searchimport', array(
-            'codes' => $this->letter->codes(),
-            'count' => $s->count(),
-            'result' => $s->take(100)->get()
-        ));
+            return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
+        });
+    }
+
+    protected function getCompare($string, $value) {
+        switch ($string) {
+            case 'contains':
+                return array(
+                    'compare' => 'like',
+                    'value' => "%$value%"
+                );
+            case 'starts with':
+                return array(
+                    'compare' => 'like',
+                    'value' => "$value%"
+                );
+            case 'ends with':
+                return array(
+                    'compare' => 'like',
+                    'value' => "%$value"
+                );
+            
+            case "equals":
+            default:
+                return array(
+                    'compare' => '=',
+                    'value' => $value
+                );
+        }
+    }
+
+    public function loadFilters() {
+        return json_encode(array());
+
+        if(Sentry::check() && $user = Sentry::getUser()) {
+            $search_filters = $user->search_filter;
+
+            echo $search_filters;
+
+            if($search_filters == "") {
+                $search_filters = "[]";
+            }
+
+            return $search_filters;
+        }
+    }
+
+    public function saveFilters() {
+        if(Sentry::check() && $user = Sentry::getUser()) {
+            $user->search_filter = json_encode(Input::get('filters', []));
+            $user->save();
+        }
+    }
+
+    public function codes() {
+        return $this->letter->codes();
     }
 }
