@@ -3,7 +3,7 @@
 @section('body')
     <div class="alert alert-danger">
         <strong>Danger!</strong> Api is experimental and may change significantly over time!<br>
-        If you find any errors, please send them to <a href="{{ Config::get('mail.from.address') }}">{{ Config::get('mail.from.name') }}</a>
+        If you find any errors, please send them to <a href="mailto:{{ Config::get('mail.from.address') }}">{{ Config::get('mail.from.name') }}</a>
     </div>
         <h1>Letters</h1>
         <div class="row">
