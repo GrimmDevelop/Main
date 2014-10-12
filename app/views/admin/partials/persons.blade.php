@@ -39,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="person in persons.data" ng-class="person.auto_generated ? 'warning' : ''">
+                <tr ng-repeat="person in persons.data" ng-class="person.auto_generated == 1 ? 'warning' : ''">
                     <td>@{{ person.name_2013 }}</td>
                     <td>@{{ person.sended_letters_count }}</td>
                     <td>@{{ person.received_letters_count }}</td>
