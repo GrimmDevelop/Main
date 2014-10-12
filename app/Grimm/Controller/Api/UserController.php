@@ -8,6 +8,7 @@ use Cartalyst\Sentry\Users\UserExistsException;
 use Grimm\Auth\Models\User;
 use Input;
 use Sentry;
+use Validator;
 
 class UserController extends \Controller
 {
@@ -52,16 +53,31 @@ class UserController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        $data = Input::only(array(
-            'username', 'password', 'email'
-        ));
+        $validator = Validator::make(
+            Input::only(['username', 'password', 'password_confirmation', 'email', 'activated']),
+            [
+                'username' => 'required|min:5',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|confirmed',
+                'activated' => 'required'
+            ]
+        );
 
-        $user = new User($data);
+        if ($validator->fails())
+        {
+            $res = [];
+            foreach($validator->messages()->toArray() as $field) {
+                $res = array_merge($res, $field);
+            }
 
+            return \Response::json(array('error' => array('message' => $res)), 200);
+        }
 
-        // $user->save();
+        $user = Sentry::createUser(
+            Input::only(['username', 'first_name', 'last_name', 'password', 'email', 'activated'])
+        );
 
-        return \Response::json(array('error' => array('message' => 'Not implemented.')), 404);
+        return \Response::json(array('success' => array('message' => 'User created')), 200);
     }
 
 
