@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class Person extends Eloquent {
     protected $table = 'persons';
 
+    protected $fillable = ['name_2013', 'auto_generated'];
+
     public function informations()
     {
         return $this->hasMany(Information::class);
@@ -15,11 +17,11 @@ class Person extends Eloquent {
 
     public function receivedLetters()
     {
-        return $this->belongsToMany(Letter::class, 'letters_sender');
+        return $this->belongsToMany(Letter::class, 'letter_receiver');
     }
 
     public function sendedLetters()
     {
-        return $this->belongsToMany(Letter::class, 'letters_receiver');
+        return $this->belongsToMany(Letter::class, 'letter_sender');
     }
 }

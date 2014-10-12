@@ -20,14 +20,20 @@ class LocationController extends \Controller {
 
     public function search()
     {
-        $result = Location::where('name', \Input::get('name'))
-            ->orWhere('asciiname', \Input::get('name'));
+        $builder = Location::query();
 
-        if (Input::get('in_alternate_names', false)) {
-            $result->orWhere('alternatenames', 'like', '%,' . \Input::get('name') . ',%');
+        if(Input::get('ahead', false)) {
+            return $builder->where('name', 'like', \Input::get('name') . '%')->orderBy('population', 'desc')->take(5)->get();
+        } else {
+            $builder->where('name', \Input::get('name'));
+            $builder->orWhere('asciiname', \Input::get('name'));
+
+            if (Input::get('in_alternate_names', false)) {
+                $builder->orWhere('alternatenames', 'like', '%,' . \Input::get('name') . ',%');
+            }
         }
 
-        $result = $result->paginate(abs((int)Input::get('items_per_page', 25)));
+        $result = $builder->paginate(abs((int)Input::get('items_per_page', 25)));
 
         if ($result->count() > 0) {
             $return = new \stdClass();

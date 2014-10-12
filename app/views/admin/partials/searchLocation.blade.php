@@ -1,13 +1,13 @@
 <div class="modal-header">
-    <h3 class="modal-title">assign @{{ mode }} for letter - @{{ letter.id }}</h3>
+    <h3 class="modal-title">search location</h3>
 </div>
 <div class="modal-body">
     <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
     <ul>
-    <li ng-repeat="information in letter.informations | filterCode:['absendeort', 'absort_ers']">
-        <input type="text" class="form-control" ng-model="information.data" typeahead="location for location in typeSearch($viewValue)" typeahead-min-length="3">
+    <li>
+        <input type="text" ng-model="locationName" typeahead="location for location in typeSearch($viewValue)" typeahead-min-length="3">
         <span>
-            <a href ng-click="search(information.data)"><span class="glyphicon glyphicon-search"></span></a>
+            <a href ng-click="search(locationName)"><span class="glyphicon glyphicon-search"></span></a>
         </span>
         <div ng-repeat="location in resultList">
             <a href ng-click="select(location)">@{{ location.name }} @{{ location.latitude }} @{{ location.longitude }}</a>

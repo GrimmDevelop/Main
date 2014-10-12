@@ -2,8 +2,8 @@
 
 namespace Grimm\Controller;
 
+use Grimm\Auth\Models\User;
 use Grimm\Models\Letter;
-use Grimm\Models\User;
 use View;
 use Input;
 use Response;

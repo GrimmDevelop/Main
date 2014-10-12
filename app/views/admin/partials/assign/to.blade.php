@@ -5,7 +5,7 @@
     <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
     <ul>
     <li ng-repeat="information in letter.informations | filterCode:['empf_ort']">
-        @{{ information.data }}
+        <input type="text" class="form-control" ng-model="information.data" typeahead="location for location in typeSearch($viewValue)" typeahead-min-length="3">
         <span>
             <a href ng-click="search(information.data)"><span class="glyphicon glyphicon-search"></span></a>
         </span>

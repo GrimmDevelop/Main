@@ -12,6 +12,12 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
     $scope.itemsPerPage = 25;
     $scope.currentPage = 1;
     $scope.itemsPerPageOptions = [10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100, 150];
+    $scope.showLettersWithErrors = {
+        from: false,
+        to: false,
+        senders: false,
+        receivers: false
+    };
 
     $scope.index = function (event) {
         $scope.mode = 'index';
@@ -27,13 +33,18 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         $scope.currentLetter = letter;
     };
 
-    $scope.reload = function (itemsPerPage, currentPage) {
-        Letters.page(itemsPerPage, currentPage).success(function (data) {
+    $scope.reload = function () {
+
+        var itemsPerPage = $scope.itemsPerPage;
+        var currentPage = $scope.currentPage;
+        var showLettersWithErrors = $scope.showLettersWithErrors;
+
+        Letters.page(itemsPerPage, currentPage, showLettersWithErrors).success(function (data) {
             $scope.letters = data;
         });
     }
 
-    $scope.reload($scope.itemsPerPage, $scope.currentPage);
+    $scope.reload();
 
     $scope.openPersonModal = function (currentLetter, assignMode) {
 

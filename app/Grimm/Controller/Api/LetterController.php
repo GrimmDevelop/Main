@@ -124,6 +124,36 @@ class LetterController extends \Controller {
             $builder->where('updated_at', '>=', $dateTime);
         }
 
+        if (Sentry::check()) {
+            $builder->where(function ($builder) {
+                foreach (Input::get('with_errors', []) as $error) {
+                    switch ($error) {
+                        case "from":
+                            $builder->orWhere(function ($query) {
+                                $query->where('from_id', null);
+                                $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and (letter_informations.code = "absendeort" or letter_informations.code = "absort_ers") and data != "") > 0');
+                            });
+                            break;
+
+                        case "to":
+                            $builder->orWhere(function ($query) {
+                                $query->where('to_id', null);
+                                $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "empf_ort" and data != "") > 0');
+                            });
+                            break;
+
+                        case "senders":
+                            $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+                            break;
+
+                        case "receivers":
+                            $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+                            break;
+                    }
+                }
+            });
+        }
+
         return $builder->paginate($totalItems);
     }
 
@@ -214,6 +244,4 @@ class LetterController extends \Controller {
     {
         //
     }
-
-
 }

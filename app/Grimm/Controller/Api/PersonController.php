@@ -4,6 +4,8 @@ namespace Grimm\Controller\Api;
 
 use App;
 use Input;
+use Sentry;
+use Response;
 use Grimm\Models\Person;
 
 class PersonController extends \Controller {
@@ -37,22 +39,17 @@ class PersonController extends \Controller {
         return json_encode($return);
     }
 
-
-    /**
-     * Display a listing of letters changed after given date
-     * @param  int $year
-     * @param  int $month
-     * @param  int $day
-     * @return Response
-     */
-    public function lettersChangedAfter($year, $month, $day)
-    {
-        return Person::where('updated_at', '>=', \Carbon\Carbon::createFromDate($year, $month, $day))->get()->toJson();
-    }
-
     public function search()
     {
-        $result = Person::with('informations')->where('name_2013', \Input::get('name'))->get();
+        $builder = Person::query();
+
+        if(Input::get('ahead', false)) {
+            return $builder->select('*', 'name_2013 as name')->where('name_2013', 'like', \Input::get('name') . '%')->take(15)->get();
+        } else {
+            $builder->with('informations')->select('*', 'name_2013 as name')->where('name_2013', \Input::get('name'));
+        }
+
+        $result = $builder->get();
 
         if ($result->count() > 0) {
             return $result->toJson();
@@ -77,8 +74,14 @@ class PersonController extends \Controller {
 
         $builder = Person::query();
 
+        $builder->selectRaw(
+            'persons.*,
+            (SELECT COUNT(letter_receiver.person_id) FROM letter_receiver WHERE persons.id = letter_receiver.person_id ) AS received_letters_count,
+            (SELECT COUNT(letter_sender.person_id) FROM letter_sender WHERE persons.id = letter_sender.person_id ) AS sended_letters_count'
+        );
+
         foreach ($with as $item) {
-            if (in_array($item, ['informations', 'receivedLetters', 'sendedLetters'])) {
+            if (in_array($item, ['informations'])) {
                 $builder->with($item);
             }
         }
@@ -96,6 +99,15 @@ class PersonController extends \Controller {
 
             $builder->where('updated_at', '>=', $dateTime);
         }
+
+        if(Input::get('auto_generated', false)) {
+            $builder->where('auto_generated', true);
+        }
+
+        $orderBy = in_array(Input::get('order_by'), ['name_2013', 'sended_letters_count', 'received_letters_count']) ? Input::get('order_by') : 'name_2013';
+        $orderByDirection = in_array(Input::get('order_by_direction'), ['asc', 'desc']) ? Input::get('order_by_direction') : 'asc';
+
+        $builder->orderBy($orderBy, $orderByDirection);
 
         return $builder->paginate($totalItems);
     }
@@ -125,6 +137,12 @@ class PersonController extends \Controller {
     {
         if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
             return \Response::json('Unauthorized action.', 403);
+        }
+
+        if(Person::create(Input::only('name_2013', 'auto_generated'))) {
+            return Response::json(array('type' => 'success', 'message' => 'person generated.'), 200);
+        } else {
+            return Response::json(array('type' => 'danger', 'message' => 'creation failed!'), 500);
         }
     }
 

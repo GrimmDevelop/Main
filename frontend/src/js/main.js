@@ -43,6 +43,10 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider',
                 templateUrl: 'admin/partials/import',
                 controller: 'importController'
             })
+            .when('/assign', {
+                templateUrl: 'admin/partials/assign',
+                controller: 'assignController'
+            })
             .when('/', {
                 templateUrl: 'admin/partials/dashboard',
                 controller: 'dashboardController'

@@ -30,4 +30,12 @@ grimmApp.service("Locations", ['$http', 'BASE_URL', function($http, BASE_URL) {
         });
     }
 
+    this.searchAhead = function(name) {
+        return $http.post(serviceBackend + 'locations/search', {
+            name: name,
+            in_alternate_names: false,
+            ahead: true
+        });
+    }
+
 }]);

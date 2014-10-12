@@ -5,9 +5,30 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return this.page;
     };
 
-    this.page = function (itemsPerPage, page) {
+    this.page = function (itemsPerPage, page, onlyWithErrors) {
 
         var params = {};
+        if(typeof onlyWithErrors != 'undefined') {
+            var with_errors = [];
+
+            if(onlyWithErrors.from) {
+                with_errors.push('from');
+            }
+            if(onlyWithErrors.to) {
+                with_errors.push('to');
+            }
+            if(onlyWithErrors.senders) {
+                with_errors.push('senders');
+            }
+            if(onlyWithErrors.receivers) {
+                with_errors.push('receivers');
+            }
+
+            params = {
+                "with_errors[]": with_errors
+            };
+        }
+
 
         if(typeof itemsPerPage != 'undefined') {
             params.items_per_page = itemsPerPage;

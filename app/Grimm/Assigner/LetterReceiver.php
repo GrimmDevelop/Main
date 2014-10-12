@@ -17,8 +17,8 @@ class LetterReceiver implements Assigner {
      */
     public function assign($object_id, $item_id)
     {
-        $letter = Letter::find($object_id);
-        $person = Person::find($item_id);
+        $letter = ($object_id instanceof Letter) ? $object_id : Letter::find($object_id);
+        $person = ($item_id instanceof Person) ? $item_id : Person::find($item_id);
 
         if (!($letter instanceof Letter) || !$letter->exists) {
             return \Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);

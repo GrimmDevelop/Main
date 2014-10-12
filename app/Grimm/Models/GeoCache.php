@@ -2,12 +2,13 @@
 
 namespace Grimm\Models;
 
-class GeoCache {
+class GeoCache extends \Eloquent {
 
-    protected $table = "geo_caches";
+    protected $table = "geo_cache";
 
+    protected $fillable = array('geo_id', 'name');
 
-    public function location() {
+    public function geo() {
         return $this->belongsTo(Location::class);
     }
 

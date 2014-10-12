@@ -55,6 +55,14 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function () {
 
     Route::get('partials/{file}', 'Grimm\Controller\Admin\PartialsController@load');
 
+    Route::post('assign/from', 'Grimm\Controller\Admin\AssignController@from');
+    Route::post('assign/to', 'Grimm\Controller\Admin\AssignController@to');
+    Route::post('assign/senders', 'Grimm\Controller\Admin\AssignController@senders');
+    Route::post('assign/receivers', 'Grimm\Controller\Admin\AssignController@receivers');
+
+    Route::post('assign/cache/location', 'Grimm\Controller\Admin\AssignController@cacheLocation');
+    Route::post('assign/cache/person', 'Grimm\Controller\Admin\AssignController@cachePerson');
+
     //Route::get('upload', 'Grimm\Controller\Admin\FileController@uploadGet');
     //Route::post('upload', 'Grimm\Controller\Admin\FileController@uploadPost');
 

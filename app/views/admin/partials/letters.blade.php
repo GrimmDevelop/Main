@@ -4,18 +4,31 @@
         <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
 
         <div class="col-md-2" style="margin: 20px 0;">
-            <select class="form-control" ng-model="itemsPerPage" ng-change="reload(itemsPerPage, currentPage)" ng-options="option for option in itemsPerPageOptions"></select>
+            <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
         </div>
 
-        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload(itemsPerPage, currentPage)" items-per-page="letters.per_page"
+        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()" items-per-page="letters.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
+
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="showLettersWithErrors.from" ng-change="reload()" /> show only letters with from errors</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="showLettersWithErrors.to" ng-change="reload()" /> show only letters with to errors</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="showLettersWithErrors.senders" ng-change="reload()" /> show only letters with sender errors</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="showLettersWithErrors.receivers" ng-change="reload()" /> show only letters with receiver errors</label>
+        </div>
 
         <table class="table">
             <tr ng-repeat="letter in letters.data">
                 <td><a href ng-click="show(letter)">@{{ letter.id }}</a></td>
                 <td>@{{ letter.code }}</td>
                 <td>
-                    <div ng-repeat="information in letter.informations | filterCode:['absendeort','absort_ers','empf_ort','dr']">@{{ information.code }} @{{ information.data }}</div>
+                    <div ng-repeat="information in letter.informations | filterCode:['absendeort','absort_ers','absender','empf_ort','empfaenger','dr']">@{{ information.code }} @{{ information.data }}</div>
                 </td>
                 <td>
                     <div class="row">
@@ -68,7 +81,7 @@
                 </td>
             </tr>
         </table>
-        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload(itemsPerPage, currentPage)" items-per-page="letters.per_page"
+        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()" items-per-page="letters.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
     </div>
 </div>

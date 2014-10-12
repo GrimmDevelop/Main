@@ -1,6 +1,6 @@
-grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations', '$modalInstance', 'letter', 'mode', function ($scope, $modal, Locations, $modalInstance, letter, mode) {
-    $scope.letter = letter;
-    $scope.mode = mode;
+
+grimmApp.controller('searchLocationController', ['$scope', '$modal', 'Locations', '$modalInstance', 'name', function ($scope, $modal, Locations, $modalInstance, name) {
+    $scope.locationName = name;
 
     $scope.message = null;
     $scope.closeMessage = function () {
