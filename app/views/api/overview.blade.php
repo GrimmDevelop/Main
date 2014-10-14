@@ -22,10 +22,10 @@
     {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'maillist-form', 'role' => 'form']) }}
         <p>Please, inform me about changes!</p>
         <div class="form-group">
-                {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address'])  }}
+                {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address']) }}
         </div>
         <div class="form-group">
-            {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address'])  }}
+            {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address']) }}
         </div>
         <div class="form-group">
             {{ Form::captcha([]) }}
