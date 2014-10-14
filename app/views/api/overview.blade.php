@@ -19,6 +19,7 @@
     <div class="alert alert-success">added e-mail to mailing list</div>
 @else
     {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'form', 'role' => 'form']) }}
+        <p>Inform me about api changes!</p>
         <div class="form-group">
                 {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address'])  }}
         </div>
