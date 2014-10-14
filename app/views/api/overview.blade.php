@@ -19,20 +19,14 @@
     <div class="alert alert-success">added e-mail to mailing list</div>
 @else
     {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'form', 'role' => 'form']) }}
-        <div class="row">
-            <div class="col-md-12">
+        <div class="form-group">
                 {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address'])  }}
-            </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address'])  }}
-            </div>
+        <div class="form-group">
+            {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address'])  }}
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ Form::captcha([])  }}
-            </div>
+        <div class="form-group">
+            {{ Form::captcha([])  }}
         </div>
 
         <button type="submit" class="btn btn-primary">eintragen</button>
