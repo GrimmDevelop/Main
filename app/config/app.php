@@ -109,6 +109,7 @@ return array(
 
         'Cartalyst\Sentry\SentryServiceProvider',
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+		'Greggilbert\Recaptcha\RecaptchaServiceProvider',
 
         'GrimmTools\Assets\AssetsServiceProvider',
 

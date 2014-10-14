@@ -20,7 +20,8 @@
         "flowjs/flow-php-server": "0.2.*",
         "codeless/ziparchiveex": "1.0.*",
         "league/csv": "~6.0",
-        "barryvdh/laravel-ide-helper": "1.*"
+        "barryvdh/laravel-ide-helper": "1.*",
+        "greggilbert/recaptcha": "1.0.7"
 	},
 	"autoload": {
 		"classmap": [
