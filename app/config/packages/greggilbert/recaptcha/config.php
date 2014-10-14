@@ -10,8 +10,8 @@ return array(
 	| Set the public and private API keys as provided by reCAPTCHA.
 	|
 	*/
-	'public_key'	=> '',
-	'private_key'	=> '',
+	'public_key'	=> getenv('RECAPTCHA_PUBLIC_KEY'),
+	'private_key'	=> getenv('RECAPTCHA_PRIVATE_KEY'),
 	
 	/*
 	|--------------------------------------------------------------------------
