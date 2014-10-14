@@ -12,6 +12,7 @@ class DeployController extends \Controller {
 
         var_dump(\Input::get('payload'));
         var_dump(\Input::get('Payload'));
+        var_dump(\Input::json()->all());
 
         $payload = (object)json_decode(\Input::get('Payload'));
 
