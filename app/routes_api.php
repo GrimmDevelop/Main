@@ -2,6 +2,8 @@
 
 Route::group(array('prefix' => 'api'), function()
 {
+    Route::get('version', 'Grimm\Controller\Api\InfoController@version');
+
     Route::get('letters/stream', 'Grimm\Controller\Api\LetterController@stream');
     Route::resource('letters', 'Grimm\Controller\Api\LetterController');
     Route::get('letters/{year}/{month}/{day}', 'Grimm\Controller\Api\LetterController@lettersChangedAfter');

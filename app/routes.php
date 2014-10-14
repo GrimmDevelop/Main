@@ -25,6 +25,7 @@ Route::get('/search/filters', 'Grimm\Controller\SearchController@loadFilters');
 Route::put('/search/filters', 'Grimm\Controller\SearchController@saveFilters');
 
 Route::get('/api', 'Grimm\Controller\ApiController@overview');
+Route::post('/api/mailinglist', ['before' => 'csrf', 'uses' => 'Grimm\Controller\ApiController@addToMaillingList']);
 
 App::missing(function ($exception) {
     return Redirect::to('/')->withErrors(
