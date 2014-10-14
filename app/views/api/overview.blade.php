@@ -6,35 +6,35 @@
         If you find any errors, please send them to <a href="mailto:{{ Config::get('mail.from.address') }}">{{ Config::get('mail.from.name') }}</a>
     </div>
 
-@if(count($errors))
-    <div class="alert alert-danger">
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-@if(Session::has('success'))
-    <div class="alert alert-success">Added e-mail to mailing list!</div>
-@else
-    <div class="row"><div class="col-md-4">
-    {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'maillist-form', 'role' => 'form']) }}
-        <p>Please, inform me about changes!</p>
-        <div class="form-group">
-            {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address']) }}
+    @if(count($errors))
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
-        <div class="form-group">
-            {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address']) }}
-        </div>
-        <div class="form-group">
-            {{ Form::captcha([]) }}
-        </div>
+    @endif
+    @if(Session::has('success'))
+        <div class="alert alert-success">Added e-mail to mailing list!</div>
+    @else
+        <div class="row"><div class="col-md-4">
+        {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'maillist-form', 'role' => 'form']) }}
+            <p>Please, inform me about changes!</p>
+            <div class="form-group">
+                {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address']) }}
+            </div>
+            <div class="form-group">
+                {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address']) }}
+            </div>
+            <div class="form-group">
+                {{ Form::captcha([]) }}
+            </div>
 
-        <button type="submit" class="btn btn-primary">add to list</button>
-    {{ Form::close() }}
-    </div></div>
-@endif
+            <button type="submit" class="btn btn-primary">add to list</button>
+        {{ Form::close() }}
+        </div></div>
+    @endif
 
         <h1>Letters</h1>
         <div class="row">
