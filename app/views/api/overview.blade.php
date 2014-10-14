@@ -18,8 +18,9 @@
 @if(Session::has('success'))
     <div class="alert alert-success">added e-mail to mailing list</div>
 @else
+    <div class="row"><div class="col-md-4">
     {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'maillist-form', 'role' => 'form']) }}
-        <p>Inform me about api changes!</p>
+        <p>Please, inform me about changes!</p>
         <div class="form-group">
                 {{ Form::email('email', Input::old('email'), ['class' => 'form-control', 'placeholder' => 'e-mail address'])  }}
         </div>
@@ -32,6 +33,7 @@
 
         <button type="submit" class="btn btn-primary">eintragen</button>
     {{ Form::close() }}
+    </div></div>
 @endif
 
         <h1>Letters</h1>
