@@ -21,7 +21,7 @@ class DeployController extends \Controller {
         //log the request
         \Log::info(print_r($payload, TRUE));
 
-        var_dump($ref):
+        var_dump($ref);
         var_dump('refs/heads/' . getenv('GIT_BRANCH'));
 
         if ($ref === 'refs/heads/' . getenv('GIT_BRANCH')) {
