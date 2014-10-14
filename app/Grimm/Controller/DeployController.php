@@ -13,7 +13,7 @@ class DeployController extends \Controller {
         var_dump(\Input::get('payload'));
         var_dump(\Input::get('Payload'));
 
-        $payload = (object)\Input::json();
+        $payload = (object)\Input::json()->all();
 
         if(!is_object($payload)) {
             return \Response::json(['message' => 'invalid payload'], 500);
