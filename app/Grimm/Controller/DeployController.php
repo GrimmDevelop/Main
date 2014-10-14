@@ -22,7 +22,8 @@ class DeployController extends \Controller {
         \Log::info(print_r($payload, TRUE));
 
         if ($ref === 'refs/heads/' . getenv('GIT_BRANCH')) {
-            return \Response::json(['message' => exec('./build.sh')], 200);
+            \Log::info(exec('./build.sh'));
+            return \Response::json(['message' => 'finished'], 200);
         }
     }
 
