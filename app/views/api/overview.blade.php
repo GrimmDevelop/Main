@@ -28,7 +28,7 @@
             {{ Form::email('email_confirmation', null, ['class' => 'form-control', 'placeholder' => 'repeat e-mail address'])  }}
         </div>
         <div class="form-group">
-            {{ Form::captcha([])  }}
+            {{ Form::captcha([]) }}
         </div>
 
         <button type="submit" class="btn btn-primary">eintragen</button>
