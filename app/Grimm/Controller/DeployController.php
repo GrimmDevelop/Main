@@ -21,11 +21,11 @@ class DeployController extends \Controller {
         if ($ref === 'refs/heads/' . getenv('GIT_BRANCH')) {
             // path to your site deployment script
             ob_start();
-            passthru('./build.sh');
+            passthru('./build.sh', $res);
             $var = ob_get_contents();
             ob_end_clean();
 
-            return \Response::json(['message' => $var], 200);
+            return \Response::json(['message' => $var, 'code' => $res], 200);
         } else {
             return \Response::json(['message' => 'not my branch'], 200);
         }
