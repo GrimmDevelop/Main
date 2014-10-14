@@ -7,19 +7,21 @@ class DeployController extends \Controller {
     public function github()
     {
         if(\Input::get('github_secret') !== getenv('GITHUB_SECRET')) {
-            return;
+            return \Response::json(['message' => 'invalid token'], 500);
         }
 
-        try {
-            $payload = json_decode($_REQUEST['payload']);
-        } catch (Exception $e) {
-            exit(0);
+        $payload = json_decode(\Input::get('payload'));
+
+        if(!is_object($payload)) {
+            return \Response::json(['message' => 'invalid payload'], 500);
         }
+
+        $ref = isset($payload->ref) ? $payload->ref : '';
 
         //log the request
-        file_put_contents('logs/github.txt', print_r($payload, TRUE), FILE_APPEND);
+        \Log::info(print_r($payload, TRUE));
 
-        if ($payload->ref === 'refs/heads/master') {
+        if ($ref === 'refs/heads/' . getenv('GIT_BRANCH')) {
             // path to your site deployment script
             exec('./build.sh');
         }
