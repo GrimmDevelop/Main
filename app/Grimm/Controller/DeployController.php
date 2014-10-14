@@ -27,7 +27,10 @@ class DeployController extends \Controller {
             passthru('./build.sh');
             $var = ob_get_contents();
             ob_end_clean();
-            return \Response::json(['message' => $var], 200);
+
+            \Log::info("finished with " . $var);
+
+            return \Response::json(['message' => 'finished'], 200);
         }
     }
 
