@@ -16,7 +16,7 @@
         </div>
 @endif
 @if(Session::has('success'))
-    <div class="alert alert-success">added e-mail to mailing list</div>
+    <div class="alert alert-success">Added e-mail to mailing list!</div>
 @else
     <div class="row"><div class="col-md-4">
     {{ Form::open(['url' => 'api/mailinglist', 'method' => 'post', 'class' => 'maillist-form', 'role' => 'form']) }}
