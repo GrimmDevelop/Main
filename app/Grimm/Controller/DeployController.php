@@ -10,6 +10,9 @@ class DeployController extends \Controller {
             return \Response::json(['message' => 'invalid token'], 500);
         }
 
+        var_dump(\Input::get('payload'));
+        var_dump(\Input::get('Payload'));
+
         $payload = (object)json_decode(\Input::get('Payload'));
 
         if(!is_object($payload)) {
