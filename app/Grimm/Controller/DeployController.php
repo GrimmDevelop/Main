@@ -6,7 +6,7 @@ class DeployController extends \Controller {
 
     public function github()
     {
-        if(Input::get('github_secret') !== getenv('GITHUB_SECRET')) {
+        if(\Input::get('github_secret') !== getenv('GITHUB_SECRET')) {
             return;
         }
 
