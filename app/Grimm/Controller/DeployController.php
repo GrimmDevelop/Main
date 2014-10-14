@@ -21,7 +21,7 @@ class DeployController extends \Controller {
         if ($ref === 'refs/heads/' . getenv('GIT_BRANCH')) {
             // path to your site deployment script
             ob_start();
-            passthru('./build.sh', $res);
+            passthru(app_path('build.sh'), $res);
             $var = ob_get_contents();
             ob_end_clean();
 
