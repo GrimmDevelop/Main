@@ -31,7 +31,7 @@
             {{ Form::captcha([]) }}
         </div>
 
-        <button type="submit" class="btn btn-primary">eintragen</button>
+        <button type="submit" class="btn btn-primary">add to list</button>
     {{ Form::close() }}
     </div></div>
 @endif
