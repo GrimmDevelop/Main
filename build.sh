@@ -1,6 +1,6 @@
 
 cd /var/www/
-git pull
+/usr/bin/git pull
 composer install
 php artisan migrate
 
