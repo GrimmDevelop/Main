@@ -31,6 +31,8 @@ class DeployController extends \Controller {
             \Log::info("finished with " . $var);
 
             return \Response::json(['message' => $var], 200);
+        } else {
+            return \Response::json(['message' => 'not my branch'], 200);
         }
     }
 
