@@ -5,9 +5,9 @@
     @{{ location.latitude }} @{{ location.longitude }}
 
     <div ng-if="showMap">
-        <google-map center="center" zoom="zoom">
-            <marker idKey="location.id" coords="location"></marker>
-        </google-map>
+        <ui-gmap-google-map center="center" zoom="zoom">
+            <ui-gmap-marker idKey="location.id" coords="location"></ui-gmap-marker>
+        </ui-gmap-google-map>
     </div>
 </div>
 <div class="modal-footer">

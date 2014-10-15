@@ -14,10 +14,10 @@ jQuery(function($) {
     });*/
 });
 
-var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps", "flow", "dialogs", "ngDragDrop"]);
+var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ngDragDrop"]);
 
-grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider',
-    function($routeProvider, $httpProvider, flowFactoryProvider) {
+grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider', 'GoogleMapApiProvider'.ns(),
+    function($routeProvider, $httpProvider, flowFactoryProvider, GoogleMapApi) {
         $routeProvider.
             when('/files', {
                 controller: 'filesController',
@@ -83,6 +83,11 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider',
         flowFactoryProvider.defaults = {
             testChunks: false
         };
+
+        GoogleMapApi.configure({
+            v: '3.17',
+            libraries: 'weather,geometry,visualization'
+        });
     }
 ]);
 
