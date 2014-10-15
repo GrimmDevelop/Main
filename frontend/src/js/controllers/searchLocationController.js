@@ -40,7 +40,7 @@ grimmApp.controller('searchLocationController', ['$scope', '$modal', 'Locations'
 
     $scope.show = function (item) {
         $modal.open({
-            templateUrl: 'admin/partials/locationPreview',
+            templateUrl: 'partials/locationPreview',
             controller: 'locationPreviewController',
             resolve: {
                 location: function () {
