@@ -57,11 +57,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
 
         modalInstance.result.then(function (result) {
             Assigner.cacheLocation(location.name, result).success(function (result) {
-                var index = $scope.locationsToCheck.indexOf(location);
-
-                if (index > -1) {
-                    $scope.locationsToCheck.splice(index, 1);
-                }
+                removeLocationFromList(location);
             });
         }, function () {
 
@@ -81,9 +77,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
 
         modalInstance.result.then(function (result) {
             Assigner.cachePerson(person.name, result).success(function (result) {
-                $scope.personsToCheck = $scope.personsToCheck.filter(function(item) {
-                    return item.name != person.name;
-                });
+                removePersonFromList(person);
             });
         }, function () {
 
@@ -92,9 +86,19 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
 
     $scope.autoGenerate = function(person) {
         Persons.autoGenerate(person.name).success(function(data) {
-            $scope.personsToCheck = $scope.personsToCheck.filter(function(item) {
-                return item.name != person.name;
-            });
+            removePersonFromList(person);
+        });
+    }
+
+    function removeLocationFromList(location) {
+        $scope.locationsToCheck = $scope.locationsToCheck.filter(function(item) {
+            return item.name != location.name;
+        });
+    }
+
+    function removePersonFromList(person) {
+        $scope.personsToCheck = $scope.personsToCheck.filter(function(item) {
+            return item.name != person.name;
         });
     }
 }]);

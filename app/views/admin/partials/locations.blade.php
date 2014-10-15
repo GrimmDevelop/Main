@@ -8,10 +8,20 @@
         <pagination total-items="locations.total" ng-model="currentPage" ng-change="reload(itemsPerPage, currentPage)" items-per-page="locations.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
 
+        <p>total: @{{ locations.total }}</p>
+
         <table class="table">
+            <thead>
+                <tr>
+                    <th width="20%">geo id</th>
+                    <th>name</th>
+                    <th width="10%">country</th>
+                </tr>
+            </thead>
             <tr ng-repeat="location in locations.data" ng-click="show(location)">
                 <td>@{{ location.id }}</td>
                 <td>@{{ location.name }}</td>
+                <td>@{{ location.country_code }}</td>
             </tr>
         </table>
 
