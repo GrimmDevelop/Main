@@ -155,7 +155,11 @@ class PersonController extends \Controller {
      */
     public function show($id)
     {
-        return Person::find($id)->toJson();
+        if($person = Person::find($id)) {
+            return $person->toJson();
+        }
+
+        return null;
     }
 
 

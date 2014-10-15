@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">@{{ location.name }}</h3>
+    <h3 class="modal-title"><span class="glyphicon glyphicon-map-marker"></span> @{{ location.name }}</h3>
 </div>
 <div class="modal-body">
     @{{ location.latitude }} @{{ location.longitude }}

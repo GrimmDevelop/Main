@@ -27,7 +27,7 @@ class SearchController extends \Controller {
 
     public function searchResult()
     {
-        $s = Letter::with('informations');
+        $s = Letter::with('informations', 'senders', 'receivers');
 
         foreach(Input::get('filters', []) as $filter) {
             $this->buildWhere($s, $filter);
