@@ -79,7 +79,6 @@
     @include('admin.compiled')
 @endif
 
-    <script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
     <script src="{{ url('assets/js/main.js') }}"></script>
     @asset('js')
     <script>
