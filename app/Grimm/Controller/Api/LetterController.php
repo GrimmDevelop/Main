@@ -7,13 +7,15 @@ use Grimm\Assigner\LetterFrom;
 use Grimm\Assigner\LetterTo;
 use Grimm\Assigner\LetterReceiver;
 use Grimm\Assigner\LetterSender;
+use Grimm\Facades\UserAction;
 use Grimm\Models\Letter;
+use Grimm\Models\Letter\Information;
 use Grimm\Models\Person;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Input;
 use Response;
 use Sentry;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LetterController extends \Controller {
 
@@ -129,25 +131,19 @@ class LetterController extends \Controller {
                 foreach (Input::get('with_errors', []) as $error) {
                     switch ($error) {
                         case "from":
-                            $builder->orWhere(function ($query) {
-                                $query->where('from_id', null);
-                                $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and (letter_informations.code = "absendeort" or letter_informations.code = "absort_ers") and data != "") > 0');
-                            });
+                            $this->withFromErrors($builder);
                             break;
 
                         case "to":
-                            $builder->orWhere(function ($query) {
-                                $query->where('to_id', null);
-                                $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "empf_ort" and data != "") > 0');
-                            });
+                            $this->withToErrors($builder);
                             break;
 
                         case "senders":
-                            $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+                            $this->withSendersErrors($builder);
                             break;
 
                         case "receivers":
-                            $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+                            $this->withReceiversErrors($builder);
                             break;
                     }
                 }
@@ -155,6 +151,48 @@ class LetterController extends \Controller {
         }
 
         return $builder->paginate($totalItems);
+    }
+
+    /**
+     * @param $builder
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withFromErrors(Builder $builder)
+    {
+        return $builder->orWhere(function ($query) {
+            $query->where('from_id', null);
+            $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and (letter_informations.code = "absendeort" or letter_informations.code = "absort_ers") and data != "") > 0');
+        });
+    }
+
+    /**
+     * @param $builder
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withToErrors(Builder $builder)
+    {
+        return $builder->orWhere(function ($query) {
+            $query->where('to_id', null);
+            $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "empf_ort" and data != "") > 0');
+        });
+    }
+
+    /**
+     * @param $builder
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withSendersErrors(Builder $builder)
+    {
+        return $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+    }
+
+    /**
+     * @param $builder
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withReceiversErrors(Builder $builder)
+    {
+        return $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
     }
 
     /**
@@ -191,7 +229,7 @@ class LetterController extends \Controller {
             return $letter->load('informations', 'senders', 'receivers', 'from', 'to')->toJson();
         }
 
-        throw new NotFoundHttpException('Unkown letter id');
+        return Response::json(array('type' => 'danger', 'message' => 'given id not found in database'), 404);
     }
 
 
@@ -215,7 +253,77 @@ class LetterController extends \Controller {
      */
     public function update($id)
     {
-        //
+        if (!(Sentry::check() && Sentry::getUser()->hasAccess('letters.edit'))) {
+            return Response::json('Unauthorized action.', 403);
+        }
+
+        if (!($letter = Letter::find($id))) {
+            return Response::json(['type' => 'danger', 'message' => 'unknown letter ' . $id], 404);
+        }
+
+        foreach (Input::get('informations', []) as $information) {
+            switch ($information['state']) {
+                case 'add':
+                    $this->addInformation($letter, $information);
+                    break;
+
+                case 'keep':
+                    if ($info = Information::find($information['id'])) {
+                        if ($info->data != $information['data']) {
+                            $this->updateInformation($letter, $info, $information['data']);
+                        }
+                    }
+                    break;
+
+                case 'remove':
+                    if ($info = Information::find($information['id'])) {
+                        $this->removeInformation($letter, $info);
+                    }
+                    break;
+            }
+        }
+
+        return Response::json(['type' => 'success', 'message' => 'changes saved'], 200);
+    }
+
+    protected function addInformation(Letter $letter, array $information)
+    {
+        UserAction::log('letters.edit.add_information', [
+            'letter_id' => $letter->id,
+            'code' => $information['code'],
+            'data' => $information['data']
+        ]);
+
+        return $letter->informations()->save(new Information([
+            'code' => $information['code'],
+            'data' => $information['data']
+        ]));
+    }
+
+    protected function updateInformation(Letter $letter, Information $information, $newData)
+    {
+        UserAction::log('letters.edit.update_information', [
+            'letter_id' => $letter->id,
+            'code' => $information->code,
+            'data_old' => $information->data,
+            'data_new' => $newData
+        ]);
+
+        $letter->touch();
+        $information->data = $newData;
+        $information->save();
+    }
+
+    protected function removeInformation(Letter $letter, Information $information)
+    {
+        UserAction::log('letters.edit.remove_information', [
+            'letter_id' => $letter->id,
+            'code' => $information->code,
+            'data' => $information->data
+        ]);
+
+        $letter->touch();
+        return $information->delete();
     }
 
     public function assign($mode)
@@ -227,6 +335,12 @@ class LetterController extends \Controller {
         if (!isset($this->assigner[$mode])) {
             return Response::json(array('type' => 'danger', 'message' => 'Unkown method ' . $mode));
         }
+
+        UserAction::log('letters.assign', [
+            'letter_id' => Input::get('object_id'),
+            'mode' => $mode,
+            'item_id' => Input::get('item_id')
+        ]);
 
         return $this->assigner[$mode]->assign(
             Input::get('object_id'),
@@ -244,4 +358,5 @@ class LetterController extends \Controller {
     {
         //
     }
+
 }

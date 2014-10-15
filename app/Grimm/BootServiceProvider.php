@@ -5,6 +5,7 @@ namespace Grimm;
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
 use Grimm\Converter\Person;
+use Grimm\Logging\UserActionLogger;
 use Grimm\Transformer\LetterRecord;
 use Grimm\Transformer\LocationRecord;
 use Grimm\Transformer\PersonRecord;
@@ -40,6 +41,10 @@ class BootServiceProvider extends ServiceProvider {
 
         $this->app->bind(Person::class, function() {
             return new Person($this->app->make(PersonRecord::class));
+        });
+
+        $this->app->bind(UserActionLogger::class, function() {
+            return new UserActionLogger();
         });
     }
 

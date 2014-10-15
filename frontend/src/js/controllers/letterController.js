@@ -28,9 +28,19 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         }
     };
 
-    $scope.show = function (letter) {
-        $scope.mode = 'show';
-        $scope.currentLetter = letter;
+    $scope.show = function (id) {
+        //$scope.mode = 'show';
+        //$scope.currentLetter = letter;
+
+        var modalInstance = $modal.open({
+            templateUrl: 'admin/partials/letterEdit',
+            controller: 'letterEditController',
+            resolve: {
+                id: function () {
+                    return id;
+                }
+            }
+        });
     };
 
     $scope.reload = function () {
@@ -98,5 +108,10 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         }, function () {
 
         });
+    }
+
+    $scope.openLetterId = null;
+    $scope.openLetterWithId = function() {
+        $scope.show($scope.openLetterId);
     }
 }]);

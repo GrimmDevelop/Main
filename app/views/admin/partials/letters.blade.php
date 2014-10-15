@@ -3,6 +3,15 @@
     <div class="col-md-12">
         <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
 
+        <div clss="row">
+            <div class="col-sm-2">
+                <input class="form-control" ng-model="openLetterId" placeholder="type in a letter id">
+            </div>
+            <div class="col-sm-10">
+                <button class="btn btn-default" ng-click="openLetterWithId()"><span class="glyphicon glyphicon-edit"></span></button>
+            </div>
+        </div>
+
         <div class="col-md-2" style="margin: 20px 0;">
             <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
         </div>
@@ -25,7 +34,7 @@
 
         <table class="table">
             <tr ng-repeat="letter in letters.data">
-                <td><a href ng-click="show(letter)">@{{ letter.id }}</a></td>
+                <td><a href ng-click="show(letter.id)">@{{ letter.id }}</a></td>
                 <td>@{{ letter.code }}</td>
                 <td>
                     <div ng-repeat="information in letter.informations | filterCode:['absendeort','absort_ers','absender','empf_ort','empfaenger','dr']">@{{ information.code }} @{{ information.data }}</div>

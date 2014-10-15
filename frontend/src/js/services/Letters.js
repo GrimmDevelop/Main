@@ -5,6 +5,10 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return this.page;
     };
 
+    this.get = function(id) {
+        return $http.get(serviceBackend + 'letters/' + id);
+    }
+
     this.page = function (itemsPerPage, page, onlyWithErrors) {
 
         var params = {};
@@ -50,4 +54,7 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         });
     }
 
+    this.save = function(letter) {
+        return $http.put(serviceBackend + 'letters/' + letter.id, letter);
+    }
 }]);

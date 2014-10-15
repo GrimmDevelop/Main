@@ -1,5 +1,5 @@
 
-grimmApp.controller('locationPreviewController', ['$scope', '$interval', '$modalInstance', 'location', function ($scope, $interval, $modalInstance, location) {
+grimmApp.controller('locationPreviewController', ['$scope', '$interval', '$modalInstance', 'GoogleMapApi'.ns(), 'location', function ($scope, $interval, $modalInstance, GoogleMapApi, location) {
     $scope.location = location;
     $scope.showMap = false;
 
@@ -19,4 +19,8 @@ grimmApp.controller('locationPreviewController', ['$scope', '$interval', '$modal
         $interval.cancel(showMapTimer);
         $modalInstance.dismiss('cancel');
     }
+
+    GoogleMapApi.then(function(maps) {
+
+    });
 }]);

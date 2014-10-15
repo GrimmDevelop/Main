@@ -9,6 +9,8 @@ use Grimm\Models\Letter;
 class Information extends Eloquent {
     protected $table = 'letter_informations';
 
+    protected $fillable = ['code', 'data'];
+
     public function codes()
     {
         return array(
