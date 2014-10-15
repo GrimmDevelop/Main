@@ -18,6 +18,8 @@ Route::get('/', function () {
     return Redirect::to(URL::to('search'));
 });
 
+Route::get('partials/{file}', 'Grimm\Controller\PartialsController@load');
+
 Route::get('/search', 'Grimm\Controller\SearchController@searchForm');
 Route::post('/search', 'Grimm\Controller\SearchController@searchResult');
 Route::get('/search/codes', 'Grimm\Controller\SearchController@codes');

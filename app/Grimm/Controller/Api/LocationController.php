@@ -96,7 +96,11 @@ class LocationController extends \Controller {
      */
     public function show($id)
     {
-        return Location::find($id)->toJson();
+        if($location = Location::find($id)) {
+            return $location->toJson();
+        }
+
+        return null;
     }
 
 

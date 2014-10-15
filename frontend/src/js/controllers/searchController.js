@@ -42,7 +42,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
     $scope.locationPreview = function (id) {
         Locations.get(id).success(function(location) {
             $modal.open({
-                templateUrl: 'admin/partials/locationPreview',
+                templateUrl: 'partials/locationPreview',
                 controller: 'locationPreviewController',
                 resolve: {
                     location: function () {
@@ -55,7 +55,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
 
     $scope.personPreview = function (person) {
         $modal.open({
-            templateUrl: 'admin/partials/personPreview',
+            templateUrl: 'partials/personPreview',
             controller: 'personPreviewController',
             resolve: {
                 person: function () {

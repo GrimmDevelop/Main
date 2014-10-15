@@ -5,50 +5,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function () {
         return View::make('admin.index');
     });
 
-    // Route::resource('users', 'Grimm\Controller\Admin\UserController');
-
-    Route::get('test', function () {
-
-        $converter = \App::make('Grimm\Converter\Letter');
-        $client = \App::make('Elasticsearch\Client');
-
-        $converter->setSource(storage_path('upload') . '/CORPUS.DBF');
-
-        echo "<html><head><meta charset='utf-8' /></head><body><pre>";
-
-        $bulk = array();
-
-        $i = 0;
-        foreach ($converter->parse() as $row) {
-            if ($i++ > 100) {
-
-                break;
-            }
-
-            try {
-                $result = $client->get(array(
-                    'index' => 'grimm',
-                    'type' => 'letter',
-                    'id' => $row['id']
-                ));
-                var_dump($result);
-            } catch (\Elasticsearch\Common\Exceptions\Missing404Exception $e) {
-                var_dump($e->getMessage());
-                $result = $client->index(array(
-                    'index' => 'grimm',
-                    'type' => 'letter',
-                    'id' => $row['id'],
-                    'body' => $row
-                ));
-
-                print_r($result);
-            }
-        }
-
-        echo "</pre></body></html>";
-
-    });
-
     Route::post('import/letters', 'Grimm\Controller\Api\ImportController@startLetterImport');
     Route::post('import/locations', 'Grimm\Controller\Api\ImportController@startLocationImport');
     Route::post('import/persons', 'Grimm\Controller\Api\ImportController@startPersonImport');

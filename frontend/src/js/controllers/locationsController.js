@@ -23,7 +23,7 @@ grimmApp.controller('locationsController', ['$scope', '$modal', 'Locations', fun
 
     $scope.show = function (location) {
         $modal.open({
-            templateUrl: 'admin/partials/locationPreview',
+            templateUrl: 'partials/locationPreview',
             controller: 'locationPreviewController',
             resolve: {
                 location: function () {
