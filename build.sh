@@ -1,6 +1,6 @@
 
 cd /var/www/
-/usr/bin/git pull
+git pull
 composer install
 php artisan migrate
 php artisan compile:templates
