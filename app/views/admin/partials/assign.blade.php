@@ -4,6 +4,9 @@
         <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
 
         <h1>Assign</h1>
+
+        <p>per command: <input ng-model="numbersToAssign"></p>
+
         <a href ng-click="from()">locations from</a><br>
         <a href ng-click="to()">locations to</a><br>
         <a href ng-click="receivers()">receivers</a><br>

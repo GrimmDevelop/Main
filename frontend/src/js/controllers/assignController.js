@@ -5,11 +5,13 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         $scope.message = null;
     };
 
+    $scope.numbersToAssign = 500;
+
     $scope.locationsToCheck = [];
     $scope.personsToCheck = [];
 
     $scope.from = function () {
-        Assigner.from().success(function (data) {
+        Assigner.from($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.locationsToCheck = data.failed;
         }).error(function (data) {
@@ -18,7 +20,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     }
 
     $scope.to = function () {
-        Assigner.to().success(function (data) {
+        Assigner.to($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.locationsToCheck = data.failed;
         }).error(function (data) {
@@ -27,7 +29,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     }
 
     $scope.senders = function () {
-        Assigner.senders().success(function (data) {
+        Assigner.senders($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.personsToCheck = data.failed;
         }).error(function (data) {
@@ -36,7 +38,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     }
 
     $scope.receivers = function () {
-        Assigner.receivers().success(function (data) {
+        Assigner.receivers($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.personsToCheck = data.failed;
         }).error(function (data) {
