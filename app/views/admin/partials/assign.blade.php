@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="location in locationsToCheck">
+                <tr ng-repeat="location in locationsToCheck | orderBy:'name'">
                     <td>@{{ location.name }}</td>
                     <td><a href ng-click="search(location)"><span class="glyphicon glyphicon-search"></span></a></td>
                 </tr>
@@ -46,7 +46,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="person in personsToCheck">
+                <tr ng-repeat="person in personsToCheck | orderBy:'name'">
                     <td>@{{ person.name }}</td>
                     <td><a href ng-click="searchPerson(person)"><span class="glyphicon glyphicon-search"></span></a></td>
                     <td><a href ng-click="autoGenerate(person)"><span class="glyphicon glyphicon-new-window"></span></a></td>
