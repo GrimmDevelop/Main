@@ -10,7 +10,14 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     $scope.locationsToCheck = [];
     $scope.personsToCheck = [];
 
+    $scope.resetLists = function() {
+        $scope.locationsToCheck = [];
+        $scope.personsToCheck = [];
+    }
+
     $scope.from = function () {
+        $scope.resetLists();
+
         Assigner.from($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.locationsToCheck = data.failed;
@@ -20,6 +27,8 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     }
 
     $scope.to = function () {
+        $scope.resetLists();
+
         Assigner.to($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.locationsToCheck = data.failed;
@@ -29,6 +38,8 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     }
 
     $scope.senders = function () {
+        $scope.resetLists();
+
         Assigner.senders($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.personsToCheck = data.failed;
@@ -38,6 +49,8 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     }
 
     $scope.receivers = function () {
+        $scope.resetLists();
+
         Assigner.receivers($scope.numbersToAssign).success(function (data) {
             $scope.message = data;
             $scope.personsToCheck = data.failed;
