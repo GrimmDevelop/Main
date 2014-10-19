@@ -6,10 +6,13 @@ interface Assigner {
 
     /**
      * Assigns an item to an object
-     * @param $object_id
-     * @param $item_id
-     * @return \Illuminate\Http\Response
+     * @param $objectId
+     * @param $itemId
+     * @return bool
+     * @throws ItemAlreadyAssignedException
+     * @throws ItemNotFoundException
+     * @throws ObjectNotFoundException
      */
-    public function assign($object_id, $item_id);
+    public function assign($objectId, $itemId);
 
 } 
