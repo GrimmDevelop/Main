@@ -21,7 +21,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="location in resultList | orderObjectBy:'population':1">
+                <tr ng-repeat="location in resultList | orderObjectBy:'population':1:'float'">
                     <td>@{{ location.id }}</td>
                     <td><a href ng-click="select(location)">@{{ location.name }}</a></td>
                     <td>@{{ location.latitude }} @{{ location.longitude }}</td>
