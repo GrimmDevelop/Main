@@ -1,6 +1,5 @@
 grimmApp.controller('locationsController', ['$scope', '$modal', 'Locations', function ($scope, $modal, Locations) {
 
-    $scope.mode = 'index';
     $scope.locations = [];
     $scope.zoom = 13;
 
@@ -13,13 +12,6 @@ grimmApp.controller('locationsController', ['$scope', '$modal', 'Locations', fun
             $scope.locations = data;
         });
     }
-
-    $scope.index = function (event) {
-        $scope.mode = 'index';
-        if (typeof event !== 'undefined') {
-            event.preventDefault();
-        }
-    };
 
     $scope.show = function (location) {
         $modal.open({

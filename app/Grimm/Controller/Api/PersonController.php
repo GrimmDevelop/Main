@@ -113,6 +113,13 @@ class PersonController extends \Controller {
     }
 
 
+    public function correspondence()
+    {
+        // person
+        // Person::find($id);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

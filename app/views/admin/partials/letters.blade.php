@@ -1,10 +1,9 @@
 
-<div class="row" ng-show="mode == 'index'">
+<div class="row">
     <div class="col-md-12">
         <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
     </div>
 </div>
-
 <div class="row">
     <div class="col-sm-2">
         <input class="form-control" ng-model="openLetterId" placeholder="type in a letter id">
@@ -13,7 +12,6 @@
         <button class="btn btn-default" ng-click="openLetterWithId()"><span class="glyphicon glyphicon-edit"></span></button>
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-2" style="margin: 20px 0;">
         <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
@@ -23,7 +21,6 @@
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-12">
         <form role="form">
