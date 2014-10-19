@@ -35,6 +35,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         var modalInstance = $modal.open({
             templateUrl: 'admin/partials/letterEdit',
             controller: 'letterEditController',
+            size: 'lg',
             resolve: {
                 id: function () {
                     return id;

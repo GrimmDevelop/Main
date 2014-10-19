@@ -152,7 +152,7 @@ class LetterRecord implements RecordTransformer
         // remove remaining braces
         $string = preg_replace("/(.*)\\(.*?\\)(.*)/", "$1$2$3", $string);
 
-        $persons = array_map('trim', explode(';', $string));
+        $persons = array_filter(array_map('trim', explode(';', $string)));
         $errors = (bool)str_contains($string, array("(", ")", "[", "]", ":", "?", ">", "<", ""));
 
         return array($persons, $errors);

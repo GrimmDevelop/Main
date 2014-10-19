@@ -6,6 +6,9 @@ use Grimm\Contract\Assigner;
 use Grimm\Models\Letter;
 use Grimm\Models\Location;
 
+use Grimm\Assigner\Exceptions\ObjectNotFoundException;
+use Grimm\Assigner\Exceptions\ItemNotFoundException;
+
 class LetterFrom implements Assigner {
 
     /**
@@ -20,16 +23,14 @@ class LetterFrom implements Assigner {
         $location = Location::find($item_id);
 
         if (!($letter instanceof Letter) || !$letter->exists) {
-            return \Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);
+            throw new ObjectNotFoundException();
         }
 
         if (!($location instanceof Location) || !$location->exists) {
-            return \Response::json(array('type' => 'danger', 'message' => 'Person not found'), 404);
+            throw new ItemNotFoundException();
         }
 
         $letter->from()->associate($location);
-        $letter->save();
-
-        return \Response::json(array('type' => 'success', 'message' => 'Location assigned to letter'), 200);
+        return (bool)$letter->save();
     }
 }

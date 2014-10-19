@@ -75,7 +75,7 @@ class PersonRecord implements RecordTransformer {
 
         $transformedRecord['informations'] = array_filter($transformedRecord['informations']);
 
-        if($transformedRecord['name_2013'] == '') {
+        if(trim($transformedRecord['name_2013']) == '') {
             return null;
         }
 

@@ -7,6 +7,11 @@ use Grimm\Models\Letter;
 use Grimm\Models\Person;
 use Illuminate\Database\Eloquent\Model;
 
+use Grimm\Assigner\Exceptions\ObjectNotFoundException;
+use Grimm\Assigner\Exceptions\ItemNotFoundException;
+use Grimm\Assigner\Exceptions\ItemAlreadyAssignedException;
+
+
 class LetterSender implements Assigner {
 
     /**
@@ -21,18 +26,18 @@ class LetterSender implements Assigner {
         $person = ($item_id instanceof Person) ? $item_id : Person::find($item_id);
 
         if (!($letter instanceof Letter) || !$letter->exists) {
-            return \Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);
+            throw new ObjectNotFoundException();
         }
 
         if (!($person instanceof Person) || !$person->exists) {
-            return \Response::json(array('type' => 'danger', 'message' => 'Person not found'), 404);
+            throw new ItemNotFoundException();
         }
 
         if ($letter->senders()->where('id', $person->id)->first()) {
-            return \Response::make(array('type' => 'warning', 'message' => 'Person already assigned'), 200);
+            throw new ItemAlreadyAssignedException();
         }
 
         $letter->senders()->attach($person);
-        return \Response::json(array('type' => 'success', 'message' => 'Person assigned to letter'), 200);
+        return true;
     }
 }

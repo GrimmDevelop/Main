@@ -15,7 +15,20 @@ class LocationController extends \Controller {
      */
     public function index()
     {
-        return Location::orderBy('name')->paginate(abs((int)Input::get('items_per_page', 25)));
+        $result = Location::orderBy('name')->paginate(abs((int)Input::get('items_per_page', 25)));
+
+        $return = new \stdClass();
+
+        $return->total = $result->getTotal();
+        $return->per_page = $result->getPerPage();
+        $return->current_page = $result->getCurrentPage();
+        $return->last_page = $result->getLastPage();
+        $return->from = $result->getFrom();
+        $return->to = $result->getTo();
+        $return->countries = Location::selectRaw("DISTINCT country_code")->orderBy('country_code')->get()->lists('country_code');
+        $return->data = $result->getCollection()->toArray();
+
+        return json_encode($return);
     }
 
     public function search()

@@ -7,6 +7,9 @@ use Grimm\Assigner\LetterFrom;
 use Grimm\Assigner\LetterTo;
 use Grimm\Assigner\LetterReceiver;
 use Grimm\Assigner\LetterSender;
+use Grimm\Assigner\Exceptions\ItemAlreadyAssignedException;
+use Grimm\Assigner\Exceptions\ItemNotFoundException;
+use Grimm\Assigner\Exceptions\ObjectNotFoundException;
 use Grimm\Facades\UserAction;
 use Grimm\Models\Letter;
 use Grimm\Models\Letter\Information;
@@ -342,10 +345,23 @@ class LetterController extends \Controller {
             'item_id' => Input::get('item_id')
         ]);
 
-        return $this->assigner[$mode]->assign(
-            Input::get('object_id'),
-            Input::get('item_id')
-        );
+        $itemResponseName = $mode == 'from' || $mode == 'to' ? 'Location' : 'Person';
+        try {
+            if($this->assigner[$mode]->assign(
+                Input::get('object_id'),
+                Input::get('item_id')
+            )) {
+                return \Response::json(array('type' => 'success', 'message' => $itemResponseName . ' assigned to letter'), 200);
+            } else {
+                return \Response::json(array('type' => 'danger', 'message' => 'Unknown error occured'), 200);
+            }
+        } catch(ObjectNotFoundException $e) {
+            return \Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);
+        } catch(ItemNotFoundException $e) {
+            return \Response::json(array('type' => 'danger', 'message' => $itemResponseName . ' not found'), 404);
+        } catch(ItemAlreadyAssignedException $e) {
+            return \Response::make(array('type' => 'warning', 'message' => $itemResponseName . ' already assigned'), 200);
+        }
     }
 
     /**

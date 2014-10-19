@@ -39,9 +39,10 @@ class AssignController extends \Controller {
             foreach ($letter->informations as $information) {
                 if ($information->code == 'absendeort' || $information->code == 'absort_ers') {
                     if ($location = $this->getLocation($information->data)) {
-                        $letter->from()->associate($location);
-                        $letter->save();
-                        $counter ++;
+                        try {
+                            $this->assigner['from']->assign($letter, $location);
+                            $counter ++;
+                        } catch(\Exception $e) {}
                     } else {
                         $failedLocations[] = [
                             'name' => $information->data,
@@ -67,9 +68,10 @@ class AssignController extends \Controller {
             foreach ($letter->informations as $information) {
                 if ($information->code == 'empf_ort') {
                     if ($location = $this->getLocation($information->data)) {
-                        $letter->to()->associate($location);
-                        $letter->save();
-                        $counter ++;
+                        try {
+                            $this->assigner['to']->assign($letter, $location);
+                            $counter ++;
+                        } catch(\Exception $e) {}
                     } else {
                         $failedLocations[] = [
                             'name' => $information->data,
@@ -95,8 +97,10 @@ class AssignController extends \Controller {
             foreach ($letter->informations as $information) {
                 if ($information->code == 'senders') {
                     if ($person = $this->getPerson($information->data)) {
-                        $this->assigner['senders']->assign($letter, $person);
-                        $counter ++;
+                        try {
+                            $this->assigner['senders']->assign($letter, $person);
+                            $counter ++;
+                        } catch(\Exception $e) {}
                     } else {
                         $failedPersons[] = [
                             'name' => $information->data,
@@ -122,8 +126,10 @@ class AssignController extends \Controller {
             foreach ($letter->informations as $information) {
                 if ($information->code == 'receivers') {
                     if ($person = $this->getPerson($information->data)) {
-                        $this->assigner['receivers']->assign($letter, $person);
-                        $counter ++;
+                        try {
+                            $this->assigner['receivers']->assign($letter, $person);
+                            $counter ++;
+                        } catch(\Exception $e) {}
                     } else {
                         $failedPersons[] = [
                             'name' => $information->data,

@@ -8,7 +8,7 @@
         <pagination total-items="locations.total" ng-model="currentPage" ng-change="reload(itemsPerPage, currentPage)" items-per-page="locations.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
 
-        <p>total: @{{ locations.total }}</p>
+        <p>total: @{{ locations.total }} countries: @{{ locations.countries.join(', ') }}</p>
 
         <table class="table">
             <thead>
