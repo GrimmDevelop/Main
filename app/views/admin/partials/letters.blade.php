@@ -2,36 +2,49 @@
 <div class="row" ng-show="mode == 'index'">
     <div class="col-md-12">
         <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
+    </div>
+</div>
 
-        <div clss="row">
-            <div class="col-sm-2">
-                <input class="form-control" ng-model="openLetterId" placeholder="type in a letter id">
-            </div>
-            <div class="col-sm-10">
-                <button class="btn btn-default" ng-click="openLetterWithId()"><span class="glyphicon glyphicon-edit"></span></button>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-sm-2">
+        <input class="form-control" ng-model="openLetterId" placeholder="type in a letter id">
+    </div>
+    <div class="col-sm-10">
+        <button class="btn btn-default" ng-click="openLetterWithId()"><span class="glyphicon glyphicon-edit"></span></button>
+    </div>
+</div>
 
-        <div class="col-md-2" style="margin: 20px 0;">
-            <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
-        </div>
-
+<div class="row">
+    <div class="col-md-2" style="margin: 20px 0;">
+        <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
+    </div>
+    <div class="col-md-10">
         <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()" items-per-page="letters.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
+    </div>
+</div>
 
-        <div class="checkbox">
-            <label><input type="checkbox" ng-model="showLettersWithErrors.from" ng-change="reload()" /> show only letters with from errors</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" ng-model="showLettersWithErrors.to" ng-change="reload()" /> show only letters with to errors</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" ng-model="showLettersWithErrors.senders" ng-change="reload()" /> show only letters with sender errors</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" ng-model="showLettersWithErrors.receivers" ng-change="reload()" /> show only letters with receiver errors</label>
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <form role="form">
+            <div class="checkbox">
+                <label><input type="checkbox" ng-model="showLettersWithErrors.from" ng-change="reload()" /> show only letters with from errors</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" ng-model="showLettersWithErrors.to" ng-change="reload()" /> show only letters with to errors</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" ng-model="showLettersWithErrors.senders" ng-change="reload()" /> show only letters with sender errors</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" ng-model="showLettersWithErrors.receivers" ng-change="reload()" /> show only letters with receiver errors</label>
+            </div>
+        </form>
+    </div>
+</div>
 
+<div class="row">
+    <div class="col-md-12">
         <table class="table">
             <tr ng-repeat="letter in letters.data">
                 <td><a href ng-click="show(letter.id)">@{{ letter.id }}</a></td>
@@ -90,20 +103,15 @@
                 </td>
             </tr>
         </table>
-        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()" items-per-page="letters.per_page"
-            max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
     </div>
 </div>
 
-<div class="row" ng-show="mode == 'show'">
-    <div class="col-md-12">
-        <a href="#" ng-click="index($event)">Back</a>
-        <table class="table">
-            <tr>
-                <td>@{{ currentLetter.id }}</td>
-                <td>@{{ currentLetter.code }}</td>
-                <td><div ng-repeat="information in currentLetter.informations">@{{ information.code }} @{{ information.data }}</div></td>
-            </tr>
-        </table>
+<div class="row">
+    <div class="col-md-2" style="margin: 20px 0;">
+        <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
+    </div>
+    <div class="col-md-10">
+        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()" items-per-page="letters.per_page"
+            max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
     </div>
 </div>

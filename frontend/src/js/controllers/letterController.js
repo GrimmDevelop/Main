@@ -5,9 +5,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         $scope.message = null;
     };
 
-    $scope.mode = 'index';
     $scope.letters = [];
-    $scope.currentLetter = {};
 
     $scope.itemsPerPage = 25;
     $scope.currentPage = 1;
@@ -19,19 +17,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         receivers: false
     };
 
-    $scope.index = function (event) {
-        $scope.mode = 'index';
-        $scope.currentLetter = {};
-
-        if (typeof event !== 'undefined') {
-            event.preventDefault();
-        }
-    };
-
     $scope.show = function (id) {
-        //$scope.mode = 'show';
-        //$scope.currentLetter = letter;
-
         var modalInstance = $modal.open({
             templateUrl: 'admin/partials/letterEdit',
             controller: 'letterEditController',
