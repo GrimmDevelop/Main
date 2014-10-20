@@ -38,6 +38,7 @@ class Information extends Eloquent {
             'kopie',
             'nr_1992',
             'nr_1997',
+            'senders',
             'receivers'
         );
     }
