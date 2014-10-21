@@ -1,5 +1,5 @@
 
-<div class="row" ng-if="mode == 'index'">
+<div class="row">
     <div class="col-md-12">
         <div class="col-md-2" style="margin: 20px 0;">
             <select class="form-control" ng-model="$parent.itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
@@ -15,6 +15,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th></th>
                     <th ng-click="orderBy('name_2013')">
                         name
                         <span class="dropup" ng-show="currentOrderBy=='name_2013' && currentOrderByDirection == 'asc'">
@@ -40,6 +41,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="person in persons.data" ng-class="person.auto_generated == 1 ? 'warning' : ''">
+                    <td><a href ng-click="show(person.id)">@{{ person.id }}</a></td>
                     <td>@{{ person.name_2013 }}</td>
                     <td>@{{ person.sended_letters_count }}</td>
                     <td>@{{ person.received_letters_count }}</td>
@@ -49,30 +51,5 @@
 
         <pagination total-items="persons.total" ng-model="$parent.currentPage" ng-change="reload()" items-per-page="persons.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
-    </div>
-</div>
-
-<div class="row" ng-if="mode == 'show'">
-    <div class="col-md-12">
-        <a href ng-click="index()" class="btn btn-default">Back</a>
-        <table>
-            <tr>
-                <td>@{{ currentPerson.id }}</td>
-                <td>@{{ currentPerson.name_2013 }}</td>
-                <td>
-                    <strong>to:</strong><br>
-                    <div ng-repeat="letter in currentPerson.sended_letters">
-                        @{{ letter.code }}
-                        @{{ (letter.receivers|personName).join(', ') }}
-                    </div>
-                    <strong>from:</strong><br>
-                    <div ng-repeat="letter in currentPerson.received_letters">
-                        @{{ letter.code }}
-                        @{{ (letter.senders|personName).join(', ') }}
-                        <div ng-repeat="person in letter.senders"><a href ng-click="show(person)">@{{ person.name_2013 }}</a></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
     </div>
 </div>

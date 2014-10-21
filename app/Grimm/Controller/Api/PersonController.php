@@ -163,7 +163,7 @@ class PersonController extends \Controller {
     public function show($id)
     {
         if($person = Person::find($id)) {
-            return $person->toJson();
+            return $person->load('informations')->toJson();
         }
 
         return null;
