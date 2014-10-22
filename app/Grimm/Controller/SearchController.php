@@ -27,7 +27,7 @@ class SearchController extends \Controller {
 
     public function searchResult()
     {
-        $s = Letter::with('informations', 'senders', 'receivers');
+        $s = Letter::with('information', 'senders', 'receivers');
 
         foreach(Input::get('filters', []) as $filter) {
             $this->buildWhere($s, $filter);
@@ -53,7 +53,7 @@ class SearchController extends \Controller {
             return $query;
         }
 
-        return $query->whereHas('informations', function($q) use($filter) {
+        return $query->whereHas('information', function($q) use($filter) {
             $compare = $this->getCompare($filter['compare'], $filter['value']);
 
             return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
@@ -88,13 +88,8 @@ class SearchController extends \Controller {
     }
 
     public function loadFilters() {
-
-        // Strange invalid catalog name bug fix...
-        User::find(1);
-
-        if(Sentry::check()) {
-            $user = Sentry::getUser();
-
+        User::find(0);
+        if($user = Sentry::getUser()) {
             $search_filters = $user->search_filter;
 
             if($search_filters == "") {
@@ -103,12 +98,10 @@ class SearchController extends \Controller {
 
             return $search_filters;
         }
-
-        return json_encode(array());
     }
 
     public function saveFilters() {
-        if(Sentry::check() && $user = Sentry::getUser()) {
+        if($user = Sentry::getUser()) {
             $user->search_filter = json_encode(Input::get('filters', []));
             $user->save();
         }

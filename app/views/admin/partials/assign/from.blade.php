@@ -4,10 +4,10 @@
 <div class="modal-body">
     <alert ng-if="message" type="@{{ message.type }}" close="closeMessage()">@{{ message.message }}</alert>
     <ul>
-    <li ng-repeat="information in letter.informations | filterCode:['absendeort', 'absort_ers']">
-        <input type="text" class="form-control" ng-model="information.data" typeahead="location for location in typeSearch($viewValue)" typeahead-min-length="3">
+    <li ng-repeat="info in letter.information | filterCode:['absendeort', 'absort_ers']">
+        <input type="text" class="form-control" ng-model="info.data" typeahead="location for location in typeSearch($viewValue)" typeahead-min-length="3">
         <span>
-            <a href ng-click="search(information.data)"><span class="glyphicon glyphicon-search"></span></a>
+            <a href ng-click="search(info.data)"><span class="glyphicon glyphicon-search"></span></a>
         </span>
         <div ng-repeat="location in resultList">
             <a href ng-click="select(location)">@{{ location.name }} @{{ location.latitude }} @{{ location.longitude }}</a>

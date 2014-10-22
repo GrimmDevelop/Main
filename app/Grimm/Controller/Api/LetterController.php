@@ -44,7 +44,7 @@ class LetterController extends \Controller {
     {
         $result = $this->loadItems(
             abs((int)Input::get('items_per_page', 25)),
-            Input::get('load', ['informations', 'senders', 'receivers', 'from', 'to'])
+            Input::get('load', ['information', 'senders', 'receivers', 'from', 'to'])
         );
 
         if ($result instanceof JsonResponse) {
@@ -110,7 +110,7 @@ class LetterController extends \Controller {
         $builder = Letter::query();
 
         foreach ($with as $item) {
-            if (in_array($item, ['informations', 'senders', 'receivers', 'from', 'to'])) {
+            if (in_array($item, ['information', 'senders', 'receivers', 'from', 'to'])) {
                 $builder->with($item);
             }
         }
@@ -164,7 +164,7 @@ class LetterController extends \Controller {
     {
         return $builder->orWhere(function ($query) {
             $query->where('from_id', null);
-            $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and (letter_informations.code = "absendeort" or letter_informations.code = "absort_ers") and data != "") > 0');
+            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
         });
     }
 
@@ -176,7 +176,7 @@ class LetterController extends \Controller {
     {
         return $builder->orWhere(function ($query) {
             $query->where('to_id', null);
-            $query->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "empf_ort" and data != "") > 0');
+            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
         });
     }
 
@@ -186,7 +186,7 @@ class LetterController extends \Controller {
      */
     protected function withSendersErrors(Builder $builder)
     {
-        return $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+        return $builder->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
     }
 
     /**
@@ -195,7 +195,7 @@ class LetterController extends \Controller {
      */
     protected function withReceiversErrors(Builder $builder)
     {
-        return $builder->orWhereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+        return $builder->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
     }
 
     /**
@@ -229,7 +229,7 @@ class LetterController extends \Controller {
     public function show($id)
     {
         if ($letter = Letter::find($id)) {
-            return $letter->load('informations', 'senders', 'receivers', 'from', 'to')->toJson();
+            return $letter->load('information', 'senders', 'receivers', 'from', 'to')->toJson();
         }
 
         return Response::json(array('type' => 'danger', 'message' => 'given id not found in database'), 404);
@@ -264,22 +264,22 @@ class LetterController extends \Controller {
             return Response::json(['type' => 'danger', 'message' => 'unknown letter ' . $id], 404);
         }
 
-        foreach (Input::get('informations', []) as $information) {
-            switch ($information['state']) {
+        foreach (Input::get('information', []) as $info) {
+            switch ($info['state']) {
                 case 'add':
-                    $this->addInformation($letter, $information);
+                    $this->addInformation($letter, $info);
                     break;
 
                 case 'keep':
-                    if ($info = Information::find($information['id'])) {
-                        if ($info->data != $information['data']) {
-                            $this->updateInformation($letter, $info, $information['data']);
+                    if ($info = Information::find($info['id'])) {
+                        if ($info->data != $info['data']) {
+                            $this->updateInformation($letter, $info, $info['data']);
                         }
                     }
                     break;
 
                 case 'remove':
-                    if ($info = Information::find($information['id'])) {
+                    if ($info = Information::find($info['id'])) {
                         $this->removeInformation($letter, $info);
                     }
                     break;
@@ -289,44 +289,44 @@ class LetterController extends \Controller {
         return Response::json(['type' => 'success', 'message' => 'changes saved'], 200);
     }
 
-    protected function addInformation(Letter $letter, array $information)
+    protected function addInformation(Letter $letter, array $info)
     {
         UserAction::log('letters.edit.add_information', [
             'letter_id' => $letter->id,
-            'code' => $information['code'],
-            'data' => $information['data']
+            'code' => $info['code'],
+            'data' => $info['data']
         ]);
 
-        return $letter->informations()->save(new Information([
-            'code' => $information['code'],
-            'data' => $information['data']
+        return $letter->info()->save(new Information([
+            'code' => $info['code'],
+            'data' => $info['data']
         ]));
     }
 
-    protected function updateInformation(Letter $letter, Information $information, $newData)
+    protected function updateInformation(Letter $letter, Information $info, $newData)
     {
         UserAction::log('letters.edit.update_information', [
             'letter_id' => $letter->id,
-            'code' => $information->code,
-            'data_old' => $information->data,
+            'code' => $info->code,
+            'data_old' => $info->data,
             'data_new' => $newData
         ]);
 
         $letter->touch();
-        $information->data = $newData;
-        $information->save();
+        $info->data = $newData;
+        $info->save();
     }
 
-    protected function removeInformation(Letter $letter, Information $information)
+    protected function removeInformation(Letter $letter, Information $info)
     {
         UserAction::log('letters.edit.remove_information', [
             'letter_id' => $letter->id,
-            'code' => $information->code,
-            'data' => $information->data
+            'code' => $info->code,
+            'data' => $info->data
         ]);
 
         $letter->touch();
-        return $information->delete();
+        return $info->delete();
     }
 
     public function assign($mode)

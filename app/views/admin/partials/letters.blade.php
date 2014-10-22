@@ -44,32 +44,32 @@
     <div class="col-md-12">
         <table class="table">
             <tr ng-repeat="letter in letters.data">
-                <td><a href ng-click="show(letter.id)">@{{ letter.id }}</a></td>
+                <td><a href letter-edit="letter.id">@{{ letter.id }}</a></td>
                 <td>@{{ letter.code }}</td>
                 <td>
-                    <div ng-repeat="information in letter.informations | filterCode:['absendeort','absort_ers','absender','empf_ort','empfaenger','dr']">@{{ information.code }} @{{ information.data }}</div>
+                    <div ng-repeat="info in letter.information | filterCode:['absendeort','absort_ers','absender','empf_ort','empfaenger','dr']">@{{ info.code }} @{{ info.data }}</div>
                 </td>
                 <td>
                     <div class="row">
                         <div class="col-md-6">
                             <div>
-                                <a href ng-click="openPersonModal(letter, 'senders')" class="btn btn-@{{ letter.senders.length == (letter.informations | countCode:'senders') ? 'default' : 'primary' }}" title="assign senders">
+                                <a href ng-click="openPersonModal(letter, 'senders')" class="btn btn-@{{ letter.senders.length == (letter.information | countCode:'senders') ? 'default' : 'primary' }}" title="assign senders">
                                     <span class="glyphicon glyphicon-user"></span>
                                     <span class="glyphicon glyphicon-arrow-right"></span>
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </a>
                             </div>
-                            <div ng-repeat="sender in letter.senders">@{{ sender.name_2013 }}</div>
+                            <div ng-repeat="sender in letter.senders"><a href person-preview="sender.id">@{{ sender.name_2013 }}</a></div>
                         </div>
                         <div class="col-md-6">
                             <div>
-                                <a href ng-click="openPersonModal(letter, 'receivers')" class="btn btn-@{{ letter.receivers.length == (letter.informations | countCode:'receivers') ? 'default' : 'primary' }}" title="assign receivers">
+                                <a href ng-click="openPersonModal(letter, 'receivers')" class="btn btn-@{{ letter.receivers.length == (letter.information | countCode:'receivers') ? 'default' : 'primary' }}" title="assign receivers">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                     <span class="glyphicon glyphicon-arrow-right"></span>
                                     <span class="glyphicon glyphicon-user"></span>
                                 </a>
                             </div>
-                            <div ng-repeat="receiver in letter.receivers">@{{ receiver.name_2013 }}</div>
+                            <div ng-repeat="receiver in letter.receivers"><a href person-preview="receiver.id">@{{ receiver.name_2013 }}</a></div>
                         </div>
                     </div>
                     <div class="row">
@@ -77,7 +77,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div ng-show="letter.from != null">@{{ letter.from.name }}</div>
+                            <div ng-show="letter.from != null"><a href location-preview="letter.from_id">@{{ letter.from.name }}</a></div>
                             <div ng-show="letter.from == null">
                                 <a href ng-click="openLocationModal(letter, 'from')" class="btn btn-primary" title="assign from location">
                                     <span class="glyphicon glyphicon-map-marker"></span>
@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div ng-show="letter.to != null">@{{ letter.to.name }}</div>
+                            <div ng-show="letter.to != null"><a href location-preview="letter.to_id">@{{ letter.to.name }}</a></div>
                             <div ng-show="letter.to == null">
                                 <a href ng-click="openLocationModal(letter, 'to')" class="btn btn-primary" title="assign to location">
                                     <span class="glyphicon glyphicon-envelope"></span>

@@ -12,7 +12,7 @@ class Letter extends Eloquent
     protected $table = 'letters';
 
 
-    public function informations($code = null)
+    public function information($code = null)
     {
         $hasMany = $this->hasMany(Information::class);
 
@@ -41,7 +41,7 @@ class Letter extends Eloquent
             }
         }
 
-        return $this->with(array('informations' => function ($query) use ($codes) {
+        return $this->with(array('information' => function ($query) use ($codes) {
             $query->whereIn('code', $codes);
         }));
     }

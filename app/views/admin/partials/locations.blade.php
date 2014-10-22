@@ -10,7 +10,8 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <p>total: @{{ locations.total }} countries: @{{ locations.countries.join(', ') }}</p>
+        <p>total: @{{ locations.total }}</p>
+        <p>countries: @{{ locations.countries.join(', ') }}</p>
 
         <table class="table">
             <thead>
@@ -20,8 +21,8 @@
                     <th width="10%">country</th>
                 </tr>
             </thead>
-            <tr ng-repeat="location in locations.data" ng-click="show(location)">
-                <td>@{{ location.id }}</td>
+            <tr ng-repeat="location in locations.data">
+                <td><a href location-preview="location.id">@{{ location.id }}</a></td>
                 <td>@{{ location.name }}</td>
                 <td>@{{ location.country_code }}</td>
             </tr>

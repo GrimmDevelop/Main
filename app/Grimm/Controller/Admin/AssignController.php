@@ -36,16 +36,16 @@ class AssignController extends \Controller {
         $failedLocations = [];
         $counter = 0;
         foreach ($this->getLetters('from') as $letter) {
-            foreach ($letter->informations as $information) {
-                if ($information->code == 'absendeort' || $information->code == 'absort_ers') {
-                    if ($location = $this->getLocation($information->data)) {
+            foreach ($letter->information as $infor) {
+                if ($infor->code == 'absendeort' || $infor->code == 'absort_ers') {
+                    if ($location = $this->getLocation($infor->data)) {
                         try {
                             $this->assigner['from']->assign($letter, $location);
                             $counter ++;
                         } catch(\Exception $e) {}
                     } else {
                         $failedLocations[] = [
-                            'name' => $information->data,
+                            'name' => $infor->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -65,16 +65,16 @@ class AssignController extends \Controller {
         $failedLocations = [];
         $counter = 0;
         foreach ($this->getLetters('to') as $letter) {
-            foreach ($letter->informations as $information) {
-                if ($information->code == 'empf_ort') {
-                    if ($location = $this->getLocation($information->data)) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'empf_ort') {
+                    if ($location = $this->getLocation($info->data)) {
                         try {
                             $this->assigner['to']->assign($letter, $location);
                             $counter ++;
                         } catch(\Exception $e) {}
                     } else {
                         $failedLocations[] = [
-                            'name' => $information->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -94,16 +94,16 @@ class AssignController extends \Controller {
         $failedPersons = [];
         $counter = 0;
         foreach ($this->getLetters('senders') as $letter) {
-            foreach ($letter->informations as $information) {
-                if ($information->code == 'senders') {
-                    if ($person = $this->getPerson($information->data)) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'senders') {
+                    if ($person = $this->getPerson($info->data)) {
                         try {
                             $this->assigner['senders']->assign($letter, $person);
                             $counter ++;
                         } catch(\Exception $e) {}
                     } else {
                         $failedPersons[] = [
-                            'name' => $information->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -123,16 +123,16 @@ class AssignController extends \Controller {
         $failedPersons = [];
         $counter = 0;
         foreach ($this->getLetters('receivers') as $letter) {
-            foreach ($letter->informations as $information) {
-                if ($information->code == 'receivers') {
-                    if ($person = $this->getPerson($information->data)) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'receivers') {
+                    if ($person = $this->getPerson($info->data)) {
                         try {
                             $this->assigner['receivers']->assign($letter, $person);
                             $counter ++;
                         } catch(\Exception $e) {}
                     } else {
                         $failedPersons[] = [
-                            'name' => $information->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -150,23 +150,23 @@ class AssignController extends \Controller {
         switch ($mode) {
             case 'from':
                 $builder->where('from_id', null);
-                $builder->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and (letter_informations.code = "absendeort" or letter_informations.code = "absort_ers") and data != "") > 0');
+                $builder->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
                 break;
             case 'to':
                 $builder->where('to_id', null);
-                $builder->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "empf_ort" and data != "") > 0');
+                $builder->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
                 break;
             case 'senders':
-                $builder->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+                $builder->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
                 break;
             case 'receivers':
-                $builder->whereRaw('(select count(*) from letter_informations where letters.id = letter_informations.letter_id and letter_informations.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+                $builder->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
                 break;
         }
 
         $builder->take((int)Input::get('take', 100));
 
-        $builder->with('informations');
+        $builder->with('information');
 
         return $builder->get();
     }

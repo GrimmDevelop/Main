@@ -19,7 +19,7 @@ class PersonController extends \Controller {
     {
         $result = $this->loadItems(
             abs((int)Input::get('items_per_page', 25)),
-            Input::get('load', ['informations'])
+            Input::get('load', ['information'])
         );
 
         if ($result instanceof JsonResponse) {
@@ -46,7 +46,7 @@ class PersonController extends \Controller {
         if(Input::get('ahead', false)) {
             return $builder->select('*', 'name_2013 as name')->where('name_2013', 'like', \Input::get('name') . '%')->take(15)->get();
         } else {
-            $builder->with('informations')->select('*', 'name_2013 as name')->where('name_2013', \Input::get('name'));
+            $builder->with('information')->select('*', 'name_2013 as name')->where('name_2013', \Input::get('name'));
         }
 
         $result = $builder->get();
@@ -81,7 +81,7 @@ class PersonController extends \Controller {
         );
 
         foreach ($with as $item) {
-            if (in_array($item, ['informations'])) {
+            if (in_array($item, ['information'])) {
                 $builder->with($item);
             }
         }
@@ -163,7 +163,7 @@ class PersonController extends \Controller {
     public function show($id)
     {
         if($person = Person::find($id)) {
-            return $person->load('informations')->toJson();
+            return $person->load('information')->toJson();
         }
 
         return null;

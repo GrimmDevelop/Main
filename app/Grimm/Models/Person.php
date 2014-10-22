@@ -10,7 +10,7 @@ class Person extends Eloquent {
 
     protected $fillable = ['name_2013', 'auto_generated'];
 
-    public function informations()
+    public function information()
     {
         return $this->hasMany(Information::class);
     }

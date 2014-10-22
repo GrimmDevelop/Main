@@ -28,7 +28,7 @@ class LetterRecord implements RecordTransformer
         $transformedRecord['language'] = $utf8DataArray['sprache'];
         $transformedRecord['date'] = $utf8DataArray['datum'];
 
-        $transformedRecord['informations'] = array(
+        $transformedRecord['information'] = array(
             'gesehen_12' => $utf8DataArray['gesehen_12'],
             'absendeort' => $utf8DataArray['absendeort'],
             'absort_ers' => $utf8DataArray['absort_ers'],
@@ -89,13 +89,13 @@ class LetterRecord implements RecordTransformer
             'del' => $utf8DataArray['del']
         );
 
-        $transformedRecord['informations']['dr'] = array_filter($transformedRecord['informations']['dr'], 'strlen');
-        $transformedRecord['informations']['konzept'] = array_filter($transformedRecord['informations']['konzept'], 'strlen');
-        $transformedRecord['informations']['abschrift'] = array_filter($transformedRecord['informations']['abschrift'], 'strlen');
-        $transformedRecord['informations']['auktkat'] = array_filter($transformedRecord['informations']['auktkat'], 'strlen');
-        $transformedRecord['informations']['zusatz'] = array_filter($transformedRecord['informations']['zusatz'], 'strlen');
+        $transformedRecord['information']['dr'] = array_filter($transformedRecord['information']['dr'], 'strlen');
+        $transformedRecord['information']['konzept'] = array_filter($transformedRecord['information']['konzept'], 'strlen');
+        $transformedRecord['information']['abschrift'] = array_filter($transformedRecord['information']['abschrift'], 'strlen');
+        $transformedRecord['information']['auktkat'] = array_filter($transformedRecord['information']['auktkat'], 'strlen');
+        $transformedRecord['information']['zusatz'] = array_filter($transformedRecord['information']['zusatz'], 'strlen');
 
-        $transformedRecord['informations'] = array_filter($transformedRecord['informations']);
+        $transformedRecord['information'] = array_filter($transformedRecord['information']);
 
         if ($transformedRecord['id'] == 0) {
             return null;

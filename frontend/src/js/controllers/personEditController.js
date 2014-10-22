@@ -9,7 +9,7 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
     $scope.load = function(id) {
         Persons.get(id).success(function(data) {
             $scope.person = data;
-            $scope.person.informations.map(function(item) {
+            $scope.person.information.map(function(item) {
                 item.state = 'keep';
             })
         }).error(function(data) {
@@ -21,10 +21,10 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
         if(information.state != 'add') {
             information.state = information.state == 'remove' ? 'keep' : 'remove';
         } else {
-            var index = $scope.person.informations.indexOf(information);
+            var index = $scope.person.information.indexOf(information);
 
             if(index != -1) {
-                $scope.person.informations.splice(index, 1);
+                $scope.person.information.splice(index, 1);
             }
         }
     }
@@ -44,7 +44,7 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
         });
 
         modalInstance.result.then(function (result) {
-            $scope.person.informations.push({
+            $scope.person.information.push({
                 state: 'add',
                 code: result,
                 data: null

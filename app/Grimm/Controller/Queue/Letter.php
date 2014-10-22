@@ -57,23 +57,23 @@ class Letter extends \Controller {
             $letter->save();
         }
 
-        $letter->informations()->delete();
+        $letter->information()->delete();
 
-        foreach ($record['informations'] as $index => $value) {
-            $this->attachInformationToLetter($letter, $index, $value);
+        foreach ($record['information'] as $index => $value) {
+            $this->attachInfoToLetter($letter, $index, $value);
         }
 
         return $letter;
     }
 
-    protected function attachInformationToLetter($letter, $code, $data)
+    protected function attachInfoToLetter($letter, $code, $data)
     {
         if (is_array($data)) {
             foreach ($data as $item) {
-                $this->attachInformationToLetter($letter, $code, $item);
+                $this->attachInfoToLetter($letter, $code, $item);
             }
         } else {
-            $letter->informations()->save(new Information(array(
+            $letter->information()->save(new Information(array(
                 'code' => $code,
                 'data' => $data
             )));

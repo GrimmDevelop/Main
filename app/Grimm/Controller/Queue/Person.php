@@ -47,23 +47,23 @@ class Person extends \Controller {
             $person->save();
         }
 
-        $person->informations()->delete();
+        $person->information()->delete();
 
-        foreach ($record['informations'] as $index => $value) {
-            $this->attachInformationToPerson($person, $index, $value);
+        foreach ($record['information'] as $index => $value) {
+            $this->attachInfoToPerson($person, $index, $value);
         }
 
         return $person;
     }
 
-    protected function attachInformationToPerson($person, $code, $data)
+    protected function attachInfoToPerson($person, $code, $data)
     {
         if (is_array($data)) {
             foreach ($data as $item) {
-                $this->attachInformationToPerson($person, $code, $item);
+                $this->attachInfoToPerson($person, $code, $item);
             }
         } else {
-            $person->informations()->save(new Information(array(
+            $person->information()->save(new Information(array(
                 'code' => $code,
                 'data' => $data
             )));

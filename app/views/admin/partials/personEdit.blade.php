@@ -1,21 +1,23 @@
 <div class="modal-header">
-    <h3 class="modal-title">
-        <div class="row"><div class="col-md-12">Person @{{ person.id }}</div></div>
-        <div class="row">
-            <div class="col-sm-11"><input type="text" class="form-control" ng-model="person.name_2013"></div>
-            <div class="col-sm-1"><a href ng-click="saveName()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span></a></div>
-        </div>
-    </h3>
+    <h3 class="modal-title">Person @{{ person.id }} - @{{ person.name_2013 }}</h3>
 </div>
 <div class="modal-body">
     <form class="form-horizontal" role="form">
-        <div class="form-group" ng-repeat="information in person.informations|orderObjectBy:'code'" ng-class="information.state == 'add' ? 'info-add' : (information.state == 'remove' ? 'info-remove' : '')">
-            <label class="col-sm-2 control-label">@{{ information.code }}</label>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">name (2013)</label>
             <div class="col-sm-8">
-                <input class="form-control" type="text" ng-model="information.data" ng-readonly="information.state == 'remove'">
+                <input type="text" class="form-control" ng-model="person.name_2013">
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <hr>
+        <div class="form-group" ng-repeat="info in person.information|orderObjectBy:'code'" ng-class="info.state == 'add' ? 'info-add' : (info.state == 'remove' ? 'info-remove' : '')">
+            <label class="col-sm-2 control-label">@{{ info.code }}</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" ng-model="info.data" ng-readonly="info.state == 'remove'">
             </div>
             <div class="col-sm-2">
-                <button ng-click="removeInformation(information)" style="width: 34px;" class="btn btn-danger">-</button>
+                <button ng-click="removeInformation(info)" style="width: 34px;" class="btn btn-danger">-</button>
             </div>
         </div>
         <div class="form-group">

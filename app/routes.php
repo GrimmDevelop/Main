@@ -20,11 +20,13 @@ Route::get('/', function () {
 
 Route::get('partials/{file}', 'Grimm\Controller\PartialsController@load');
 
-Route::get('/search', 'Grimm\Controller\SearchController@searchForm');
-Route::post('/search', 'Grimm\Controller\SearchController@searchResult');
-Route::get('/search/codes', 'Grimm\Controller\SearchController@codes');
-Route::get('/search/filters', 'Grimm\Controller\SearchController@loadFilters');
-Route::put('/search/filters', 'Grimm\Controller\SearchController@saveFilters');
+Route::group(['prefix' => 'search'], function() {
+    Route::get('/', 'Grimm\Controller\SearchController@searchForm');
+    Route::post('/', 'Grimm\Controller\SearchController@searchResult');
+    Route::get('codes', 'Grimm\Controller\SearchController@codes');
+    Route::get('filters', 'Grimm\Controller\SearchController@loadFilters');
+    Route::put('filters', 'Grimm\Controller\SearchController@saveFilters');
+});
 
 Route::get('/api', 'Grimm\Controller\ApiController@overview');
 Route::post('/api/mailinglist', ['before' => 'csrf', 'uses' => 'Grimm\Controller\ApiController@addToMaillingList']);

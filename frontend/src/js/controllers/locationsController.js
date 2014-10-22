@@ -13,17 +13,5 @@ grimmApp.controller('locationsController', ['$scope', '$modal', 'Locations', fun
         });
     }
 
-    $scope.show = function (location) {
-        $modal.open({
-            templateUrl: 'partials/locationPreview',
-            controller: 'locationPreviewController',
-            resolve: {
-                location: function () {
-                    return location;
-                }
-            }
-        });
-    };
-
     $scope.reload($scope.itemsPerPage, $scope.currentPage);
 }]);

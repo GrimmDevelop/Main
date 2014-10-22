@@ -9,7 +9,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
     $scope.load = function(id) {
         Letters.get(id).success(function(data) {
             $scope.letter = data;
-            $scope.letter.informations.map(function(item) {
+            $scope.letter.information.map(function(item) {
                 item.state = 'keep';
             })
         }).error(function(data) {
@@ -21,10 +21,10 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
         if(information.state != 'add') {
             information.state = information.state == 'remove' ? 'keep' : 'remove';
         } else {
-            var index = $scope.letter.informations.indexOf(information);
+            var index = $scope.letter.information.indexOf(information);
 
             if(index != -1) {
-                $scope.letter.informations.splice(index, 1);
+                $scope.letter.information.splice(index, 1);
             }
         }
     }
@@ -44,7 +44,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
         });
 
         modalInstance.result.then(function (result) {
-            $scope.letter.informations.push({
+            $scope.letter.information.push({
                 state: 'add',
                 code: result,
                 data: null

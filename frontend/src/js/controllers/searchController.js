@@ -39,32 +39,6 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
         });
     }
 
-    $scope.locationPreview = function (id) {
-        Locations.get(id).success(function(location) {
-            $modal.open({
-                templateUrl: 'partials/locationPreview',
-                controller: 'locationPreviewController',
-                resolve: {
-                    location: function () {
-                        return location;
-                    }
-                }
-            });
-        });
-    };
-
-    $scope.personPreview = function (person) {
-        $modal.open({
-            templateUrl: 'partials/personPreview',
-            controller: 'personPreviewController',
-            resolve: {
-                person: function () {
-                    return person;
-                }
-            }
-        });
-    };
-
     Search.codes().success(function(codes) {
         codes.unshift("");
         $scope.codes = codes;

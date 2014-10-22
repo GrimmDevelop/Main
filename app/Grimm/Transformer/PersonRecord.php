@@ -21,7 +21,7 @@ class PersonRecord implements RecordTransformer {
 
         $transformedRecord = [
             'name_2013' => $this->name($utf8DataArray['name_2013']),
-            'informations' => [
+            'information' => [
                 'name' => $utf8DataArray['name'],
                 'name_alt' => $utf8DataArray['name_alt'],
                 'standard' => $utf8DataArray['standard'],
@@ -70,10 +70,10 @@ class PersonRecord implements RecordTransformer {
             ]
         ];
 
-        $transformedRecord['informations']['druck'] = array_filter($transformedRecord['informations']['druck'], 'strlen');
-        $transformedRecord['informations']['nl'] = array_filter($transformedRecord['informations']['nl'], 'strlen');
+        $transformedRecord['information']['druck'] = array_filter($transformedRecord['information']['druck'], 'strlen');
+        $transformedRecord['information']['nl'] = array_filter($transformedRecord['information']['nl'], 'strlen');
 
-        $transformedRecord['informations'] = array_filter($transformedRecord['informations']);
+        $transformedRecord['information'] = array_filter($transformedRecord['information']);
 
         if(trim($transformedRecord['name_2013']) == '') {
             return null;
