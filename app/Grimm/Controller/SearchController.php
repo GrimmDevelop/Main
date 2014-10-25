@@ -181,6 +181,8 @@ class SearchController extends \Controller {
 
             return $search_filters;
         }
+
+        return "[]";
     }
 
     public function saveFilters() {
