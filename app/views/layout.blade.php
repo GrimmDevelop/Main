@@ -33,7 +33,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('search') }}">{{ trans('menu.search') }}</a></li>
                     <li><a href="{{ url('api') }}">{{ trans('menu.api') }}</a></li>
-                    <li><a href="{{ url('impressum') }}">{{ trans('menu.impressum') }}</a></li>
+                    <li><a href="{{ url(getenv('impressum')) }}">{{ trans('menu.impressum') }}</a></li>
 @if(Sentry::check())
                     <li><a href="{{ url('admin') }}">{{ trans('menu.admin') }}</a></li>
                     <li class="dropdown">
