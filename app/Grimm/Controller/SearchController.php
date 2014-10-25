@@ -4,6 +4,7 @@ namespace Grimm\Controller;
 
 use Grimm\Auth\Models\User;
 use Grimm\Models\Letter;
+use Grimm\Models\Location;
 use View;
 use Input;
 use Response;
@@ -61,30 +62,10 @@ class SearchController extends \Controller {
             $this->addBorderData($distanceMapData, $letter->from);
             $this->addBorderData($distanceMapData, $letter->to);
 
-            if(($index = $this->indexOfPolyline($distanceMapData->polylines, $letter->from_id, $letter->to_id)) != -1) {
+            if(($index = $this->indexOfPolyline($distanceMapData, $letter->from_id, $letter->to_id)) != -1) {
                 $distanceMapData->polylines[$index]['count']++;
             } else {
-                if($letter->from->id > $letter->to->id) {
-                    $id1 = $letter->to->id;
-                    $id2 = $letter->from->id;
-                } else {
-                    $id1 = $letter->from->id;
-                    $id2 = $letter->to->id;
-                }
-
-                $distanceMapData->polylines[] = [
-                    'id1' => $id1,
-                    'id2' => $id2,
-                    'from' => [
-                        'latitude' => $letter->from->latitude,
-                        'longitude'=> $letter->from->longitude
-                    ],
-                    'to' => [
-                        'latitude' => $letter->to->latitude,
-                        'longitude'=> $letter->to->longitude
-                    ],
-                    'count' => 1
-                ];
+                $this->addPolyline($distanceMapData, $letter->from, $letter->to);
             }
         }
 
@@ -101,20 +82,44 @@ class SearchController extends \Controller {
         }
     }
 
-    protected function indexOfPolyline($lines, $id1, $id2) {
+    protected function indexOfPolyline($distanceMapData, $id1, $id2) {
         if($id1 > $id2) {
             $t = $id2;
             $id2 = $id1;
             $id1 = $t;
         }
 
-        foreach($lines as $index => $line) {
+        foreach($distanceMapData->polylines as $index => $line) {
             if($line['id1'] == $id1 && $line['id2'] == $id2) {
                 return $index;
             }
         }
 
         return -1;
+    }
+
+    protected function addPolyline($distanceMapData, Location $from, Location $to) {
+        if($from->id > $to->id) {
+            $id1 = $to->id;
+            $id2 = $from->id;
+        } else {
+            $id1 = $from->id;
+            $id2 = $to->id;
+        }
+
+        $distanceMapData->polylines[] = [
+            'id1' => $id1,
+            'id2' => $id2,
+            'from' => [
+                'latitude' => $from->latitude,
+                'longitude'=> $from->longitude
+            ],
+            'to' => [
+                'latitude' => $to->latitude,
+                'longitude'=> $to->longitude
+            ],
+            'count' => 1
+        ];
     }
 
     protected function buildSearchQuery($with, $filters) {

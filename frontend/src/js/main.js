@@ -47,6 +47,10 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider', 'Goog
                 templateUrl: 'admin/partials/assign',
                 controller: 'assignController'
             })
+            .when('/mailing', {
+                templateUrl: 'admin/partials/mailingList',
+                controller: 'mailingListController'
+            })
             .when('/', {
                 templateUrl: 'admin/partials/dashboard',
                 controller: 'dashboardController'

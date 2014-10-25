@@ -37,6 +37,10 @@
                     <td><a href ng-click="go('/assign')">{{ trans('admin_default.assign_locations') }}</a></td>
                     <td>mass assigner used to assign locations and persons to mutiple letters at once automated</td>
                 </tr>
+                <tr>
+                    <td><a href ng-click="go('/mailing')">{{ trans('admin_default.mailing') }}</a></td>
+                    <td>mailing functions used to inform about changes</td>
+                </tr>
             </tbody>
             <tfoot></tfoot>
         </table>
