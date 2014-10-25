@@ -1,7 +1,6 @@
 
 grimmApp.controller('locationPreviewController', ['$scope', '$interval', '$modalInstance', 'GoogleMapApi'.ns(), 'location', function ($scope, $interval, $modalInstance, GoogleMapApi, location) {
 
-    var marker;
     $scope.showMap = false;
     $scope.location = location;
 
@@ -10,7 +9,7 @@ grimmApp.controller('locationPreviewController', ['$scope', '$interval', '$modal
         longitude: location.longitude
     };
 
-    $scope.zoom = 13;
+    $scope.zoom = 10;
 
     $scope.mapInstance = {};
 
@@ -21,14 +20,25 @@ grimmApp.controller('locationPreviewController', ['$scope', '$interval', '$modal
     GoogleMapApi.then(function(maps) {
         $scope.showMap = true;
 
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(location.latitude, location.longitude),
-            map: null,
-            title: location.name
-        });
+        $interval(loadMarker, 50, 1);
     });
 
-    $scope.marker = function () {
-        marker.setMap($scope.mapInstance.getGMap());
+    function loadMarker() {
+        if(typeof $scope.mapInstance.getGMap == 'function') {
+            new google.maps.Marker({
+                position: new google.maps.LatLng(location.latitude, location.longitude),
+                map: $scope.mapInstance.getGMap(),
+                title: location.name
+            });
+        } else {
+            $interval(loadMarker, 50, 1);
+        }
+    }
+
+    $scope.marker = function() {
+        $scope.center = {
+            latitude: location.latitude,
+            longitude: location.longitude
+        };
     }
 }]);

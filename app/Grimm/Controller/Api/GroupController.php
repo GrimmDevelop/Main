@@ -2,16 +2,13 @@
 
 namespace Grimm\Controller\Api;
 
-use Cartalyst\Sentry\Users\LoginRequiredException;
-use Cartalyst\Sentry\Users\PasswordRequiredException;
-use Cartalyst\Sentry\Users\UserExistsException;
+use Grimm\Auth\Models\Group;
 use Grimm\Auth\Models\User;
 use Input;
 use Sentry;
 use Validator;
 
-class UserController extends \Controller
-{
+class GroupController extends \Controller {
 
     /**
      * Display a listing of the resource.
@@ -24,7 +21,7 @@ class UserController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        return User::with('groups')->get();
+        return Group::with('users')->get();
     }
 
 
@@ -53,20 +50,19 @@ class UserController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        $validator = Validator::make(
+        /*$validator = Validator::make(
             Input::only(['username', 'password', 'password_confirmation', 'email', 'activated']),
             [
-                'username' => 'required|min:5',
+                'name' => 'required|min:5',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|confirmed',
                 'activated' => 'required'
             ]
         );
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             $res = [];
-            foreach($validator->messages()->toArray() as $field) {
+            foreach ($validator->messages()->toArray() as $field) {
                 $res = array_merge($res, $field);
             }
 
@@ -77,7 +73,7 @@ class UserController extends \Controller
             Input::only(['username', 'first_name', 'last_name', 'password', 'email', 'activated'])
         );
 
-        return \Response::json(array('success' => array('message' => 'User created')), 200);
+        return \Response::json(array('success' => array('message' => 'User created')), 200);*/
     }
 
 
@@ -93,7 +89,7 @@ class UserController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        return User::find($id)->load('groups')->toJson();
+        return Group::find($id)->load('users');
     }
 
 
@@ -125,7 +121,7 @@ class UserController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        $data = Input::only(array(
+        /*$data = Input::only(array(
             'first_name',
             'last_name',
             'username',
@@ -163,7 +159,7 @@ class UserController extends \Controller
             return \Response::json(array('success' => array('message' => "User successfully saved!")));
         } else {
             return \Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
-        }
+        }*/
     }
 
 
@@ -179,7 +175,7 @@ class UserController extends \Controller
             return \App::make('grimm.unauthorized');
         }
 
-        User::destroy($id);
+        Group::destroy($id);
     }
 
 

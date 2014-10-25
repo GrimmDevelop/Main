@@ -27,13 +27,10 @@ class SearchController extends \Controller {
 
     public function searchResult()
     {
-        $s = Letter::with('information', 'senders', 'receivers');
-
-        foreach(Input::get('filters', []) as $filter) {
-            $this->buildWhere($s, $filter);
-        }
-
-        $result = $s->paginate(100);
+        $result = $this->buildSearchQuery(
+            ['information'],
+            Input::get('filters', [])
+        )->paginate(abs((int)Input::get('items_per_page', 100)));
 
         $return = new \stdClass();
 
@@ -46,6 +43,92 @@ class SearchController extends \Controller {
         $return->data = $result->getCollection()->toArray();
 
         return json_encode($return);
+    }
+
+    public function computeDistanceMap() {
+
+        $query = $this->buildSearchQuery(
+            ['from', 'to'],
+            Input::get('filters', [])
+        )->whereNotNull('from_id')->whereNotNull('to_id')/*->take(1000)*/;
+
+        $distanceMapData = new \stdClass();
+        $distanceMapData->computedLetters = $query->count();
+        $distanceMapData->borderData = [];
+        $distanceMapData->polylines = [];
+
+        foreach($query->get() as $letter) {
+            $this->addBorderData($distanceMapData, $letter->from);
+            $this->addBorderData($distanceMapData, $letter->to);
+
+            if(($index = $this->indexOfPolyline($distanceMapData->polylines, $letter->from_id, $letter->to_id)) != -1) {
+                $distanceMapData->polylines[$index]['count']++;
+            } else {
+                if($letter->from->id > $letter->to->id) {
+                    $id1 = $letter->to->id;
+                    $id2 = $letter->from->id;
+                } else {
+                    $id1 = $letter->from->id;
+                    $id2 = $letter->to->id;
+                }
+
+                $distanceMapData->polylines[] = [
+                    'id1' => $id1,
+                    'id2' => $id2,
+                    'from' => [
+                        'latitude' => $letter->from->latitude,
+                        'longitude'=> $letter->from->longitude
+                    ],
+                    'to' => [
+                        'latitude' => $letter->to->latitude,
+                        'longitude'=> $letter->to->longitude
+                    ],
+                    'count' => 1
+                ];
+            }
+        }
+
+        return  json_encode($distanceMapData);
+    }
+
+    protected function addBorderData($mapData, $location) {
+        $position = new \stdClass();
+        $position->latitude = $location->latitude;
+        $position->longitude = $location->longitude;
+
+        if(!in_array($position, $mapData->borderData)) {
+            $mapData->borderData[] = $position;
+        }
+    }
+
+    protected function indexOfPolyline($lines, $id1, $id2) {
+        if($id1 > $id2) {
+            $t = $id2;
+            $id2 = $id1;
+            $id1 = $t;
+        }
+
+        foreach($lines as $index => $line) {
+            if($line['id1'] == $id1 && $line['id2'] == $id2) {
+                return $index;
+            }
+        }
+
+        return -1;
+    }
+
+    protected function buildSearchQuery($with, $filters) {
+        $query = Letter::query();
+
+        foreach($with as $load) {
+            $query->with($load);
+        }
+
+        foreach($filters as $filter) {
+            $this->buildWhere($query, $filter);
+        }
+
+        return $query;
     }
 
     protected function buildWhere($query, $filter) {

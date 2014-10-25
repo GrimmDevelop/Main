@@ -26,6 +26,7 @@ Route::group(['prefix' => 'search'], function() {
     Route::get('codes', 'Grimm\Controller\SearchController@codes');
     Route::get('filters', 'Grimm\Controller\SearchController@loadFilters');
     Route::put('filters', 'Grimm\Controller\SearchController@saveFilters');
+    Route::post('distanceMap', 'Grimm\Controller\SearchController@computeDistanceMap');
 });
 
 Route::get('/api', 'Grimm\Controller\ApiController@overview');

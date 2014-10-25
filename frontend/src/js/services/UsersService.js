@@ -6,6 +6,10 @@ grimmApp.service("UsersService", ['$http', 'BASE_URL', function($http, BASE_URL)
         return $http.get(serviceBackend + 'users');
     };
 
+    this.getGroup = function (id) {
+        return $http.get(serviceBackend + 'groups/' + id);
+    }
+
     this.create = function(user) {
         return $http.post(serviceBackend + 'users', user);
     }

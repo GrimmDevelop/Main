@@ -17,5 +17,6 @@ Route::group(array('prefix' => 'api'), function()
     Route::post('persons/search', 'Grimm\Controller\Api\PersonController@search');
 
     Route::resource('users', 'Grimm\Controller\Api\UserController');
+    Route::resource('groups', 'Grimm\Controller\Api\GroupController');
 
 });

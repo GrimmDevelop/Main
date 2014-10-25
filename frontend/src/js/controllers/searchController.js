@@ -3,9 +3,16 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
     $scope.filters = [];
     $scope.codes = [];
     $scope.results = {};
-    $scope.currentPage = 1;
 
-    $scope.addFilter = function() {
+    $scope.itemsPerPage = 100;
+    $scope.currentPage = 1;
+    $scope.itemsPerPageOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 300, 500];
+
+    $scope.dateCodeBounds = {};
+
+    $scope.addFilter = function () {
+        $scope.result = {};
+
         $scope.filters.push({
             code: "",
             compare: "equals",
@@ -13,7 +20,9 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
         });
     }
 
-    $scope.removeFilter = function(filter) {
+    $scope.removeFilter = function (filter) {
+        $scope.result = {};
+
         var index = $scope.filters.indexOf(filter);
 
         if (index > -1) {
@@ -21,25 +30,41 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
         }
     }
 
-    $scope.loadFilters = function() {
-        Search.loadFilters().success(function(data) {
+    $scope.loadFilters = function () {
+        $scope.result = {};
+        Search.loadFilters().success(function (data) {
             $scope.filters = data;
         });
     }
 
-    $scope.saveFilters = function() {
-        Search.saveFilters($scope.filters).success(function() {
+    $scope.saveFilters = function () {
+        Search.saveFilters($scope.filters).success(function () {
             // saved
         });
     }
 
-    $scope.search = function() {
-        Search.search($scope.filters, $scope.currentPage).success(function(data) {
+    $scope.search = function () {
+        Search.search($scope.filters, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
             $scope.results = data;
         });
     }
 
-    Search.codes().success(function(codes) {
+    $scope.viewDistanceMap = function () {
+        Search.distanceMap($scope.filters).success(function (data) {
+            $modal.open({
+                templateUrl: 'partials/distanceMap',
+                controller: 'distanceMapController',
+                size: 'lg',
+                resolve: {
+                    mapData: function () {
+                        return data;
+                    }
+                }
+            });
+        });
+    }
+
+    Search.codes().success(function (codes) {
         codes.unshift("");
         $scope.codes = codes;
     });
