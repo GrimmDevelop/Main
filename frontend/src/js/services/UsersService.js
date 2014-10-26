@@ -1,8 +1,7 @@
-
-grimmApp.service("UsersService", ['$http', 'BASE_URL', function($http, BASE_URL) {
+grimmApp.service("UsersService", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     var serviceBackend = BASE_URL + '/api/';
 
-    this.all = function() {
+    this.all = function () {
         return $http.get(serviceBackend + 'users');
     };
 
@@ -10,15 +9,15 @@ grimmApp.service("UsersService", ['$http', 'BASE_URL', function($http, BASE_URL)
         return $http.get(serviceBackend + 'groups/' + id);
     }
 
-    this.create = function(user) {
+    this.create = function (user) {
         return $http.post(serviceBackend + 'users', user);
     }
 
-    this.update = function(user) {
+    this.update = function (user) {
         return $http.put(serviceBackend + 'users/' + user.id, user);
     }
 
-    this.delete = function(user) {
+    this.delete = function (user) {
         return $http.delete(serviceBackend + 'users/' + user.id);
     }
 }]);

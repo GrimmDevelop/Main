@@ -1,9 +1,8 @@
-
 grimmApp.controller('searchPersonController', ['$scope', '$modal', 'Persons', '$modalInstance', 'name', function ($scope, $modal, Persons, $modalInstance, name) {
     $scope.personName = name;
 
     $scope.message = null;
-    $scope.showMessage = function(message) {
+    $scope.showMessage = function (message) {
         $scope.closeMessage();
         $scope.message = message;
     }
@@ -47,22 +46,22 @@ grimmApp.controller('searchPersonController', ['$scope', '$modal', 'Persons', '$
         });
     }
 
-    $scope.typeSearch = function(name) {
-        return Persons.searchAhead(name).then(function(response) {
-            return response.data.map(function(item) {
+    $scope.typeSearch = function (name) {
+        return Persons.searchAhead(name).then(function (response) {
+            return response.data.map(function (item) {
                 return item.name;
             });
         });
     }
 
-    $scope.autoGenerate = function() {
+    $scope.autoGenerate = function () {
         console.log($scope.personName);
         $scope.selectedItem = null;
         $scope.resultList = null;
-        Persons.autoGenerate($scope.personName).success(function(data) {
+        Persons.autoGenerate($scope.personName).success(function (data) {
             $scope.showMessage(data);
             $scope.showCreateButton = false;
-        }).error(function(data) {
+        }).error(function (data) {
             $scope.showMessage(data);
         });
     }

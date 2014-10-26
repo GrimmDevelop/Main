@@ -8,7 +8,8 @@ class GeoCache extends \Eloquent {
 
     protected $fillable = array('geo_id', 'name');
 
-    public function geo() {
+    public function geo()
+    {
         return $this->belongsTo(Location::class);
     }
 

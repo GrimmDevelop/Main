@@ -11,15 +11,15 @@
 |
 */
 
-App::before(function($request)
+App::before(function ($request)
 {
-	//
+    //
 });
 
 
-App::after(function($request, $response)
+App::after(function ($request, $response)
 {
-	//
+    //
 });
 
 /*
@@ -33,36 +33,36 @@ App::after(function($request, $response)
 |
 */
 
-Route::filter('auth', function()
+Route::filter('auth', function ()
 {
-	if (Auth::guest()) return Redirect::guest('login');
+    if (Auth::guest()) return Redirect::guest('login');
 });
 
 
-Route::filter('auth.basic', function()
+Route::filter('auth.basic', function ()
 {
-	return Auth::basic();
+    return Auth::basic();
 });
 
-Route::filter('grimm_guest', function()
+Route::filter('grimm_guest', function ()
 {
     return !Sentry::check();
 });
 
-Route::filter('grimm_auth', function()
+Route::filter('grimm_auth', function ()
 {
     if (Request::ajax() && !Sentry::check()) return Response::make('Grimm Unauthorized', 401);
     if (!Sentry::check()) return Redirect::guest('login');
 });
 
-Route::filter('grimm_access', function($route, $request, $value)
+Route::filter('grimm_access', function ($route, $request, $value)
 {
-    if($value == 'none') return;
+    if ($value == 'none') return;
 
     if (Request::ajax() && !Sentry::check()) return Response::make('Grimm Unauthorized', 401);
     if (!Sentry::check()) return Redirect::guest('login');
 
-    if(!Sentry::getUser()->hasAccess($value)) return Response::make('Grimm Unauthorized', 401);
+    if (!Sentry::getUser()->hasAccess($value)) return Response::make('Grimm Unauthorized', 401);
 });
 
 /*
@@ -76,9 +76,9 @@ Route::filter('grimm_access', function($route, $request, $value)
 |
 */
 
-Route::filter('guest', function()
+Route::filter('guest', function ()
 {
-	if (Auth::check()) return Redirect::to('/');
+    if (Auth::check()) return Redirect::to('/');
 });
 
 /*
@@ -92,10 +92,10 @@ Route::filter('guest', function()
 |
 */
 
-Route::filter('csrf', function()
+Route::filter('csrf', function ()
 {
-	if (Session::token() != Input::get('_token'))
-	{
-		throw new Illuminate\Session\TokenMismatchException;
-	}
+    if (Session::token() != Input::get('_token'))
+    {
+        throw new Illuminate\Session\TokenMismatchException;
+    }
 });

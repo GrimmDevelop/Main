@@ -1,12 +1,12 @@
-grimmApp.filter('orderObjectBy', function() {
-    return function(items, field, reverse, parse) {
+grimmApp.filter('orderObjectBy', function () {
+    return function (items, field, reverse, parse) {
 
-        var parseFunc = function(i) {
+        var parseFunc = function (i) {
             return i;
         }
 
-        if(typeof parse != 'undefined') {
-            switch(parse) {
+        if (typeof parse != 'undefined') {
+            switch (parse) {
                 case "float":
                     parseFunc = parseFloat;
                     break;
@@ -17,16 +17,16 @@ grimmApp.filter('orderObjectBy', function() {
         }
 
         var filtered = [];
-        angular.forEach(items, function(item) {
+        angular.forEach(items, function (item) {
             filtered.push(item);
         });
         filtered.sort(function (a, b) {
 
-            if(parseFunc(a[field]) > parseFunc(b[field])) return 1;
-            if(parseFunc(a[field]) < parseFunc(b[field])) return -1;
+            if (parseFunc(a[field]) > parseFunc(b[field])) return 1;
+            if (parseFunc(a[field]) < parseFunc(b[field])) return -1;
             return 0;
         });
-        if(reverse) filtered.reverse();
+        if (reverse) filtered.reverse();
         return filtered;
     };
 });

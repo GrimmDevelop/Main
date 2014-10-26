@@ -1,5 +1,5 @@
-grimmApp.filter('percentage', function() {
-    return function(value) {
+grimmApp.filter('percentage', function () {
+    return function (value) {
         return Math.floor(value * 100);
     }
 });

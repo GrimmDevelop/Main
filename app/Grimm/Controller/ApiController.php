@@ -15,7 +15,7 @@ class ApiController extends \Controller {
      */
     private $validator;
     /**
-     * @var Redirector
+     * @var Redirect
      */
     private $redirect;
 
@@ -25,19 +25,22 @@ class ApiController extends \Controller {
         $this->redirect = $redirect;
     }
 
-    public function overview() {
+    public function overview()
+    {
         return \View::make('api.overview');
     }
 
-    public function addToMaillingList() {
+    public function addToMailingList()
+    {
         $validator = $this->validator->make(Input::only([
             'email', 'email_confirmation', 'recaptcha_response_field'
         ]), [
-            'email' => 'required|email|confirmed|unique:mailing_list',
+            'email'                    => 'required|email|confirmed|unique:mailing_list',
             'recaptcha_response_field' => 'required|recaptcha'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails())
+        {
             return $this->redirect->to(\URL::to('api'))->withErrors($validator)->withInput(Input::only('email'));
         }
 

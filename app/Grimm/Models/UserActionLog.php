@@ -6,6 +6,7 @@ use Grimm\Auth\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class UserActionLog extends Model {
+
     protected $table = 'user_action_log';
 
     protected $fillable = ['action', 'data'];

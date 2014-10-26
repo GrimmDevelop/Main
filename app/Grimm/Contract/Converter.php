@@ -5,8 +5,7 @@ namespace Grimm\Contract;
 use Illuminate\Support\Contracts\ArrayableInterface;
 use Illuminate\Support\Contracts\JsonableInterface;
 
-interface Converter extends JsonableInterface, ArrayableInterface
-{
+interface Converter extends JsonableInterface, ArrayableInterface {
 
     /**
      * Sets source for parser

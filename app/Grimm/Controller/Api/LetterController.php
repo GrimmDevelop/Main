@@ -43,11 +43,12 @@ class LetterController extends \Controller {
     public function index()
     {
         $result = $this->loadItems(
-            abs((int)Input::get('items_per_page', 25)),
+            abs((int) Input::get('items_per_page', 25)),
             Input::get('load', ['information', 'senders', 'receivers', 'from', 'to'])
         );
 
-        if ($result instanceof JsonResponse) {
+        if ($result instanceof JsonResponse)
+        {
             return $result;
         }
 
@@ -67,15 +68,17 @@ class LetterController extends \Controller {
     public function stream()
     {
         $result = $this->loadItems(
-            abs((int)Input::get('items_per_page', 25)),
+            abs((int) Input::get('items_per_page', 25)),
             Input::get('load', ['senders', 'receivers', 'from', 'to'])
         );
 
-        if ($result instanceof JsonResponse) {
+        if ($result instanceof JsonResponse)
+        {
             return $result;
         }
 
-        foreach ($result as $row) {
+        foreach ($result as $row)
+        {
             echo $row->toJson() . "\n";
             flush();
         }
@@ -88,27 +91,35 @@ class LetterController extends \Controller {
      */
     protected function loadItems($totalItems, array $with = [])
     {
-        $totalItems = abs((int)$totalItems);
+        $totalItems = abs((int) $totalItems);
 
-        if ($totalItems > 500) {
+        if ($totalItems > 500)
+        {
             $totalItems = 500;
         }
 
         $builder = Letter::query();
 
-        foreach ($with as $item) {
-            if (in_array($item, ['information', 'senders', 'receivers', 'from', 'to'])) {
+        foreach ($with as $item)
+        {
+            if (in_array($item, ['information', 'senders', 'receivers', 'from', 'to']))
+            {
                 $builder->with($item);
             }
         }
 
-        if (Input::get('updated_after')) {
-            try {
+        if (Input::get('updated_after'))
+        {
+            try
+            {
                 $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', Input::get('updated_after'));
-            } catch (\InvalidArgumentException $e) {
-                try {
+            } catch (\InvalidArgumentException $e)
+            {
+                try
+                {
                     $dateTime = Carbon::createFromFormat('Y-m-d', Input::get('updated_after'));
-                } catch (\InvalidArgumentException $e) {
+                } catch (\InvalidArgumentException $e)
+                {
                     return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s]'), 500);
                 }
             }
@@ -116,10 +127,14 @@ class LetterController extends \Controller {
             $builder->where('updated_at', '>=', $dateTime);
         }
 
-        if (Sentry::check()) {
-            $builder->where(function ($builder) {
-                foreach (Input::get('with_errors', []) as $error) {
-                    switch ($error) {
+        if (Sentry::check())
+        {
+            $builder->where(function ($builder)
+            {
+                foreach (Input::get('with_errors', []) as $error)
+                {
+                    switch ($error)
+                    {
                         case "from":
                             $this->withFromErrors($builder);
                             break;
@@ -149,7 +164,8 @@ class LetterController extends \Controller {
      */
     protected function withFromErrors(Builder $builder)
     {
-        return $builder->orWhere(function ($query) {
+        return $builder->orWhere(function ($query)
+        {
             $query->where('from_id', null);
             $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
         });
@@ -161,7 +177,8 @@ class LetterController extends \Controller {
      */
     protected function withToErrors(Builder $builder)
     {
-        return $builder->orWhere(function ($query) {
+        return $builder->orWhere(function ($query)
+        {
             $query->where('to_id', null);
             $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
         });
@@ -215,7 +232,8 @@ class LetterController extends \Controller {
      */
     public function show($id)
     {
-        if ($letter = Letter::find($id)) {
+        if ($letter = Letter::find($id))
+        {
             return $letter->load('information', 'senders', 'receivers', 'from', 'to')->toJson();
         }
 
@@ -243,26 +261,32 @@ class LetterController extends \Controller {
      */
     public function update($id)
     {
-        if (!($letter = Letter::find($id))) {
+        if (!($letter = Letter::find($id)))
+        {
             return Response::json(['type' => 'danger', 'message' => 'unknown letter ' . $id], 404);
         }
 
-        foreach (Input::get('information', []) as $info) {
-            switch ($info['state']) {
+        foreach (Input::get('information', []) as $info)
+        {
+            switch ($info['state'])
+            {
                 case 'add':
                     $this->addInformation($letter, $info);
                     break;
 
                 case 'keep':
-                    if ($info = Information::find($info['id'])) {
-                        if ($info->data != $info['data']) {
+                    if ($info = Information::find($info['id']))
+                    {
+                        if ($info->data != $info['data'])
+                        {
                             $this->updateInformation($letter, $info, $info['data']);
                         }
                     }
                     break;
 
                 case 'remove':
-                    if ($info = Information::find($info['id'])) {
+                    if ($info = Information::find($info['id']))
+                    {
                         $this->removeInformation($letter, $info);
                     }
                     break;
@@ -276,8 +300,8 @@ class LetterController extends \Controller {
     {
         UserAction::log('letters.edit.add_information', [
             'letter_id' => $letter->id,
-            'code' => $info['code'],
-            'data' => $info['data']
+            'code'      => $info['code'],
+            'data'      => $info['data']
         ]);
 
         return $letter->info()->save(new Information([
@@ -290,9 +314,9 @@ class LetterController extends \Controller {
     {
         UserAction::log('letters.edit.update_information', [
             'letter_id' => $letter->id,
-            'code' => $info->code,
-            'data_old' => $info->data,
-            'data_new' => $newData
+            'code'      => $info->code,
+            'data_old'  => $info->data,
+            'data_new'  => $newData
         ]);
 
         $letter->touch();
@@ -304,41 +328,50 @@ class LetterController extends \Controller {
     {
         UserAction::log('letters.edit.remove_information', [
             'letter_id' => $letter->id,
-            'code' => $info->code,
-            'data' => $info->data
+            'code'      => $info->code,
+            'data'      => $info->data
         ]);
 
         $letter->touch();
+
         return $info->delete();
     }
 
     public function assign($mode)
     {
-        if (!isset($this->assigner[$mode])) {
+        if (!isset($this->assigner[$mode]))
+        {
             return Response::json(array('type' => 'danger', 'message' => 'Unkown method ' . $mode));
         }
 
         UserAction::log('letters.assign', [
             'letter_id' => Input::get('object_id'),
-            'mode' => $mode,
-            'item_id' => Input::get('item_id')
+            'mode'      => $mode,
+            'item_id'   => Input::get('item_id')
         ]);
 
         $itemResponseName = $mode == 'from' || $mode == 'to' ? 'Location' : 'Person';
-        try {
-            if($this->assigner[$mode]->assign(
+        try
+        {
+            if ($this->assigner[$mode]->assign(
                 Input::get('object_id'),
                 Input::get('item_id')
-            )) {
+            )
+            )
+            {
                 return \Response::json(array('type' => 'success', 'message' => $itemResponseName . ' assigned to letter'), 200);
-            } else {
+            } else
+            {
                 return \Response::json(array('type' => 'danger', 'message' => 'Unknown error occured'), 200);
             }
-        } catch(ObjectNotFoundException $e) {
+        } catch (ObjectNotFoundException $e)
+        {
             return \Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);
-        } catch(ItemNotFoundException $e) {
+        } catch (ItemNotFoundException $e)
+        {
             return \Response::json(array('type' => 'danger', 'message' => $itemResponseName . ' not found'), 404);
-        } catch(ItemAlreadyAssignedException $e) {
+        } catch (ItemAlreadyAssignedException $e)
+        {
             return \Response::make(array('type' => 'warning', 'message' => $itemResponseName . ' already assigned'), 200);
         }
     }

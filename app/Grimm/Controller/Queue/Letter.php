@@ -20,7 +20,8 @@ class Letter extends \Controller {
 
     public function importLetters($job, $data)
     {
-        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source'])) {
+        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source']))
+        {
             throw new \InvalidArgumentException('Cannot find source file ' . storage_path('upload') . $data['source']);
         }
 
@@ -28,8 +29,10 @@ class Letter extends \Controller {
 
         \Eloquent::unguard();
 
-        foreach ($this->converter->parse() as $record) {
-            if ($letter = $this->firstOrCreateAndUpdate($record)) {
+        foreach ($this->converter->parse() as $record)
+        {
+            if ($letter = $this->firstOrCreateAndUpdate($record))
+            {
                 // letter created and/or updated
             }
         }
@@ -43,14 +46,16 @@ class Letter extends \Controller {
     {
         $letter = Model::find($record['id']);
 
-        if ($letter == null) {
+        if ($letter == null)
+        {
             $letter = Model::create(array(
-                'id' => $record['id'],
-                'code' => $record['code'],
+                'id'       => $record['id'],
+                'code'     => $record['code'],
                 'language' => $record['language'],
-                'date' => $record['date']
+                'date'     => $record['date']
             ));
-        } else {
+        } else
+        {
             $letter->code = $record['code'];
             $letter->language = $record['language'];
             $letter->date = $record['date'];
@@ -59,7 +64,8 @@ class Letter extends \Controller {
 
         $letter->information()->delete();
 
-        foreach ($record['information'] as $index => $value) {
+        foreach ($record['information'] as $index => $value)
+        {
             $this->attachInfoToLetter($letter, $index, $value);
         }
 
@@ -68,11 +74,14 @@ class Letter extends \Controller {
 
     protected function attachInfoToLetter($letter, $code, $data)
     {
-        if (is_array($data)) {
-            foreach ($data as $item) {
+        if (is_array($data))
+        {
+            foreach ($data as $item)
+            {
                 $this->attachInfoToLetter($letter, $code, $item);
             }
-        } else {
+        } else
+        {
             $letter->information()->save(new Information(array(
                 'code' => $code,
                 'data' => $data

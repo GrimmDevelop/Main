@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Grimm\Models\Letter;
 
 class Information extends Eloquent {
+
     protected $table = 'letter_information';
 
     protected $fillable = ['code', 'data'];

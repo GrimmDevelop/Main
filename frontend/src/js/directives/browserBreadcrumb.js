@@ -1,4 +1,4 @@
-grimmApp.directive("browserBreadcrumb", ['FileBrowser', function(browser) {
+grimmApp.directive("browserBreadcrumb", ['FileBrowser', function (browser) {
     return {
         restrict: "A",
         templateUrl: 'admin/partials/browserBreadcrumb',
@@ -6,7 +6,7 @@ grimmApp.directive("browserBreadcrumb", ['FileBrowser', function(browser) {
             onChange: '&',
             onDrop: '&'
         },
-        link: function(scope, element, attrs) {
+        link: function (scope, element, attrs) {
             scope.cwd = [];
             scope.up = function (event, level) {
                 var tmp = [];
@@ -31,11 +31,11 @@ grimmApp.directive("browserBreadcrumb", ['FileBrowser', function(browser) {
                 return '/' + tmp.join('/');
             }
 
-            scope.$watch(function() {
+            scope.$watch(function () {
                 return browser.cwd(true);
-            }, function(newVal) {
+            }, function (newVal) {
                 var copy = newVal.slice()
-                copy.splice(0,1);
+                copy.splice(0, 1);
                 scope.cwd = copy;
             });
         }

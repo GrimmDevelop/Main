@@ -10,8 +10,7 @@ use Input;
 use Sentry;
 use Validator;
 
-class UserController extends \Controller
-{
+class UserController extends \Controller {
 
     /**
      * Display a listing of the resource.
@@ -34,9 +33,9 @@ class UserController extends \Controller
         $validator = Validator::make(
             Input::only(['username', 'password', 'password_confirmation', 'email', 'activated']),
             [
-                'username' => 'required|min:5',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|confirmed',
+                'username'  => 'required|min:5',
+                'email'     => 'required|email|unique:users',
+                'password'  => 'required|confirmed',
                 'activated' => 'required'
             ]
         );
@@ -44,7 +43,8 @@ class UserController extends \Controller
         if ($validator->fails())
         {
             $res = [];
-            foreach($validator->messages()->toArray() as $field) {
+            foreach ($validator->messages()->toArray() as $field)
+            {
                 $res = array_merge($res, $field);
             }
 
@@ -94,27 +94,33 @@ class UserController extends \Controller
         $user->last_name = $data['last_name'];
 
         $user->username = $data['username'];
-        if ($data['password'] != '') {
-            if ($data['password'] != $data['password_confirmation']) {
+        if ($data['password'] != '')
+        {
+            if ($data['password'] != $data['password_confirmation'])
+            {
                 return \Response::json(array('error' => array('message' => "Password and password confirmation didn\'t match.")), 500);
             }
 
             $user->password = $data['password'];
         }
 
-        if (!$user->activated && $data['activated']) {
+        if (!$user->activated && $data['activated'])
+        {
             $this->activation_code = null;
             $user->activated = true;
             $user->activated_at = new \DateTime();
-        } else if ($user->activated && !$data['activated']) {
+        } else if ($user->activated && !$data['activated'])
+        {
             $user->activated = false;
         }
 
         $user->email = $data['email'];
 
-        if ($user->save()) {
+        if ($user->save())
+        {
             return \Response::json(array('success' => array('message' => "User successfully saved!")));
-        } else {
+        } else
+        {
             return \Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
         }
     }

@@ -3,7 +3,7 @@ grimmApp.controller('assignPersonController', ['$scope', 'Persons', '$modalInsta
     $scope.mode = mode;
 
     $scope.message = null;
-    $scope.showMessage = function(message) {
+    $scope.showMessage = function (message) {
         $scope.closeMessage();
         $scope.message = message;
     }
@@ -41,9 +41,9 @@ grimmApp.controller('assignPersonController', ['$scope', 'Persons', '$modalInsta
         $scope.selectedItem = item;
     }
 
-    $scope.typeSearch = function(name) {
-        return Persons.searchAhead(name).then(function(response) {
-            return response.data.map(function(item) {
+    $scope.typeSearch = function (name) {
+        return Persons.searchAhead(name).then(function (response) {
+            return response.data.map(function (item) {
                 return item.name;
             });
         });

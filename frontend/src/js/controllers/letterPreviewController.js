@@ -1,4 +1,3 @@
-
 grimmApp.controller('letterPreviewController', ['$scope', '$interval', '$modalInstance', 'letter', function ($scope, $interval, $modalInstance, letter) {
     $scope.letter = letter;
 

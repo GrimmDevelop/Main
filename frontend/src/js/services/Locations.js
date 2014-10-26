@@ -1,16 +1,15 @@
-
-grimmApp.service("Locations", ['$http', 'BASE_URL', function($http, BASE_URL) {
+grimmApp.service("Locations", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     var serviceBackend = BASE_URL + '/api/';
 
-    this.all = function(itemsPerPage, page) {
+    this.all = function (itemsPerPage, page) {
 
         var params = {};
 
-        if(typeof itemsPerPage != 'undefined') {
+        if (typeof itemsPerPage != 'undefined') {
             params.items_per_page = itemsPerPage;
         }
 
-        if(typeof page != 'undefined') {
+        if (typeof page != 'undefined') {
             params.page = page;
         }
 
@@ -19,12 +18,12 @@ grimmApp.service("Locations", ['$http', 'BASE_URL', function($http, BASE_URL) {
         });
     };
 
-    this.get = function(id) {
+    this.get = function (id) {
         return $http.get(serviceBackend + 'locations/' + id);
     }
 
-    this.search = function(name, in_alternate_names) {
-        if(typeof in_alternate_names == 'undefined') {
+    this.search = function (name, in_alternate_names) {
+        if (typeof in_alternate_names == 'undefined') {
             in_alternate_names = false;
         }
 
@@ -34,7 +33,7 @@ grimmApp.service("Locations", ['$http', 'BASE_URL', function($http, BASE_URL) {
         });
     }
 
-    this.searchAhead = function(name) {
+    this.searchAhead = function (name) {
         return $http.post(serviceBackend + 'locations/search', {
             name: name,
             in_alternate_names: false,

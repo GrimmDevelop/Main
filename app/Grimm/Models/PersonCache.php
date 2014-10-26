@@ -8,7 +8,8 @@ class PersonCache extends \Eloquent {
 
     protected $fillable = array('person_id', 'name');
 
-    public function person() {
+    public function person()
+    {
         return $this->belongsTo(Person::class);
     }
 

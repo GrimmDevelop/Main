@@ -1,23 +1,11 @@
-
-jQuery(function($) {
+jQuery(function ($) {
     $('[data-toggle=tooltip]').tooltip();
-
-    /*$('.typeahead').each(function() {
-        var $this = $(this);
-        $this.typeahead({
-            "source": function(query, process) {
-                $.getJSON("{{ url('search/typeahead') }}?field=" + $this.attr('name') + "&query=" + query, function(data) {
-                    process(data);
-                });
-            }
-        });
-    });*/
 });
 
 var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ngDragDrop"]);
 
 grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider', 'GoogleMapApiProvider'.ns(),
-    function($routeProvider, $httpProvider, flowFactoryProvider, GoogleMapApi) {
+    function ($routeProvider, $httpProvider, flowFactoryProvider, GoogleMapApi) {
         $routeProvider.
             when('/files', {
                 controller: 'filesController',
@@ -59,19 +47,19 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider', 'Goog
                 redirectTo: '/'
             });
 
-        $httpProvider.interceptors.push(['$q', '$rootScope', '$location', 'BASE_URL', function($q, $rootScope, $location, BASE_URL) {
+        $httpProvider.interceptors.push(['$q', '$rootScope', '$location', 'BASE_URL', function ($q, $rootScope, $location, BASE_URL) {
             return {
-                'request': function(config) {
+                'request': function (config) {
                     $rootScope.$broadcast('loading-started');
                     return config || $q.when(config);
                 },
 
-                'response': function(response) {
+                'response': function (response) {
                     $rootScope.$broadcast('loading-complete');
                     return response || $q.when(response);
                 },
 
-                'responseError': function(rejection) {
+                'responseError': function (rejection) {
                     var status = rejection.status;
                     $rootScope.$broadcast('loading-complete');
                     if (status == 401 && rejection.data === 'Grimm Unauthorized') {
@@ -95,6 +83,6 @@ grimmApp.config(['$routeProvider', '$httpProvider', 'flowFactoryProvider', 'Goog
     }
 ]);
 
-grimmApp.run(['$http', function($http) {
+grimmApp.run(['$http', function ($http) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 }]);

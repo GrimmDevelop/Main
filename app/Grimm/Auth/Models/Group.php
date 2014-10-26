@@ -1,4 +1,5 @@
 <?php namespace Grimm\Auth\Models;
+
 /**
  * Part of the Sentry package.
  *
@@ -101,15 +102,15 @@ class Group extends Model implements GroupInterface {
      * have access to all permissions passed through, unless the
      * "all" flag is set to false.
      *
-     * @param  string|array  $permissions
-     * @param  bool  $all
+     * @param  string|array $permissions
+     * @param  bool $all
      * @return bool
      */
     public function hasAccess($permissions, $all = true)
     {
         $groupPermissions = $this->getPermissions();
 
-        if ( ! is_array($permissions))
+        if (!is_array($permissions))
         {
             $permissions = (array) $permissions;
         }
@@ -130,7 +131,7 @@ class Group extends Model implements GroupInterface {
                 foreach ($groupPermissions as $groupPermission => $value)
                 {
                     // Strip the '*' off the end of the permission.
-                    $checkPermission = substr($permission, 0, -1);
+                    $checkPermission = substr($permission, 0, - 1);
 
                     // We will make sure that the merged permission does not
                     // exactly match our permission, but starts with it.
@@ -162,9 +163,7 @@ class Group extends Model implements GroupInterface {
                         break;
                     }
                 }
-            }
-
-            else
+            } else
             {
                 $matched = false;
 
@@ -176,7 +175,7 @@ class Group extends Model implements GroupInterface {
                         $matched = false;
 
                         // Strip the '*' off the end of the permission.
-                        $checkGroupPermission = substr($groupPermission, 0, -1);
+                        $checkGroupPermission = substr($groupPermission, 0, - 1);
 
                         // We will make sure that the merged permission does not
                         // exactly match our permission, but starts wtih it.
@@ -203,8 +202,7 @@ class Group extends Model implements GroupInterface {
             if ($all === true and $matched === false)
             {
                 return false;
-            }
-            elseif ($all === false and $matched === true)
+            } elseif ($all === false and $matched === true)
             {
                 return true;
             }
@@ -222,7 +220,7 @@ class Group extends Model implements GroupInterface {
      * Returns if the user has access to any of the
      * given permissions.
      *
-     * @param  array  $permissions
+     * @param  array $permissions
      * @return bool
      */
     public function hasAnyAccess(array $permissions)
@@ -243,7 +241,7 @@ class Group extends Model implements GroupInterface {
     /**
      * Set the Eloquent model to use for user relationships.
      *
-     * @param  string  $model
+     * @param  string $model
      * @return void
      */
     public static function setUserModel($model)
@@ -254,7 +252,7 @@ class Group extends Model implements GroupInterface {
     /**
      * Set the user groups pivot table name.
      *
-     * @param  string  $tableName
+     * @param  string $tableName
      * @return void
      */
     public static function setUserGroupsPivot($tableName)
@@ -265,12 +263,13 @@ class Group extends Model implements GroupInterface {
     /**
      * Saves the group.
      *
-     * @param  array  $options
+     * @param  array $options
      * @return bool
      */
     public function save(array $options = array())
     {
         $this->validate();
+
         return parent::save();
     }
 
@@ -282,6 +281,7 @@ class Group extends Model implements GroupInterface {
     public function delete()
     {
         $this->users()->detach();
+
         return parent::delete();
     }
 
@@ -294,7 +294,7 @@ class Group extends Model implements GroupInterface {
      */
     public function getPermissionsAttribute($permissions)
     {
-        if ( ! $permissions)
+        if (!$permissions)
         {
             return array();
         }
@@ -304,7 +304,7 @@ class Group extends Model implements GroupInterface {
             return $permissions;
         }
 
-        if ( ! $_permissions = json_decode($permissions, true))
+        if (!$_permissions = json_decode($permissions, true))
         {
             throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
         }
@@ -315,7 +315,7 @@ class Group extends Model implements GroupInterface {
     /**
      * Mutator for taking permissions.
      *
-     * @param  array  $permissions
+     * @param  array $permissions
      * @return void
      * @throws \InvalidArgumentException
      */
@@ -328,7 +328,7 @@ class Group extends Model implements GroupInterface {
         foreach ($permissions as $permission => &$value)
         {
             // Lets make sure their is a valid permission value
-            if ( ! in_array($value = (int) $value, $this->allowedPermissionsValues))
+            if (!in_array($value = (int) $value, $this->allowedPermissionsValues))
             {
                 throw new \InvalidArgumentException("Invalid value [$value] for permission [$permission] given.");
             }
@@ -340,7 +340,7 @@ class Group extends Model implements GroupInterface {
             }
         }
 
-        $this->attributes['permissions'] = ( ! empty($permissions)) ? json_encode($permissions) : '';
+        $this->attributes['permissions'] = (!empty($permissions)) ? json_encode($permissions) : '';
     }
 
     /**
@@ -371,7 +371,7 @@ class Group extends Model implements GroupInterface {
     public function validate()
     {
         // Check if name field was passed
-        if ( ! $name = $this->name)
+        if (!$name = $this->name)
         {
             throw new NameRequiredException("A name is required for a group, none given.");
         }

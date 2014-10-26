@@ -9,25 +9,25 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         });
     }
 
-    this.distanceMap = function(filters) {
+    this.distanceMap = function (filters) {
         return $http.post(serviceBackend + '/distanceMap', {
             filters: filters
         });
     }
 
-    this.dateCodeBounds = function() {
+    this.dateCodeBounds = function () {
         return $http.post(serviceBackend + '/dataCodeBounds');
     }
 
-    this.codes = function() {
+    this.codes = function () {
         return $http.get(serviceBackend + '/codes');
     }
 
-    this.loadFilters = function() {
+    this.loadFilters = function () {
         return $http.get(serviceBackend + '/filters');
     }
 
-    this.saveFilters = function(filters) {
+    this.saveFilters = function (filters) {
         return $http.put(serviceBackend + '/filters', {
             filters: filters
         });

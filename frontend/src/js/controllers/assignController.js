@@ -10,7 +10,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     $scope.locationsToCheck = [];
     $scope.personsToCheck = [];
 
-    $scope.resetLists = function() {
+    $scope.resetLists = function () {
         $scope.locationsToCheck = [];
         $scope.personsToCheck = [];
     }
@@ -99,20 +99,20 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         });
     }
 
-    $scope.autoGenerate = function(person) {
-        Persons.autoGenerate(person.name).success(function(data) {
+    $scope.autoGenerate = function (person) {
+        Persons.autoGenerate(person.name).success(function (data) {
             removePersonFromList(person);
         });
     }
 
     function removeLocationFromList(location) {
-        $scope.locationsToCheck = $scope.locationsToCheck.filter(function(item) {
+        $scope.locationsToCheck = $scope.locationsToCheck.filter(function (item) {
             return item.name != location.name;
         });
     }
 
     function removePersonFromList(person) {
-        $scope.personsToCheck = $scope.personsToCheck.filter(function(item) {
+        $scope.personsToCheck = $scope.personsToCheck.filter(function (item) {
             return item.name != person.name;
         });
     }

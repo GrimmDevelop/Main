@@ -1,4 +1,3 @@
-
 grimmApp.controller('groupPreviewController', ['$scope', '$interval', '$modalInstance', 'group', function ($scope, $interval, $modalInstance, group) {
     $scope.group = group;
 

@@ -14,13 +14,15 @@
 require_once('routes_admin.php');
 require_once('routes_api.php');
 
-Route::get('/', function () {
+Route::get('/', function ()
+{
     return Redirect::to(URL::to('search'));
 });
 
 Route::get('partials/{file}', 'Grimm\Controller\PartialsController@load');
 
-Route::group(['prefix' => 'search'], function() {
+Route::group(['prefix' => 'search'], function ()
+{
     Route::get('/', 'Grimm\Controller\SearchController@searchForm');
     Route::post('/', 'Grimm\Controller\SearchController@searchResult');
     Route::get('codes', 'Grimm\Controller\SearchController@codes');
@@ -34,7 +36,8 @@ Route::post('/api/mailinglist', ['before' => 'csrf', 'uses' => 'Grimm\Controller
 
 Route::post('/deploy/github', 'Grimm\Controller\DeployController@github');
 
-App::missing(function ($exception) {
+App::missing(function ($exception)
+{
     return Redirect::to('/')->withErrors(
         array(
             '404' => $exception->getMessage()

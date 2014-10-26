@@ -38,8 +38,8 @@ grimmApp.controller('personsController', ['$scope', '$modal', 'Persons', functio
         });
     };
 
-    $scope.orderBy = function(field) {
-        if($scope.currentOrderBy != field) {
+    $scope.orderBy = function (field) {
+        if ($scope.currentOrderBy != field) {
             $scope.currentOrderBy = field;
             $scope.currentOrderByDirection = 'asc';
         } else {

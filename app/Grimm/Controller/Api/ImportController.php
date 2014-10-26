@@ -6,8 +6,7 @@ use Sentry;
 use Queue;
 use Input;
 
-class ImportController extends \Controller
-{
+class ImportController extends \Controller {
 
     protected $queue;
 

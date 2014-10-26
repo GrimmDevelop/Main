@@ -15,6 +15,8 @@ class LetterTo implements Assigner {
      * Assigns an item to an object
      * @param $object_id
      * @param $item_id
+     * @throws ItemNotFoundException
+     * @throws ObjectNotFoundException
      * @return \Illuminate\Http\Response
      */
     public function assign($object_id, $item_id)
@@ -22,15 +24,18 @@ class LetterTo implements Assigner {
         $letter = ($object_id instanceof Letter) ? $object_id : Letter::find($object_id);
         $location = ($item_id instanceof Location) ? $item_id : Location::find($item_id);
 
-        if (!($letter instanceof Letter) || !$letter->exists) {
+        if (!($letter instanceof Letter) || !$letter->exists)
+        {
             throw new ObjectNotFoundException();
         }
 
-        if (!($location instanceof Location) || !$location->exists) {
+        if (!($location instanceof Location) || !$location->exists)
+        {
             throw new ItemNotFoundException();
         }
 
         $letter->to()->associate($location);
-        return (bool)$letter->save();
+
+        return (bool) $letter->save();
     }
 }

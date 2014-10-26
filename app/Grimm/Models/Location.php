@@ -4,8 +4,8 @@ namespace Grimm\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Location extends Eloquent
-{
+class Location extends Eloquent {
+
     protected $table = 'locations';
 
     public function lettersFrom()

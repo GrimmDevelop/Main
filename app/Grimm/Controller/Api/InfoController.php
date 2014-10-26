@@ -11,15 +11,16 @@ class InfoController extends \Controller {
         $this->file = $file;
     }
 
-    public function version() {
-
+    public function version()
+    {
         $changelog = '';
-        if($this->file->exists(storage_path('changelog.txt'))) {
+        if ($this->file->exists(storage_path('changelog.txt')))
+        {
             $changelog = $this->file->get(storage_path('changelog.txt'));
         }
 
         return json_encode([
-            'version' => '0.1',
+            'version'   => '0.1',
             'changelog' => $changelog
         ]);
     }

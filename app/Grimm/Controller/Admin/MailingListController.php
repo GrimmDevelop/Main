@@ -6,11 +6,13 @@ use Grimm\Models\MailingList;
 
 class MailingListController extends \Controller {
 
-    public function sendMail() {
+    public function sendMail()
+    {
         //
     }
 
-    public function mailList() {
+    public function mailList()
+    {
         return MailingList::all();
     }
 }

@@ -17,6 +17,9 @@ class LetterReceiver implements Assigner {
      * Assigns an item to an object
      * @param $object_id
      * @param $item_id
+     * @throws ItemAlreadyAssignedException
+     * @throws ItemNotFoundException
+     * @throws ObjectNotFoundException
      * @return \Illuminate\Http\Response
      */
     public function assign($object_id, $item_id)
@@ -24,19 +27,23 @@ class LetterReceiver implements Assigner {
         $letter = ($object_id instanceof Letter) ? $object_id : Letter::find($object_id);
         $person = ($item_id instanceof Person) ? $item_id : Person::find($item_id);
 
-        if (!($letter instanceof Letter) || !$letter->exists) {
+        if (!($letter instanceof Letter) || !$letter->exists)
+        {
             throw new ObjectNotFoundException();
         }
 
-        if (!($person instanceof Person) || !$person->exists) {
+        if (!($person instanceof Person) || !$person->exists)
+        {
             throw new ItemNotFoundException();
         }
 
-        if ($letter->receivers()->where('id', $person->id)->first()) {
+        if ($letter->receivers()->where('id', $person->id)->first())
+        {
             throw new ItemAlreadyAssignedException();
         }
 
         $letter->receivers()->attach($person);
+
         return true;
     }
 }

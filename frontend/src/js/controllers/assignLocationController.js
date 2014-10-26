@@ -50,9 +50,9 @@ grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations'
         });
     };
 
-    $scope.typeSearch = function(name) {
-        return Locations.searchAhead(name).then(function(response) {
-            return response.data.map(function(item) {
+    $scope.typeSearch = function (name) {
+        return Locations.searchAhead(name).then(function (response) {
+            return response.data.map(function (item) {
                 return item.name;
             });
         });

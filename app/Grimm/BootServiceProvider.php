@@ -27,23 +27,28 @@ class BootServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->bind('grimm.unauthorized', function() {
+        $this->app->bind('grimm.unauthorized', function ()
+        {
             return \Response::json('Grimm Unauthorized', 401);
         });
 
-        $this->app->bind(Letter::class, function() {
+        $this->app->bind(Letter::class, function ()
+        {
             return new Letter($this->app->make(LetterRecord::class));
         });
 
-        $this->app->bind(Location::class, function() {
+        $this->app->bind(Location::class, function ()
+        {
             return new Location($this->app->make(LocationRecord::class));
         });
 
-        $this->app->bind(Person::class, function() {
+        $this->app->bind(Person::class, function ()
+        {
             return new Person($this->app->make(PersonRecord::class));
         });
 
-        $this->app->bind(UserActionLogger::class, function() {
+        $this->app->bind(UserActionLogger::class, function ()
+        {
             return new UserActionLogger();
         });
     }

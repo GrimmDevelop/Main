@@ -1,4 +1,4 @@
-grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) {
+grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     var serviceBackend = BASE_URL + '/admin/files';
 
     var currentPath = [''];
@@ -8,15 +8,15 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
      * @param  {[type]} subdir [description]
      * @return {[type]}        [description]
      */
-    this.cd = function(subdir) {
+    this.cd = function (subdir) {
         var newPath = this.makeAbsolute(subdir);
 
-        return _getFilesInFolder(_merge(newPath)).success(function() {
+        return _getFilesInFolder(_merge(newPath)).success(function () {
             currentPath = newPath;
         });
     };
 
-    this.makeAbsolute = function(path) {
+    this.makeAbsolute = function (path) {
         if (path == '/') {
             return [''];
         }
@@ -37,7 +37,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
                     if (workingPath.length > 1) {
                         workingPath.pop();
                     }
-                } else if(components[i] != '.') {
+                } else if (components[i] != '.') {
                     workingPath.push(components[i]);
                 }
             }
@@ -46,7 +46,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         }
     };
 
-    this.move = function(srcPath, destPath) {
+    this.move = function (srcPath, destPath) {
         return $http.get(serviceBackend + '/move', {
             params: {
                 'src': srcPath,
@@ -55,7 +55,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         })
     }
 
-    this.mkdir = function(basepath, name) {
+    this.mkdir = function (basepath, name) {
         return $http.get(serviceBackend + '/mkdir', {
             params: {
                 'basepath': basepath,
@@ -64,7 +64,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         });
     };
 
-    this.deleteFile = function(path) {
+    this.deleteFile = function (path) {
         return $http.get(serviceBackend + '/delete', {
             params: {
                 'path': path
@@ -72,7 +72,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         });
     };
 
-    this.deleteFolder = function(path) {
+    this.deleteFolder = function (path) {
         return $http.get(serviceBackend + '/deleteFolder', {
             params: {
                 'path': path
@@ -80,7 +80,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         });
     };
 
-    this.rename = function(src, dest) {
+    this.rename = function (src, dest) {
         console.log(_dirname(src) + '/' + dest);
         return $http.get(serviceBackend + '/rename', {
             params: {
@@ -95,7 +95,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
      * The root level is always '/'
      * @return {string} The path
      */
-    this.cwd = function(stacked) {
+    this.cwd = function (stacked) {
         stacked = (typeof stacked == 'undefined' ? false : stacked);
 
         if (stacked) {
@@ -105,7 +105,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         return _merge(currentPath);
     };
 
-    var _merge = function(pathArray) {
+    var _merge = function (pathArray) {
         var path = pathArray.join('/');
         if (path === '') {
             return '/';
@@ -113,7 +113,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
         return path;
     };
 
-    var _dirname = function(path) {
+    var _dirname = function (path) {
         // Adapted from PHP.js
         //  discuss at: http://phpjs.org/functions/dirname/
         //        http: //kevin.vanzonneveld.net
@@ -127,7 +127,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function($http, BASE_URL) 
 
     this.dirname = _dirname;
 
-    var _getFilesInFolder = function(folder) {
+    var _getFilesInFolder = function (folder) {
         return $http.get(serviceBackend + '/list', {
             params: {
                 'path': folder

@@ -7,7 +7,6 @@ use Grimm\Models\Letter;
 use Grimm\Models\Location;
 use View;
 use Input;
-use Response;
 use Sentry;
 
 class SearchController extends \Controller {
@@ -31,7 +30,7 @@ class SearchController extends \Controller {
         $result = $this->buildSearchQuery(
             ['information'],
             Input::get('filters', [])
-        )->paginate(abs((int)Input::get('items_per_page', 100)));
+        )->paginate(abs((int) Input::get('items_per_page', 100)));
 
         $return = new \stdClass();
 
@@ -46,141 +45,166 @@ class SearchController extends \Controller {
         return json_encode($return);
     }
 
-    public function computeDistanceMap() {
+    public function computeDistanceMap()
+    {
 
         $query = $this->buildSearchQuery(
             ['from', 'to'],
             Input::get('filters', [])
-        )->whereNotNull('from_id')->whereNotNull('to_id')/*->take(1000)*/;
+        )->whereNotNull('from_id')->whereNotNull('to_id')/*->take(1000)*/
+        ;
 
         $distanceMapData = new \stdClass();
         $distanceMapData->computedLetters = $query->count();
         $distanceMapData->borderData = [];
         $distanceMapData->polylines = [];
 
-        foreach($query->get() as $letter) {
+        foreach ($query->get() as $letter)
+        {
             $this->addBorderData($distanceMapData, $letter->from);
             $this->addBorderData($distanceMapData, $letter->to);
 
-            if(($index = $this->indexOfPolyline($distanceMapData, $letter->from_id, $letter->to_id)) != -1) {
-                $distanceMapData->polylines[$index]['count']++;
-            } else {
+            if (($index = $this->indexOfPolyline($distanceMapData, $letter->from_id, $letter->to_id)) != - 1)
+            {
+                $distanceMapData->polylines[$index]['count'] ++;
+            } else
+            {
                 $this->addPolyline($distanceMapData, $letter->from, $letter->to);
             }
         }
 
-        return  json_encode($distanceMapData);
+        return json_encode($distanceMapData);
     }
 
-    protected function addBorderData($mapData, $location) {
+    protected function addBorderData($mapData, $location)
+    {
         $position = new \stdClass();
         $position->latitude = $location->latitude;
         $position->longitude = $location->longitude;
 
-        if(!in_array($position, $mapData->borderData)) {
+        if (!in_array($position, $mapData->borderData))
+        {
             $mapData->borderData[] = $position;
         }
     }
 
-    protected function indexOfPolyline($distanceMapData, $id1, $id2) {
-        if($id1 > $id2) {
+    protected function indexOfPolyline($distanceMapData, $id1, $id2)
+    {
+        if ($id1 > $id2)
+        {
             $t = $id2;
             $id2 = $id1;
             $id1 = $t;
         }
 
-        foreach($distanceMapData->polylines as $index => $line) {
-            if($line['id1'] == $id1 && $line['id2'] == $id2) {
+        foreach ($distanceMapData->polylines as $index => $line)
+        {
+            if ($line['id1'] == $id1 && $line['id2'] == $id2)
+            {
                 return $index;
             }
         }
 
-        return -1;
+        return - 1;
     }
 
-    protected function addPolyline($distanceMapData, Location $from, Location $to) {
-        if($from->id > $to->id) {
+    protected function addPolyline($distanceMapData, Location $from, Location $to)
+    {
+        if ($from->id > $to->id)
+        {
             $id1 = $to->id;
             $id2 = $from->id;
-        } else {
+        } else
+        {
             $id1 = $from->id;
             $id2 = $to->id;
         }
 
         $distanceMapData->polylines[] = [
-            'id1' => $id1,
-            'id2' => $id2,
-            'from' => [
-                'latitude' => $from->latitude,
-                'longitude'=> $from->longitude
+            'id1'   => $id1,
+            'id2'   => $id2,
+            'from'  => [
+                'latitude'  => $from->latitude,
+                'longitude' => $from->longitude
             ],
-            'to' => [
-                'latitude' => $to->latitude,
-                'longitude'=> $to->longitude
+            'to'    => [
+                'latitude'  => $to->latitude,
+                'longitude' => $to->longitude
             ],
             'count' => 1
         ];
     }
 
-    protected function buildSearchQuery($with, $filters) {
+    protected function buildSearchQuery($with, $filters)
+    {
         $query = Letter::query();
 
-        foreach($with as $load) {
+        foreach ($with as $load)
+        {
             $query->with($load);
         }
 
-        foreach($filters as $filter) {
+        foreach ($filters as $filter)
+        {
             $this->buildWhere($query, $filter);
         }
 
         return $query;
     }
 
-    protected function buildWhere($query, $filter) {
-        if($filter['code'] == '') {
+    protected function buildWhere($query, $filter)
+    {
+        if ($filter['code'] == '')
+        {
             return $query;
         }
 
-        return $query->whereHas('information', function($q) use($filter) {
+        return $query->whereHas('information', function ($q) use ($filter)
+        {
             $compare = $this->getCompare($filter['compare'], $filter['value']);
 
             return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
         });
     }
 
-    protected function getCompare($string, $value) {
-        switch ($string) {
+    protected function getCompare($string, $value)
+    {
+        switch ($string)
+        {
             case 'contains':
                 return array(
                     'compare' => 'like',
-                    'value' => "%$value%"
+                    'value'   => "%$value%"
                 );
             case 'starts with':
                 return array(
                     'compare' => 'like',
-                    'value' => "$value%"
+                    'value'   => "$value%"
                 );
             case 'ends with':
                 return array(
                     'compare' => 'like',
-                    'value' => "%$value"
+                    'value'   => "%$value"
                 );
-            
+
             case "equals":
             default:
                 return array(
                     'compare' => '=',
-                    'value' => $value
+                    'value'   => $value
                 );
         }
     }
 
-    public function loadFilters() {
+    public function loadFilters()
+    {
         User::find(0);
-        if($user = Sentry::getUser()) {
+        if ($user = Sentry::getUser())
+        {
             $search_filters = $user->search_filter;
 
-            if($search_filters == "") {
+            if ($search_filters == "")
+            {
                 $search_filters = "[]";
             }
 
@@ -190,14 +214,17 @@ class SearchController extends \Controller {
         return "[]";
     }
 
-    public function saveFilters() {
-        if($user = Sentry::getUser()) {
+    public function saveFilters()
+    {
+        if ($user = Sentry::getUser())
+        {
             $user->search_filter = json_encode(Input::get('filters', []));
             $user->save();
         }
     }
 
-    public function codes() {
+    public function codes()
+    {
         return $this->letter->codes();
     }
 }

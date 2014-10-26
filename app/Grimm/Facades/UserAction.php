@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Facade;
 
 class UserAction extends Facade {
 
-    public static function getFacadeAccessor() {
+    public static function getFacadeAccessor()
+    {
         return UserActionLogger::class;
     }
 

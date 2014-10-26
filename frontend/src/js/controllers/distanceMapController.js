@@ -54,7 +54,7 @@ grimmApp.controller('distanceMapController', ['$scope', '$interval', '$modalInst
     });
 
     function loadPolylines() {
-        if(typeof $scope.mapInstance.getGMap == 'function') {
+        if (typeof $scope.mapInstance.getGMap == 'function') {
             addLetterPathsToMap(mapData.polylines, $scope.mapInstance.getGMap());
             $scope.zoomFit();
         } else {
@@ -63,7 +63,7 @@ grimmApp.controller('distanceMapController', ['$scope', '$interval', '$modalInst
     }
 
     $scope.zoomFit = function () {
-        if(typeof $scope.mapInstance.getGMap == 'function') {
+        if (typeof $scope.mapInstance.getGMap == 'function') {
             $scope.mapInstance.getGMap().fitBounds(bounds);
         }
     }

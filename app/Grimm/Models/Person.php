@@ -6,6 +6,7 @@ use Grimm\Models\Person\Information;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class Person extends Eloquent {
+
     protected $table = 'persons';
 
     protected $fillable = ['name_2013', 'auto_generated'];

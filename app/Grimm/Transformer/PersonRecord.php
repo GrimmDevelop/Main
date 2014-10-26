@@ -15,22 +15,23 @@ class PersonRecord implements RecordTransformer {
      */
     public function transform($data)
     {
-        $utf8DataArray = array_map(function ($column) use ($data) {
+        $utf8DataArray = array_map(function ($column) use ($data)
+        {
             return $this->utf8Convert($data, $column);
         }, $data->getColumns());
 
         $transformedRecord = [
-            'name_2013' => $this->name($utf8DataArray['name_2013']),
+            'name_2013'   => $this->name($utf8DataArray['name_2013']),
             'information' => [
-                'name' => $utf8DataArray['name'],
-                'name_alt' => $utf8DataArray['name_alt'],
-                'standard' => $utf8DataArray['standard'],
-                'wann_gepr' => $utf8DataArray['wann_gepr'],
+                'name'       => $utf8DataArray['name'],
+                'name_alt'   => $utf8DataArray['name_alt'],
+                'standard'   => $utf8DataArray['standard'],
+                'wann_gepr'  => $utf8DataArray['wann_gepr'],
                 'q_standard' => $utf8DataArray['q_standard'],
                 'nichtstand' => $utf8DataArray['nichtstand'],
-                'freigabe' => $utf8DataArray['freigabe'],
-                'nichtverz' => $utf8DataArray['nichtverz'],
-                'druck' => [
+                'freigabe'   => $utf8DataArray['freigabe'],
+                'nichtverz'  => $utf8DataArray['nichtverz'],
+                'druck'      => [
                     $utf8DataArray['druck_1'],
                     $utf8DataArray['druck_2'],
                     $utf8DataArray['druck_3'],
@@ -46,14 +47,14 @@ class PersonRecord implements RecordTransformer {
                     $utf8DataArray['druck_13'],
                     $utf8DataArray['druck_14']
                 ],
-                'lebt' => $utf8DataArray['lebt'],
+                'lebt'       => $utf8DataArray['lebt'],
                 // 'taetig' => $utf8DataArray['t?tig'], todo: find correct index...
-                'literatur' => $utf8DataArray['literatur'],
-                'biografie' => $utf8DataArray['biografie'],
+                'literatur'  => $utf8DataArray['literatur'],
+                'biografie'  => $utf8DataArray['biografie'],
                 'briefe_von' => $utf8DataArray['briefe_von'],
-                'briefe_an' => $utf8DataArray['briefe_an'],
-                'asu_j_n' => $utf8DataArray['asu_j_n'],
-                'nl' => [
+                'briefe_an'  => $utf8DataArray['briefe_an'],
+                'asu_j_n'    => $utf8DataArray['asu_j_n'],
+                'nl'         => [
                     $utf8DataArray['nl_1'],
                     $utf8DataArray['nl_2'],
                     $utf8DataArray['nl_3'],
@@ -65,8 +66,8 @@ class PersonRecord implements RecordTransformer {
                     $utf8DataArray['nl_9'],
                     $utf8DataArray['nl_10']
                 ],
-                'leb_orte' => $utf8DataArray['leb_orte'],
-                'herkunft' => $utf8DataArray['herkunft'],
+                'leb_orte'   => $utf8DataArray['leb_orte'],
+                'herkunft'   => $utf8DataArray['herkunft'],
             ]
         ];
 
@@ -75,7 +76,8 @@ class PersonRecord implements RecordTransformer {
 
         $transformedRecord['information'] = array_filter($transformedRecord['information']);
 
-        if(trim($transformedRecord['name_2013']) == '') {
+        if (trim($transformedRecord['name_2013']) == '')
+        {
             return null;
         }
 
@@ -91,6 +93,7 @@ class PersonRecord implements RecordTransformer {
     protected function utf8Convert(Record $record, Column $column)
     {
         $field = $record->{$column->getName()};
+
         return ($column->getType() == Record::DBFFIELD_TYPE_MEMO ||
             $column->getType() == Record::DBFFIELD_TYPE_CHAR) ?
             iconv("IBM850", "UTF-8//TRANSLIT", $field) :
@@ -121,7 +124,8 @@ class PersonRecord implements RecordTransformer {
         $string = preg_replace("/(.*)\\(.*?\\)(.*)/", "$1$3", $string);
 
         // remove double spaces
-        while(strpos($string, '  ') !== false) {
+        while (strpos($string, '  ') !== false)
+        {
             $string = str_replace('  ', ' ', $string);
         }
 

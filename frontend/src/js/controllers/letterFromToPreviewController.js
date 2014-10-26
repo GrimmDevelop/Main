@@ -42,8 +42,8 @@ grimmApp.controller('letterFromToPreviewController', ['$scope', '$interval', '$m
     });
 
     function loadPolyline() {
-        if(typeof $scope.mapInstance.getGMap == 'function') {
-            if(letter.from.id != letter.to.id) {
+        if (typeof $scope.mapInstance.getGMap == 'function') {
+            if (letter.from.id != letter.to.id) {
                 new google.maps.Polyline({
                     path: LatLngList,
                     geodesic: true,
@@ -72,7 +72,7 @@ grimmApp.controller('letterFromToPreviewController', ['$scope', '$interval', '$m
     }
 
     $scope.zoomFit = function () {
-        if(letter.from.id != letter.to.id) {
+        if (letter.from.id != letter.to.id) {
             var map = $scope.mapInstance.getGMap();
 
             map.fitBounds(bounds);

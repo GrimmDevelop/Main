@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Grimm\Models\Person;
 
 class Information extends Eloquent {
+
     protected $table = "person_information";
-    
+
     public function codes()
     {
         return array(

@@ -2,19 +2,21 @@
 
 namespace Grimm\Controller\Admin\Files;
 
-class Path
-{
+class Path {
+
     public function clean($path)
     {
         $path = str_replace('..', '', $path);
         $path = str_replace('./', '/', $path);
-        while (strpos($path, '//') !== false) {
+        while (strpos($path, '//') !== false)
+        {
             $path = str_replace('//', '/', $path);
         }
 
         // Ensure that path begins with a slash
-        if ($path[0] !== '/') {
-            $path = '/'.$path;
+        if ($path[0] !== '/')
+        {
+            $path = '/' . $path;
         }
 
         $path = rtrim($path, '/');

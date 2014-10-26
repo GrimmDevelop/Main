@@ -2,7 +2,7 @@ grimmApp.controller('mailingListController', ['$scope', 'MailingList', function 
 
     $scope.mailList = [];
 
-    MailingList.list().success(function(data) {
+    MailingList.list().success(function (data) {
         $scope.mailList = data;
     });
 

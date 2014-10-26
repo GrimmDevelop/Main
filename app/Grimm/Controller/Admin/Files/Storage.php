@@ -6,8 +6,8 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 
-class Storage
-{
+class Storage {
+
     private $finder;
 
     private $basePath;
@@ -53,7 +53,8 @@ class Storage
     {
         $path = $this->buildPath($folder);
 
-        if ($path === false) {
+        if ($path === false)
+        {
             throw new FileNotFoundException(sprintf('Folder "%s" could not be found.', $folder));
         }
 
@@ -61,19 +62,21 @@ class Storage
 
         $finf = array();
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        foreach($files as $file) {
+        foreach ($files as $file)
+        {
             $type = "directory";
-            if ($file->isFile()) {
+            if ($file->isFile())
+            {
                 $type = finfo_file($finfo, $file->getRealPath());
             }
             $finf[] = array(
-                'filename'  => $file->getFilename(),
-                'path'      => $folder . '/' . $file->getFilename(),
-                'url'       => $this->buildUrl($folder . '/' . $file->getFilename()),
-                'isFile'    => $file->isFile(),
-                'isDir'     => $file->isDir(),
-                'size'      => $file->getSize(),
-                'type'      => $type
+                'filename' => $file->getFilename(),
+                'path'     => $folder . '/' . $file->getFilename(),
+                'url'      => $this->buildUrl($folder . '/' . $file->getFilename()),
+                'isFile'   => $file->isFile(),
+                'isDir'    => $file->isDir(),
+                'size'     => $file->getSize(),
+                'type'     => $type
             );
         }
         finfo_close($finfo);
@@ -92,7 +95,8 @@ class Storage
     {
         $path = $this->buildPath($file);
 
-        if ($path === false) {
+        if ($path === false)
+        {
             throw new FileNotFoundException(sprintf('Folder "%s" could not be found.', $file));
         }
 
@@ -107,8 +111,9 @@ class Storage
     public function mkdir($path)
     {
         $path = $this->basePath . $path;
-        
-        if (!mkdir($path)) {
+
+        if (!mkdir($path))
+        {
             throw new Exception("No Permissions to create directory!");
         }
     }
@@ -122,6 +127,7 @@ class Storage
     public function move($src, $dest)
     {
         $filename = $this->makeUniqueFilename(basename($src), $dest);
+
         return $this->fs->move($src, $dest . DIRECTORY_SEPARATOR . $filename);
     }
 
@@ -139,9 +145,11 @@ class Storage
      */
     public function makeUniqueFilename($filename, $dest)
     {
-        if (file_exists($dest . DIRECTORY_SEPARATOR . $filename)) {
+        if (file_exists($dest . DIRECTORY_SEPARATOR . $filename))
+        {
             return date("dmy_His_") . $filename;
         }
+
         return $filename;
     }
 
@@ -164,7 +172,8 @@ class Storage
      */
     public function deleteFile($path)
     {
-        if (!@unlink($path)) {
+        if (!@unlink($path))
+        {
             throw new Exception("Unable to delete file!");
         }
     }
@@ -178,7 +187,8 @@ class Storage
      */
     public function deleteFolder($path)
     {
-        if (!$this->fs->deleteDirectory($path, false)) {
+        if (!$this->fs->deleteDirectory($path, false))
+        {
             throw new Exception("Unable to delete directory!");
         }
     }
@@ -186,7 +196,7 @@ class Storage
     /**
      * Checks if the given file is in the virtual FS and exists
      * builds the absoulte path to the file
-     * @param  string       $file Virtual path
+     * @param  string $file Virtual path
      * @return string|bool        absolute path to file, false if file does not exist
      */
     public function buildPath($file)
@@ -202,6 +212,6 @@ class Storage
      */
     public function buildUrl($path)
     {
-        return $this->baseUrl . str_replace(" ", "%20",$path);
+        return $this->baseUrl . str_replace(" ", "%20", $path);
     }
 }

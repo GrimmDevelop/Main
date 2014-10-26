@@ -1,4 +1,5 @@
 <?php namespace Grimm\Auth\Models;
+
 /**
  * Part of the Sentry package.
  *
@@ -80,7 +81,7 @@ class User extends Model implements UserInterface {
      *
      * @var array
      */
-    protected $allowedPermissionsValues = array(-1, 0, 1);
+    protected $allowedPermissionsValues = array(- 1, 0, 1);
 
     /**
      * The login attribute.
@@ -197,7 +198,7 @@ class User extends Model implements UserInterface {
     /**
      * Get mutator for giving the activated property.
      *
-     * @param  mixed  $activated
+     * @param  mixed $activated
      * @return bool
      */
     public function getActivatedAttribute($activated)
@@ -208,12 +209,12 @@ class User extends Model implements UserInterface {
     /**
      * Mutator for giving permissions.
      *
-     * @param  mixed  $permissions
+     * @param  mixed $permissions
      * @return array  $_permissions
      */
     public function getPermissionsAttribute($permissions)
     {
-        if ( ! $permissions)
+        if (!$permissions)
         {
             return array();
         }
@@ -223,7 +224,7 @@ class User extends Model implements UserInterface {
             return $permissions;
         }
 
-        if ( ! $_permissions = json_decode($permissions, true))
+        if (!$_permissions = json_decode($permissions, true))
         {
             throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
         }
@@ -234,7 +235,7 @@ class User extends Model implements UserInterface {
     /**
      * Mutator for taking permissions.
      *
-     * @param  array  $permissions
+     * @param  array $permissions
      * @return string
      */
     public function setPermissionsAttribute(array $permissions)
@@ -246,7 +247,7 @@ class User extends Model implements UserInterface {
         foreach ($permissions as $permission => &$value)
         {
             // Lets make sure there is a valid permission value
-            if ( ! in_array($value = (int) $value, $this->allowedPermissionsValues))
+            if (!in_array($value = (int) $value, $this->allowedPermissionsValues))
             {
                 throw new \InvalidArgumentException("Invalid value [$value] for permission [$permission] given.");
             }
@@ -258,7 +259,7 @@ class User extends Model implements UserInterface {
             }
         }
 
-        $this->attributes['permissions'] = ( ! empty($permissions)) ? json_encode($permissions) : '';
+        $this->attributes['permissions'] = (!empty($permissions)) ? json_encode($permissions) : '';
     }
 
     /**
@@ -283,12 +284,12 @@ class User extends Model implements UserInterface {
      */
     public function validate()
     {
-        if ( ! $login = $this->{static::$loginAttribute})
+        if (!$login = $this->{static::$loginAttribute})
         {
             throw new LoginRequiredException("A login is required for a user, none given.");
         }
 
-        if ( ! $password = $this->getPassword())
+        if (!$password = $this->getPassword())
         {
             throw new PasswordRequiredException("A password is required for user [$login], none given.");
         }
@@ -308,7 +309,7 @@ class User extends Model implements UserInterface {
     /**
      * Saves the user.
      *
-     * @param  array  $options
+     * @param  array $options
      * @return bool
      */
     public function save(array $options = array())
@@ -326,6 +327,7 @@ class User extends Model implements UserInterface {
     public function delete()
     {
         $this->groups()->detach();
+
         return parent::delete();
     }
 
@@ -351,12 +353,12 @@ class User extends Model implements UserInterface {
     /**
      * Checks the given persist code.
      *
-     * @param  string  $persistCode
+     * @param  string $persistCode
      * @return bool
      */
     public function checkPersistCode($persistCode)
     {
-        if ( ! $persistCode)
+        if (!$persistCode)
         {
             return false;
         }
@@ -383,7 +385,7 @@ class User extends Model implements UserInterface {
      * the activate code. If the user is activated already,
      * an Exception is thrown.
      *
-     * @param  string  $activationCode
+     * @param  string $activationCode
      * @return bool
      * @throws \Cartalyst\Sentry\Users\UserAlreadyActivatedException
      */
@@ -397,8 +399,9 @@ class User extends Model implements UserInterface {
         if ($activationCode == $this->activation_code)
         {
             $this->activation_code = null;
-            $this->activated       = true;
-            $this->activated_at    = new DateTime;
+            $this->activated = true;
+            $this->activated_at = new DateTime;
+
             return $this->save();
         }
 
@@ -408,7 +411,7 @@ class User extends Model implements UserInterface {
     /**
      * Checks the password passed matches the user's password.
      *
-     * @param  string  $password
+     * @param  string $password
      * @return bool
      */
     public function checkPassword($password)
@@ -434,7 +437,7 @@ class User extends Model implements UserInterface {
      * Checks if the provided user reset password code is
      * valid without actually resetting the password.
      *
-     * @param  string  $resetCode
+     * @param  string $resetCode
      * @return bool
      */
     public function checkResetPasswordCode($resetCode)
@@ -446,8 +449,8 @@ class User extends Model implements UserInterface {
      * Attempts to reset a user's password by matching
      * the reset code generated with the user's.
      *
-     * @param  string  $resetCode
-     * @param  string  $newPassword
+     * @param  string $resetCode
+     * @param  string $newPassword
      * @return bool
      */
     public function attemptResetPassword($resetCode, $newPassword)
@@ -456,6 +459,7 @@ class User extends Model implements UserInterface {
         {
             $this->password = $newPassword;
             $this->reset_password_code = null;
+
             return $this->save();
         }
 
@@ -485,7 +489,7 @@ class User extends Model implements UserInterface {
      */
     public function getGroups()
     {
-        if ( ! $this->userGroups)
+        if (!$this->userGroups)
         {
             $this->userGroups = $this->groups()->get();
         }
@@ -496,12 +500,12 @@ class User extends Model implements UserInterface {
     /**
      * Adds the user to the given group.
      *
-     * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @param \Cartalyst\Sentry\Groups\GroupInterface $group
      * @return bool
      */
     public function addGroup(GroupInterface $group)
     {
-        if ( ! $this->inGroup($group))
+        if (!$this->inGroup($group))
         {
             $this->groups()->attach($group);
             $this->userGroups = null;
@@ -513,7 +517,7 @@ class User extends Model implements UserInterface {
     /**
      * Removes the user from the given group.
      *
-     * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @param \Cartalyst\Sentry\Groups\GroupInterface $group
      * @return bool
      */
     public function removeGroup(GroupInterface $group)
@@ -530,7 +534,7 @@ class User extends Model implements UserInterface {
     /**
      * See if the user is in the given group.
      *
-     * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @param \Cartalyst\Sentry\Groups\GroupInterface $group
      * @return bool
      */
     public function inGroup(GroupInterface $group)
@@ -554,7 +558,7 @@ class User extends Model implements UserInterface {
      */
     public function getMergedPermissions()
     {
-        if ( ! $this->mergedPermissions)
+        if (!$this->mergedPermissions)
         {
             $permissions = array();
 
@@ -580,8 +584,8 @@ class User extends Model implements UserInterface {
      *
      * Super users have access no matter what.
      *
-     * @param  string|array  $permissions
-     * @param  bool  $all
+     * @param  string|array $permissions
+     * @param  bool $all
      * @return bool
      */
     public function hasAccess($permissions, $all = true)
@@ -605,15 +609,15 @@ class User extends Model implements UserInterface {
      *
      * Super users DON'T have access no matter what.
      *
-     * @param  string|array  $permissions
-     * @param  bool  $all
+     * @param  string|array $permissions
+     * @param  bool $all
      * @return bool
      */
     public function hasPermission($permissions, $all = true)
     {
         $mergedPermissions = $this->getMergedPermissions();
 
-        if ( ! is_array($permissions))
+        if (!is_array($permissions))
         {
             $permissions = (array) $permissions;
         }
@@ -634,7 +638,7 @@ class User extends Model implements UserInterface {
                 foreach ($mergedPermissions as $mergedPermission => $value)
                 {
                     // Strip the '*' off the end of the permission.
-                    $checkPermission = substr($permission, 0, -1);
+                    $checkPermission = substr($permission, 0, - 1);
 
                     // We will make sure that the merged permission does not
                     // exactly match our permission, but starts with it.
@@ -644,9 +648,7 @@ class User extends Model implements UserInterface {
                         break;
                     }
                 }
-            }
-
-            elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
+            } elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
             {
                 $matched = false;
 
@@ -663,9 +665,7 @@ class User extends Model implements UserInterface {
                         break;
                     }
                 }
-            }
-
-            else
+            } else
             {
                 $matched = false;
 
@@ -677,7 +677,7 @@ class User extends Model implements UserInterface {
                         $matched = false;
 
                         // Strip the '*' off the end of the permission.
-                        $checkMergedPermission = substr($mergedPermission, 0, -1);
+                        $checkMergedPermission = substr($mergedPermission, 0, - 1);
 
                         // We will make sure that the merged permission does not
                         // exactly match our permission, but starts with it.
@@ -704,8 +704,7 @@ class User extends Model implements UserInterface {
             if ($all === true and $matched === false)
             {
                 return false;
-            }
-            elseif ($all === false and $matched === true)
+            } elseif ($all === false and $matched === true)
             {
                 return true;
             }
@@ -723,7 +722,7 @@ class User extends Model implements UserInterface {
      * Returns if the user has access to any of the
      * given permissions.
      *
-     * @param  array  $permissions
+     * @param  array $permissions
      * @return bool
      */
     public function hasAnyAccess(array $permissions)
@@ -755,7 +754,7 @@ class User extends Model implements UserInterface {
     /**
      * Set the Eloquent model to use for group relationships.
      *
-     * @param  string  $model
+     * @param  string $model
      * @return void
      */
     public static function setGroupModel($model)
@@ -766,7 +765,7 @@ class User extends Model implements UserInterface {
     /**
      * Set the user groups pivot table name.
      *
-     * @param  string  $tableName
+     * @param  string $tableName
      * @return void
      */
     public static function setUserGroupsPivot($tableName)
@@ -777,14 +776,14 @@ class User extends Model implements UserInterface {
     /**
      * Check string against hashed string.
      *
-     * @param  string  $string
-     * @param  string  $hashedString
+     * @param  string $string
+     * @param  string $hashedString
      * @return bool
      * @throws RuntimeException
      */
     public function checkHash($string, $hashedString)
     {
-        if ( ! static::$hasher)
+        if (!static::$hasher)
         {
             throw new \RuntimeException("A hasher has not been provided for the user.");
         }
@@ -795,13 +794,13 @@ class User extends Model implements UserInterface {
     /**
      * Hash string.
      *
-     * @param  string  $string
+     * @param  string $string
      * @return string
      * @throws RuntimeException
      */
     public function hash($string)
     {
-        if ( ! static::$hasher)
+        if (!static::$hasher)
         {
             throw new \RuntimeException("A hasher has not been provided for the user.");
         }
@@ -853,14 +852,14 @@ class User extends Model implements UserInterface {
     /**
      * Set a given attribute on the model.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed $value
      * @return void
      */
     public function setAttribute($key, $value)
     {
         // Hash required fields when necessary
-        if (in_array($key, $this->hashableAttributes) and ! empty($value))
+        if (in_array($key, $this->hashableAttributes) and !empty($value))
         {
             $value = $this->hash($value);
         }
@@ -937,7 +936,7 @@ class User extends Model implements UserInterface {
     /**
      * Override the login attribute for all models instances.
      *
-     * @param  string  $loginAttribute
+     * @param  string $loginAttribute
      * @return void
      */
     public static function setLoginAttributeName($loginAttribute)

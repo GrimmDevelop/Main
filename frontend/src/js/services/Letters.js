@@ -5,26 +5,26 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return this.page;
     };
 
-    this.get = function(id) {
+    this.get = function (id) {
         return $http.get(serviceBackend + 'letters/' + id);
     }
 
     this.page = function (itemsPerPage, page, onlyWithErrors) {
 
         var params = {};
-        if(typeof onlyWithErrors != 'undefined') {
+        if (typeof onlyWithErrors != 'undefined') {
             var with_errors = [];
 
-            if(onlyWithErrors.from) {
+            if (onlyWithErrors.from) {
                 with_errors.push('from');
             }
-            if(onlyWithErrors.to) {
+            if (onlyWithErrors.to) {
                 with_errors.push('to');
             }
-            if(onlyWithErrors.senders) {
+            if (onlyWithErrors.senders) {
                 with_errors.push('senders');
             }
-            if(onlyWithErrors.receivers) {
+            if (onlyWithErrors.receivers) {
                 with_errors.push('receivers');
             }
 
@@ -34,11 +34,11 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         }
 
 
-        if(typeof itemsPerPage != 'undefined') {
+        if (typeof itemsPerPage != 'undefined') {
             params.items_per_page = itemsPerPage;
         }
 
-        if(typeof page != 'undefined') {
+        if (typeof page != 'undefined') {
             params.page = page;
         }
 
@@ -54,7 +54,7 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         });
     }
 
-    this.save = function(letter) {
+    this.save = function (letter) {
         return $http.put(serviceBackend + 'letters/' + letter.id, letter);
     }
 }]);
