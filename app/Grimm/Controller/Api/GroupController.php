@@ -17,27 +17,8 @@ class GroupController extends \Controller {
      */
     public function index()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         return Group::with('users')->get();
     }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-    }
-
 
     /**
      * Store a newly created resource in storage.
@@ -46,10 +27,6 @@ class GroupController extends \Controller {
      */
     public function store()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         /*$validator = Validator::make(
             Input::only(['username', 'password', 'password_confirmation', 'email', 'activated']),
             [
@@ -85,29 +62,8 @@ class GroupController extends \Controller {
      */
     public function show($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         return Group::find($id)->load('users');
     }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-        return null;
-    }
-
 
     /**
      * Update the specified resource in storage.
@@ -117,10 +73,6 @@ class GroupController extends \Controller {
      */
     public function update($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         /*$data = Input::only(array(
             'first_name',
             'last_name',
@@ -171,10 +123,6 @@ class GroupController extends \Controller {
      */
     public function destroy($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.delete'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         Group::destroy($id);
     }
 

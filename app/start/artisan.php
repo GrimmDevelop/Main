@@ -14,3 +14,7 @@
 ini_set('memory_limit', -1);
 
 Artisan::add(new CompileTemplatesCommand);
+Artisan::add(new AssignFromLocations);
+Artisan::add(new AssignToLocations);
+Artisan::add(new AssignSenderPersons);
+Artisan::add(new AssignReceiverPersons);

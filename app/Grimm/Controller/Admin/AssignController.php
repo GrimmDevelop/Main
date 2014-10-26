@@ -26,16 +26,11 @@ class AssignController extends \Controller {
         $this->assigner['to'] = $letterToAssigner;
     }
 
-    public function from()
+    public function from($take)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('assign'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-
         $failedLocations = [];
         $counter = 0;
-        foreach ($this->getLetters('from') as $letter) {
+        foreach ($this->getLetters('from', $take) as $letter) {
             foreach ($letter->information as $infor) {
                 if ($infor->code == 'absendeort' || $infor->code == 'absort_ers') {
                     if ($location = $this->getLocation($infor->data)) {
@@ -56,15 +51,11 @@ class AssignController extends \Controller {
         return \Response::json(array('type' => $counter > 0 ? 'success' : 'danger', 'message' => $counter . ' assignments done.', 'failed' => $failedLocations));
     }
 
-    public function to()
+    public function to($take)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('assign'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         $failedLocations = [];
         $counter = 0;
-        foreach ($this->getLetters('to') as $letter) {
+        foreach ($this->getLetters('to', $take) as $letter) {
             foreach ($letter->information as $info) {
                 if ($info->code == 'empf_ort') {
                     if ($location = $this->getLocation($info->data)) {
@@ -85,15 +76,11 @@ class AssignController extends \Controller {
         return \Response::json(array('type' => $counter > 0 ? 'success' : 'danger', 'message' => $counter . ' assignments done.', 'failed' => $failedLocations));
     }
 
-    public function senders()
+    public function senders($take)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('assign'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         $failedPersons = [];
         $counter = 0;
-        foreach ($this->getLetters('senders') as $letter) {
+        foreach ($this->getLetters('senders', $take) as $letter) {
             foreach ($letter->information as $info) {
                 if ($info->code == 'senders') {
                     if ($person = $this->getPerson($info->data)) {
@@ -114,15 +101,10 @@ class AssignController extends \Controller {
         return \Response::json(array('type' => $counter > 0 ? 'success' : 'danger', 'message' => $counter . ' assignments done.', 'failed' => $failedPersons));
     }
 
-    public function receivers()
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('assign'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-        $failedPersons = [];
+    public function receivers($take)
+    {$failedPersons = [];
         $counter = 0;
-        foreach ($this->getLetters('receivers') as $letter) {
+        foreach ($this->getLetters('receivers', $take) as $letter) {
             foreach ($letter->information as $info) {
                 if ($info->code == 'receivers') {
                     if ($person = $this->getPerson($info->data)) {
@@ -143,7 +125,7 @@ class AssignController extends \Controller {
         return \Response::json(array('type' => $counter > 0 ? 'success' : 'danger', 'message' => $counter . ' assignments done.', 'failed' => $failedPersons));
     }
 
-    protected function getLetters($mode)
+    protected function getLetters($mode, $take)
     {
         $builder = Letter::query();
 
@@ -164,7 +146,7 @@ class AssignController extends \Controller {
                 break;
         }
 
-        $builder->take((int)Input::get('take', 100));
+        $builder->take(abs((int)$take));
 
         $builder->with('information');
 
@@ -210,18 +192,11 @@ class AssignController extends \Controller {
 
     public function cacheLocation()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('assign'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         GeoCache::create(Input::only(['name', 'geo_id']));
     }
 
-    public function cachePerson() {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('assign'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
+    public function cachePerson()
+    {
         PersonCache::create(Input::only(['name', 'person_id']));
     }
 }

@@ -121,31 +121,12 @@ class PersonController extends \Controller {
 
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
-
-
-    }
-
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
     public function store()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.create'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
-
         if(Person::create(Input::only('name_2013', 'auto_generated'))) {
             return Response::json(array('type' => 'success', 'message' => 'person generated.'), 200);
         } else {
@@ -169,21 +150,6 @@ class PersonController extends \Controller {
         return null;
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
-    }
-
-
     /**
      * Update the specified resource in storage.
      *
@@ -192,9 +158,7 @@ class PersonController extends \Controller {
      */
     public function update($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.edit'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
+        // update
     }
 
 
@@ -206,9 +170,7 @@ class PersonController extends \Controller {
      */
     public function destroy($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('persons.delete'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
+        // destroy
     }
 
 

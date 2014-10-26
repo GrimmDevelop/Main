@@ -64,19 +64,6 @@ class LetterController extends \Controller {
         return json_encode($return);
     }
 
-
-    /**
-     * Display a listing of letters changed after given date
-     * @param  int $year
-     * @param  int $month
-     * @param  int $day
-     * @return Response
-     */
-    public function lettersChangedAfter($year, $month, $day)
-    {
-        return Letter::where('updated_at', '>=', Carbon::createFromDate($year, $month, $day))->take(Input::get('take', 100))->get()->toJson();
-    }
-
     public function stream()
     {
         $result = $this->loadItems(
@@ -256,10 +243,6 @@ class LetterController extends \Controller {
      */
     public function update($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('letters.edit'))) {
-            return Response::json('Unauthorized action.', 403);
-        }
-
         if (!($letter = Letter::find($id))) {
             return Response::json(['type' => 'danger', 'message' => 'unknown letter ' . $id], 404);
         }
@@ -331,10 +314,6 @@ class LetterController extends \Controller {
 
     public function assign($mode)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('letters.edit'))) {
-            return Response::json('Unauthorized action.', 403);
-        }
-
         if (!isset($this->assigner[$mode])) {
             return Response::json(array('type' => 'danger', 'message' => 'Unkown method ' . $mode));
         }

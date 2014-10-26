@@ -16,9 +16,6 @@ class UserController extends \Controller {
 	 */
 	public function index()
 	{
-        if(!Sentry::getUser()->hasPermission('users.view')) {
-            return \Redirect::to('admin')->with('error', 'auth.permission');
-        }
 		return View::make('admin.users.index', array(
             'models' => User::all()
         ));
@@ -55,10 +52,6 @@ class UserController extends \Controller {
 	 */
 	public function show($id)
 	{
-        if(!Sentry::getUser()->hasPermission('users.view')) {
-            return \Redirect::to('admin')->with('error', 'auth.permission');
-        }
-
         try {
             $user = User::findOrFail($id);
 
@@ -79,10 +72,6 @@ class UserController extends \Controller {
 	 */
 	public function edit($id)
 	{
-        if(!Sentry::getUser()->hasPermission('users.edit')) {
-            return \Redirect::to('admin')->with('error', 'auth.permission');
-        }
-
         try {
             $user = User::findOrFail($id);
 
@@ -103,10 +92,6 @@ class UserController extends \Controller {
 	 */
 	public function update($id)
 	{
-        if(!Sentry::getUser()->hasPermission('users.edit')) {
-            return \Redirect::to('admin')->with('error', 'auth.permission');
-        }
-
         try {
             $user = User::findOrFail($id);
 
@@ -125,10 +110,6 @@ class UserController extends \Controller {
 	 */
 	public function destroy($id)
 	{
-        if(!Sentry::getUser()->hasPermission('users.delete')) {
-            return \Redirect::to('admin')->with('error', 'auth.permission');
-        }
-
         return User::destroy($id);
 	}
 }
