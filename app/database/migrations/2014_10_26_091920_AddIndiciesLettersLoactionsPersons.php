@@ -57,6 +57,8 @@ class AddIndiciesLettersLoactionsPersons extends Migration {
 
 		Schema::table('geo_cache', function(Blueprint $table)
 		{
+			DB::statement('ALTER TABLE `geo_cache` CHANGE `geo_id` `geo_id` INT( 10 ) UNSIGNED NOT NULL');
+
 			$table->index('geo_id');
 			$table->foreign('geo_id')
 				->references('id')->on('locations')
