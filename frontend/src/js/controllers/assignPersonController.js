@@ -1,4 +1,4 @@
-grimmApp.controller('assignPersonController', ['$scope', 'Persons', '$modalInstance', 'letter', 'mode', function ($scope, Persons, $modalInstance, letter, mode) {
+grimmApp.controller('assignPersonController', ['$scope', '$modalInstance', 'Persons', 'Letters', 'letter', 'mode', function ($scope, $modalInstance, Persons, Letters, letter, mode) {
     $scope.letter = letter;
     $scope.mode = mode;
 
@@ -34,6 +34,12 @@ grimmApp.controller('assignPersonController', ['$scope', 'Persons', '$modalInsta
             $scope.selectedItem = null;
             $scope.message = data;
             // hide loader show red cross
+        });
+    }
+
+    $scope.unassign = function(sender) {
+        Letters.unassign().success(function(data) {
+
         });
     }
 

@@ -20,6 +20,7 @@ Route::group(['prefix' => 'api'], function()
     Route::post('letters',              ['before' => 'grimm_access:letters.create', 'uses' => 'Grimm\Controller\Api\LetterController@store']);
     Route::put('letters/{id}',          ['before' => 'grimm_access:letters.edit', 'uses' => 'Grimm\Controller\Api\LetterController@update']);
     Route::put('letters/assign/{mode}', ['before' => 'grimm_access:letters.edit', 'uses' => 'Grimm\Controller\Api\LetterController@assign']);
+    Route::delete('letters/assign/{mode}',['before' => 'grimm_access:letters.edit', 'uses' => 'Grimm\Controller\Api\LetterController@unassign']);
 
     // Location api
     Route::get('locations',             ['before' => 'grimm_access:none', 'uses' => 'Grimm\Controller\Api\LocationController@index']);

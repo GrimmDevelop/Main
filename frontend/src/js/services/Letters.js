@@ -54,6 +54,13 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         });
     }
 
+    this.unassign = function (mode, letter_id, person_id) {
+        return $http.delete(serviceBackend + 'letters/assign/' + mode, {
+            object_id: letter_id,
+            item_id: person_id
+        });
+    }
+
     this.save = function (letter) {
         return $http.put(serviceBackend + 'letters/' + letter.id, letter);
     }
