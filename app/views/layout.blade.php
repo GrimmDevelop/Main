@@ -80,6 +80,10 @@
 @endif
 
     <script src="{{ url('assets/js/main.js') }}"></script>
+@if(Sentry::check())
+    <script src="{{ url('assets/admin/js/main.js') }}"></script>
+@endif
+
     @asset('js')
     <script>
 

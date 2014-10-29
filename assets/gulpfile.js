@@ -8,16 +8,6 @@ var path = require('path');
 
 var BASE_PATH = '../public/assets/';
 
-gulp.task('less', function() {
-    return gulp.src('src/less/main.less')
-        .pipe(less({
-            paths: [ path.join(__dirname, 'theme_components', 'bower', 'bootstrap', 'less') ]
-        }))
-        .pipe(minifycss())
-        .pipe(gulp.dest(BASE_PATH + 'css'))
-        .pipe(notify({"message": "LESS compiled!"}));
-});
-
 var third_party = [
     "theme_components/bower/jquery/dist/jquery.min.js",
     "theme_components/bower/bootstrap/dist/js/bootstrap.min.js",
@@ -34,18 +24,45 @@ var third_party = [
     "theme_components/bower/angular-dragdrop-ganarajpr/draganddrop.js"
 ];
 
-gulp.task('js', function() {
-    return gulp.src(third_party.concat(['src/js/**/*.js']))
+gulp.task('frontend_less', function() {
+    return gulp.src('src/frontend/less/main.less')
+        .pipe(less({
+            paths: [ path.join(__dirname, 'theme_components', 'bower', 'bootstrap', 'less') ]
+        }))
+        .pipe(minifycss())
+        .pipe(gulp.dest(BASE_PATH + 'css'))
+        .pipe(notify({"message": "LESS compiled!"}));
+});
+
+gulp.task('backend_less', function() {
+    return gulp.src('src/backend/less/main.less')
+        .pipe(minifycss())
+        .pipe(gulp.dest(BASE_PATH + 'admin/css'))
+        .pipe(notify({"message": "LESS compiled!"}));
+});
+
+gulp.task('frontend_js', function() {
+    return gulp.src(third_party.concat(['src/frontend/js/**/*.js']))
         .pipe(concat('main.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest(BASE_PATH + 'js'))
         .pipe(notify({"message": "JS compiled!"}));
 });
 
-gulp.task('watch', function() {
-    gulp.watch('src/less/*.less', ['less']);
+gulp.task('backend_js', function() {
+    return gulp.src(['src/backend/js/**/*.js'])
+        .pipe(concat('main.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest(BASE_PATH + 'admin/js'))
+        .pipe(notify({"message": "JS compiled!"}));
+});
 
-    gulp.watch('src/js/**/*.js', ['js']);
+gulp.task('watch', function() {
+    gulp.watch('src/frontend/less/*.less', ['frontend_less']);
+    gulp.watch('src/backend/less/*.less', ['backend_less']);
+
+    gulp.watch('src/frontend/js/**/*.js', ['frontend_js']);
+    gulp.watch('src/backend/js/**/*.js', ['backend_js']);
 })
 
-gulp.task('default', ['less', 'js', 'watch']);
+gulp.task('default', ['frontend_less', 'backend_less', 'frontend_js', 'backend_js', 'watch']);
