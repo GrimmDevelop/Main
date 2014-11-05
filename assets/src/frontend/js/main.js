@@ -2,7 +2,7 @@ jQuery(function ($) {
     $('[data-toggle=tooltip]').tooltip();
 });
 
-var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ngDragDrop"]);
+var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ang-drag-drop"]);
 
 grimmApp.config(['$httpProvider', 'flowFactoryProvider', 'GoogleMapApiProvider'.ns(),
     function ($httpProvider, flowFactoryProvider, GoogleMapApi) {
