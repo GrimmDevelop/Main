@@ -1,6 +1,11 @@
 grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters', 'Locations', 'Persons', function ($scope, $modal, Search, Letters, Locations, Persons) {
 
     $scope.filters = [];
+    $scope.currentFilter = {};
+    $scope.currentFilter.id = null;
+    $scope.currentFilter.filter_key = null;
+    $scope.currentFilter.fields = [];
+
     $scope.codes = [];
     $scope.results = {};
 
@@ -10,23 +15,23 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
 
     $scope.dateCodeBounds = {};
 
-    $scope.addFilter = function () {
+    $scope.addField = function () {
         $scope.result = {};
 
-        $scope.filters.push({
+        $scope.currentFilter.fields.push({
             code: "",
             compare: "equals",
             value: ""
         });
     }
 
-    $scope.removeFilter = function (filter) {
+    $scope.removeField = function (field) {
         $scope.result = {};
 
-        var index = $scope.filters.indexOf(filter);
+        var index = $scope.currentFilter.fields.indexOf(field);
 
         if (index > -1) {
-            $scope.filters.splice(index, 1);
+            $scope.currentFilter.fields.splice(index, 1);
         }
     }
 
@@ -34,23 +39,76 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
         $scope.result = {};
         Search.loadFilters().success(function (data) {
             $scope.filters = data;
+
+            if ($scope.filters.length > 0) {
+                // $scope.loadFilter($scope.filters[0]);
+            }
         });
     }
 
-    $scope.saveFilters = function () {
-        Search.saveFilters($scope.filters).success(function () {
-            // saved
+    $scope.loadFilter = function (filter) {
+        if (filter != null) {
+            if (typeof filter == 'string') {
+                if(filter != '') {
+                    Search.loadFilter(filter).success(function (data) {
+                        if (data != '') {
+                            $scope.currentFilter = data;
+                        }
+                    });
+                }
+            } else {
+                $scope.currentFilter = filter;
+            }
+        }
+    }
+
+    $scope.sendMail = function () {
+        if ($scope.currentFilter.filter_key != null) {
+            return 'mailto:?subject=Grimm%20Database%20-%20Filter&body=Filter%20link:%20' + $scope.currentFilter.filter_key;
+        }
+    }
+
+    $scope.newFilter = function () {
+        Search.newFilter($scope.currentFilter).success(function (data) {
+            $scope.filters = data;
         });
+    }
+
+    $scope.saveFilter = function () {
+        if ($scope.currentFilter.id != null) {
+            Search.saveFilter($scope.currentFilter).success(function (data) {
+                $scope.filters = data;
+            });
+        }
+    }
+
+    $scope.deleteFilter = function () {
+        if ($scope.currentFilter.id != null) {
+            Search.deleteFilter($scope.currentFilter).success(function (data) {
+                $scope.currentFilter.id = null;
+                $scope.currentFilter.public_key = null;
+                $scope.currentFilter.fields = [];
+                $scope.filters = data;
+            });
+        }
+    }
+
+    $scope.publicFilter = function () {
+        if ($scope.currentFilter.id != null) {
+            Search.publicFilter($scope.currentFilter).success(function (data) {
+                $scope.loadFilters();
+            });
+        }
     }
 
     $scope.search = function () {
-        Search.search($scope.filters, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
+        Search.search($scope.currentFilter.fields, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
             $scope.results = data;
         });
     }
 
     $scope.viewDistanceMap = function () {
-        Search.distanceMap($scope.filters).success(function (data) {
+        Search.distanceMap($scope.currentFilter.fields).success(function (data) {
             $modal.open({
                 templateUrl: 'partials/distanceMap',
                 controller: 'distanceMapController',

@@ -19,6 +19,7 @@
  * @link       http://cartalyst.com
  */
 
+use Grimm\Models\Filter;
 use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Hashing\HasherInterface;
@@ -192,7 +193,7 @@ class User extends Model implements UserInterface {
      */
     public function isActivated()
     {
-        return (bool) $this->activated;
+        return (bool)$this->activated;
     }
 
     /**
@@ -203,7 +204,7 @@ class User extends Model implements UserInterface {
      */
     public function getActivatedAttribute($activated)
     {
-        return (bool) $activated;
+        return (bool)$activated;
     }
 
     /**
@@ -214,18 +215,15 @@ class User extends Model implements UserInterface {
      */
     public function getPermissionsAttribute($permissions)
     {
-        if (!$permissions)
-        {
+        if (!$permissions) {
             return array();
         }
 
-        if (is_array($permissions))
-        {
+        if (is_array($permissions)) {
             return $permissions;
         }
 
-        if (!$_permissions = json_decode($permissions, true))
-        {
+        if (!$_permissions = json_decode($permissions, true)) {
             throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
         }
 
@@ -244,17 +242,14 @@ class User extends Model implements UserInterface {
         $permissions = array_merge($this->getPermissions(), $permissions);
 
         // Loop through and adjust permissions as needed
-        foreach ($permissions as $permission => &$value)
-        {
+        foreach ($permissions as $permission => &$value) {
             // Lets make sure there is a valid permission value
-            if (!in_array($value = (int) $value, $this->allowedPermissionsValues))
-            {
+            if (!in_array($value = (int)$value, $this->allowedPermissionsValues)) {
                 throw new \InvalidArgumentException("Invalid value [$value] for permission [$permission] given.");
             }
 
             // If the value is 0, delete it
-            if ($value === 0)
-            {
+            if ($value === 0) {
                 unset($permissions[$permission]);
             }
         }
@@ -284,13 +279,11 @@ class User extends Model implements UserInterface {
      */
     public function validate()
     {
-        if (!$login = $this->{static::$loginAttribute})
-        {
+        if (!$login = $this->{static::$loginAttribute}) {
             throw new LoginRequiredException("A login is required for a user, none given.");
         }
 
-        if (!$password = $this->getPassword())
-        {
+        if (!$password = $this->getPassword()) {
             throw new PasswordRequiredException("A password is required for user [$login], none given.");
         }
 
@@ -298,8 +291,7 @@ class User extends Model implements UserInterface {
         $query = $this->newQuery();
         $persistedUser = $query->where($this->getLoginName(), '=', $login)->first();
 
-        if ($persistedUser and $persistedUser->getId() != $this->getId())
-        {
+        if ($persistedUser and $persistedUser->getId() != $this->getId()) {
             throw new UserExistsException("A user already exists with login [$login], logins must be unique for users.");
         }
 
@@ -358,8 +350,7 @@ class User extends Model implements UserInterface {
      */
     public function checkPersistCode($persistCode)
     {
-        if (!$persistCode)
-        {
+        if (!$persistCode) {
             return false;
         }
 
@@ -391,13 +382,11 @@ class User extends Model implements UserInterface {
      */
     public function attemptActivation($activationCode)
     {
-        if ($this->activated)
-        {
+        if ($this->activated) {
             throw new UserAlreadyActivatedException('Cannot attempt activation on an already activated user.');
         }
 
-        if ($activationCode == $this->activation_code)
-        {
+        if ($activationCode == $this->activation_code) {
             $this->activation_code = null;
             $this->activated = true;
             $this->activated_at = new DateTime;
@@ -455,8 +444,7 @@ class User extends Model implements UserInterface {
      */
     public function attemptResetPassword($resetCode, $newPassword)
     {
-        if ($this->checkResetPasswordCode($resetCode))
-        {
+        if ($this->checkResetPasswordCode($resetCode)) {
             $this->password = $newPassword;
             $this->reset_password_code = null;
 
@@ -474,8 +462,7 @@ class User extends Model implements UserInterface {
      */
     public function clearResetPassword()
     {
-        if ($this->reset_password_code)
-        {
+        if ($this->reset_password_code) {
             $this->reset_password_code = null;
             $this->save();
         }
@@ -489,8 +476,7 @@ class User extends Model implements UserInterface {
      */
     public function getGroups()
     {
-        if (!$this->userGroups)
-        {
+        if (!$this->userGroups) {
             $this->userGroups = $this->groups()->get();
         }
 
@@ -505,8 +491,7 @@ class User extends Model implements UserInterface {
      */
     public function addGroup(GroupInterface $group)
     {
-        if (!$this->inGroup($group))
-        {
+        if (!$this->inGroup($group)) {
             $this->groups()->attach($group);
             $this->userGroups = null;
         }
@@ -522,8 +507,7 @@ class User extends Model implements UserInterface {
      */
     public function removeGroup(GroupInterface $group)
     {
-        if ($this->inGroup($group))
-        {
+        if ($this->inGroup($group)) {
             $this->groups()->detach($group);
             $this->userGroups = null;
         }
@@ -539,10 +523,8 @@ class User extends Model implements UserInterface {
      */
     public function inGroup(GroupInterface $group)
     {
-        foreach ($this->getGroups() as $_group)
-        {
-            if ($_group->getId() == $group->getId())
-            {
+        foreach ($this->getGroups() as $_group) {
+            if ($_group->getId() == $group->getId()) {
                 return true;
             }
         }
@@ -558,12 +540,10 @@ class User extends Model implements UserInterface {
      */
     public function getMergedPermissions()
     {
-        if (!$this->mergedPermissions)
-        {
+        if (!$this->mergedPermissions) {
             $permissions = array();
 
-            foreach ($this->getGroups() as $group)
-            {
+            foreach ($this->getGroups() as $group) {
                 $permissions = array_merge($permissions, $group->getPermissions());
             }
 
@@ -590,8 +570,7 @@ class User extends Model implements UserInterface {
      */
     public function hasAccess($permissions, $all = true)
     {
-        if ($this->isSuperUser())
-        {
+        if ($this->isSuperUser()) {
             return true;
         }
 
@@ -617,13 +596,11 @@ class User extends Model implements UserInterface {
     {
         $mergedPermissions = $this->getMergedPermissions();
 
-        if (!is_array($permissions))
-        {
-            $permissions = (array) $permissions;
+        if (!is_array($permissions)) {
+            $permissions = (array)$permissions;
         }
 
-        foreach ($permissions as $permission)
-        {
+        foreach ($permissions as $permission) {
             // We will set a flag now for whether this permission was
             // matched at all.
             $matched = true;
@@ -631,49 +608,40 @@ class User extends Model implements UserInterface {
             // Now, let's check if the permission ends in a wildcard "*" symbol.
             // If it does, we'll check through all the merged permissions to see
             // if a permission exists which matches the wildcard.
-            if ((strlen($permission) > 1) and ends_with($permission, '*'))
-            {
+            if ((strlen($permission) > 1) and ends_with($permission, '*')) {
                 $matched = false;
 
-                foreach ($mergedPermissions as $mergedPermission => $value)
-                {
+                foreach ($mergedPermissions as $mergedPermission => $value) {
                     // Strip the '*' off the end of the permission.
                     $checkPermission = substr($permission, 0, - 1);
 
                     // We will make sure that the merged permission does not
                     // exactly match our permission, but starts with it.
-                    if ($checkPermission != $mergedPermission and starts_with($mergedPermission, $checkPermission) and $value == 1)
-                    {
+                    if ($checkPermission != $mergedPermission and starts_with($mergedPermission, $checkPermission) and $value == 1) {
                         $matched = true;
                         break;
                     }
                 }
-            } elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
-            {
+            } elseif ((strlen($permission) > 1) and starts_with($permission, '*')) {
                 $matched = false;
 
-                foreach ($mergedPermissions as $mergedPermission => $value)
-                {
+                foreach ($mergedPermissions as $mergedPermission => $value) {
                     // Strip the '*' off the beginning of the permission.
                     $checkPermission = substr($permission, 1);
 
                     // We will make sure that the merged permission does not
                     // exactly match our permission, but ends with it.
-                    if ($checkPermission != $mergedPermission and ends_with($mergedPermission, $checkPermission) and $value == 1)
-                    {
+                    if ($checkPermission != $mergedPermission and ends_with($mergedPermission, $checkPermission) and $value == 1) {
                         $matched = true;
                         break;
                     }
                 }
-            } else
-            {
+            } else {
                 $matched = false;
 
-                foreach ($mergedPermissions as $mergedPermission => $value)
-                {
+                foreach ($mergedPermissions as $mergedPermission => $value) {
                     // This time check if the mergedPermission ends in wildcard "*" symbol.
-                    if ((strlen($mergedPermission) > 1) and ends_with($mergedPermission, '*'))
-                    {
+                    if ((strlen($mergedPermission) > 1) and ends_with($mergedPermission, '*')) {
                         $matched = false;
 
                         // Strip the '*' off the end of the permission.
@@ -681,8 +649,7 @@ class User extends Model implements UserInterface {
 
                         // We will make sure that the merged permission does not
                         // exactly match our permission, but starts with it.
-                        if ($checkMergedPermission != $permission and starts_with($permission, $checkMergedPermission) and $value == 1)
-                        {
+                        if ($checkMergedPermission != $permission and starts_with($permission, $checkMergedPermission) and $value == 1) {
                             $matched = true;
                             break;
                         }
@@ -690,8 +657,7 @@ class User extends Model implements UserInterface {
 
                     // Otherwise, we'll fallback to standard permissions checking where
                     // we match that permissions explicitly exist.
-                    elseif ($permission == $mergedPermission and $mergedPermissions[$permission] == 1)
-                    {
+                    elseif ($permission == $mergedPermission and $mergedPermissions[$permission] == 1) {
                         $matched = true;
                         break;
                     }
@@ -701,17 +667,14 @@ class User extends Model implements UserInterface {
             // Now, we will check if we have to match all
             // permissions or any permission and return
             // accordingly.
-            if ($all === true and $matched === false)
-            {
+            if ($all === true and $matched === false) {
                 return false;
-            } elseif ($all === false and $matched === true)
-            {
+            } elseif ($all === false and $matched === true) {
                 return true;
             }
         }
 
-        if ($all === false)
-        {
+        if ($all === false) {
             return false;
         }
 
@@ -783,8 +746,7 @@ class User extends Model implements UserInterface {
      */
     public function checkHash($string, $hashedString)
     {
-        if (!static::$hasher)
-        {
+        if (!static::$hasher) {
             throw new \RuntimeException("A hasher has not been provided for the user.");
         }
 
@@ -800,8 +762,7 @@ class User extends Model implements UserInterface {
      */
     public function hash($string)
     {
-        if (!static::$hasher)
-        {
+        if (!static::$hasher) {
             throw new \RuntimeException("A hasher has not been provided for the user.");
         }
 
@@ -818,16 +779,14 @@ class User extends Model implements UserInterface {
         // We'll check if the user has OpenSSL installed with PHP. If they do
         // we'll use a better method of getting a random string. Otherwise, we'll
         // fallback to a reasonably reliable method.
-        if (function_exists('openssl_random_pseudo_bytes'))
-        {
+        if (function_exists('openssl_random_pseudo_bytes')) {
             // We generate twice as many bytes here because we want to ensure we have
             // enough after we base64 encode it to get the length we need because we
             // take out the "/", "+", and "=" characters.
             $bytes = openssl_random_pseudo_bytes($length * 2);
 
             // We want to stop execution if the key fails because, well, that is bad.
-            if ($bytes === false)
-            {
+            if ($bytes === false) {
                 throw new \RuntimeException('Unable to generate random string.');
             }
 
@@ -859,8 +818,7 @@ class User extends Model implements UserInterface {
     public function setAttribute($key, $value)
     {
         // Hash required fields when necessary
-        if (in_array($key, $this->hashableAttributes) and !empty($value))
-        {
+        if (in_array($key, $this->hashableAttributes) and !empty($value)) {
             $value = $this->hash($value);
         }
 
@@ -886,16 +844,13 @@ class User extends Model implements UserInterface {
     {
         $result = parent::toArray();
 
-        if (isset($result['activated']))
-        {
+        if (isset($result['activated'])) {
             $result['activated'] = $this->getActivatedAttribute($result['activated']);
         }
-        if (isset($result['permissions']))
-        {
+        if (isset($result['permissions'])) {
             $result['permissions'] = $this->getPermissionsAttribute($result['permissions']);
         }
-        if (isset($result['suspended_at']))
-        {
+        if (isset($result['suspended_at'])) {
             $result['suspended_at'] = $result['suspended_at']->format('Y-m-d H:i:s');
         }
 
@@ -957,5 +912,10 @@ class User extends Model implements UserInterface {
     public function fullName()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function filters()
+    {
+        return $this->hasMany(Filter::class);
     }
 }

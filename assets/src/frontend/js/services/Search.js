@@ -27,9 +27,29 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return $http.get(serviceBackend + '/filters');
     }
 
-    this.saveFilters = function (filters) {
-        return $http.put(serviceBackend + '/filters', {
-            filters: filters
+    this.loadFilter = function (key) {
+        return $http.get(serviceBackend + '/filters/' + key);
+    }
+
+    this.newFilter = function (filter) {
+        return $http.post(serviceBackend + '/filters', {
+            filter: filter
         });
+    }
+
+    this.saveFilter = function (filter) {
+        return $http.put(serviceBackend + '/filters', {
+            filter: filter
+        });
+    }
+
+    this.publicFilter = function (filter) {
+        return $http.put(serviceBackend + '/filters/public', {
+            filter: filter
+        });
+    }
+
+    this.deleteFilter = function(filter) {
+        return $http.delete(serviceBackend + '/filters/' + filter.id);
     }
 }]);

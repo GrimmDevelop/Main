@@ -2,26 +2,40 @@
 
 @section('body')
     <div class="row">
-        <div class="col-md-12" ng-controller="searchController">
+        <div class="col-md-12" ng-controller="searchController" ng-init="loadFilter('{{ $filter_key }}')">
             <form role="form" ng-submit="search()">
-                <h1>Filters</h1>
-                <div class="form-group row" ng-repeat="filter in filters">
-                    <div class="col-md-2 control-label"><select class="form-control" ng-model="filter.code" ng-options="code for code in codes"></select></div>
-                    <div class="col-md-2"><select class="form-control" ng-model="filter.compare">
+                <h1>Filter</h1>
+
+                <div class="form-group row" ng-repeat="field in currentFilter.fields">
+                    <div class="col-md-2 control-label"><select class="form-control" ng-model="field.code" ng-options="code for code in codes"></select></div>
+                    <div class="col-md-2"><select class="form-control" ng-model="field.compare">
                         <option>equals</option>
                         <option>contains</option>
                         <option>starts with</option>
                         <option>ends with</option>
                     </select></div>
-                    <div class="col-md-7"><input type="text" class="form-control" ng-model="filter.value" /></div>
-                    <div class="col-md-1"><button type="button" class="btn btn-primary" ng-click="removeFilter(filter)">-</button></div>
+                    <div class="col-md-7"><input type="text" class="form-control" ng-model="field.value" /></div>
+                    <div class="col-md-1"><button type="button" class="btn btn-danger" ng-click="removeField(field)">-</button></div>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary" ng-click="addFilter()">+</button>
+                    <button type="button" class="btn btn-primary" ng-click="addField()">+</button>
                 </div>
                 <button type="submit" class="btn btn-primary">start search</button>
 @if(Sentry::check())
-                <button type="button" class="btn btn-default" ng-click="saveFilters()">save filters</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" ng-repeat="filter in filters" ng-class="{ 'active': currentFilter.id == filter.id }" ng-click="loadFilter(filter)">@{{ $index + 1  }}</button>
+                    <button type="button" class="btn btn-default" ng-click="newFilter()" ng-disabled="currentFilter.fields.length == 0">+</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" ng-click="saveFilter()" ng-disabled="currentFilter.id == null">save current</button>
+                    <button type="button" class="btn btn-default" ng-click="deleteFilter()" ng-disabled="currentFilter.id == null">delete current</button>
+                    <button type="button" class="btn btn-default" ng-click="publicFilter()" ng-disabled="currentFilter.id == null || currentFilter.filter_key != null">public current</button>
+                </div>
+
+                <span class="btn-group" ng-show="currentFilter.id != null && currentFilter.filter_key != null">
+                    <a href="{{ url('search') }}/@{{ currentFilter.filter_key }}" target="_blank" class="btn btn-default">{{ url('search') }}/@{{ currentFilter.filter_key }}</a>
+                    <a href="@{{ sendMail() }}" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span></a>
+                </span>
 @endif
             </form>
 
