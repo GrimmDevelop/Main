@@ -55,12 +55,12 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <p><a class="btn btn-default" href ng-click="viewDistanceMap()">compute distance map</a></p>
+                        <p><a class="btn btn-default" href ng-click="viewDistanceMap()" ng-disabled="!{{ json_encode(Sentry::check()) }}">compute distance map</a></p>
                     </div>
                 </div>
 
                 <div class="row" ng-repeat="letter in results.data">
-                    <div class="col-md-1"><a href letter-preview="letter.id">@{{ letter.id }}</a></div>
+                    <div class="col-md-1"><a href letter-preview="letter.id" class="btn btn-default">#@{{ letter.id }}</a></div>
                     <div class="col-md-9">
                         <table class="table">
                             <thead>
@@ -78,7 +78,7 @@
                         </table>
                     </div>
                     <div class="col-md-2">
-                        <a href letter-from-to-preview="letter.id" class="btn btn-default form-control">
+                        <a href letter-from-to-preview="letter.id" ng-show="letter.from_id && letter.to_id" class="btn btn-default form-control">
                             <span class="glyphicon glyphicon-map-marker"></span>
                             <span class="glyphicon glyphicon-arrow-right"></span>
                             <span class="glyphicon glyphicon-envelope"></span>

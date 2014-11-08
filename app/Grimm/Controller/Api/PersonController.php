@@ -2,11 +2,10 @@
 
 namespace Grimm\Controller\Api;
 
-use App;
-use Input;
-use Sentry;
-use Response;
 use Grimm\Models\Person;
+use Grimm\Models\Person\Information;
+use Input;
+use Response;
 
 class PersonController extends \Controller {
 
@@ -18,12 +17,11 @@ class PersonController extends \Controller {
     public function index()
     {
         $result = $this->loadItems(
-            abs((int) Input::get('items_per_page', 25)),
+            abs((int)Input::get('items_per_page', 25)),
             Input::get('load', ['information'])
         );
 
-        if ($result instanceof JsonResponse)
-        {
+        if ($result instanceof JsonResponse) {
             return $result;
         }
 
@@ -44,18 +42,15 @@ class PersonController extends \Controller {
     {
         $builder = Person::query();
 
-        if (Input::get('ahead', false))
-        {
+        if (Input::get('ahead', false)) {
             return $builder->select('*', 'name_2013 as name')->where('name_2013', 'like', \Input::get('name') . '%')->take(15)->get();
-        } else
-        {
+        } else {
             $builder->with('information')->select('*', 'name_2013 as name')->where('name_2013', \Input::get('name'));
         }
 
         $result = $builder->get();
 
-        if ($result->count() > 0)
-        {
+        if ($result->count() > 0) {
             return $result->toJson();
         }
 
@@ -70,10 +65,9 @@ class PersonController extends \Controller {
      */
     protected function loadItems($totalItems, array $with = [])
     {
-        $totalItems = abs((int) $totalItems);
+        $totalItems = abs((int)$totalItems);
 
-        if ($totalItems > 500)
-        {
+        if ($totalItems > 500) {
             $totalItems = 500;
         }
 
@@ -85,26 +79,19 @@ class PersonController extends \Controller {
             (SELECT COUNT(letter_sender.person_id) FROM letter_sender WHERE persons.id = letter_sender.person_id ) AS sended_letters_count'
         );
 
-        foreach ($with as $item)
-        {
-            if (in_array($item, ['information']))
-            {
+        foreach ($with as $item) {
+            if (in_array($item, ['information'])) {
                 $builder->with($item);
             }
         }
 
-        if (Input::get('updated_after'))
-        {
-            try
-            {
+        if (Input::get('updated_after')) {
+            try {
                 $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', Input::get('updated_after'));
-            } catch (\InvalidArgumentException $e)
-            {
-                try
-                {
+            } catch (\InvalidArgumentException $e) {
+                try {
                     $dateTime = Carbon::createFromFormat('Y-m-d', Input::get('updated_after'));
-                } catch (\InvalidArgumentException $e)
-                {
+                } catch (\InvalidArgumentException $e) {
                     return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s]'), 500);
                 }
             }
@@ -112,8 +99,7 @@ class PersonController extends \Controller {
             $builder->where('updated_at', '>=', $dateTime);
         }
 
-        if (Input::get('auto_generated', false))
-        {
+        if (Input::get('auto_generated', false)) {
             $builder->where('auto_generated', true);
         }
 
@@ -125,6 +111,10 @@ class PersonController extends \Controller {
         return $builder->paginate($totalItems);
     }
 
+    public function codes()
+    {
+        return (new Information)->codes();
+    }
 
     public function correspondence()
     {
@@ -140,11 +130,9 @@ class PersonController extends \Controller {
      */
     public function store()
     {
-        if (Person::create(Input::only('name_2013', 'auto_generated')))
-        {
+        if (Person::create(Input::only('name_2013', 'auto_generated'))) {
             return Response::json(array('type' => 'success', 'message' => 'person generated.'), 200);
-        } else
-        {
+        } else {
             return Response::json(array('type' => 'danger', 'message' => 'creation failed!'), 500);
         }
     }
@@ -158,8 +146,7 @@ class PersonController extends \Controller {
      */
     public function show($id)
     {
-        if ($person = Person::find($id))
-        {
+        if ($person = Person::find($id)) {
             return $person->load('information')->toJson();
         }
 

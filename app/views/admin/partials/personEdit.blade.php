@@ -10,6 +10,14 @@
             </div>
             <div class="col-sm-2"></div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">auto generated</label>
+            <div class="col-sm-8 btn-group">
+                <label class="btn btn-primary" ng-model="person.auto_generated" btn-radio="1">Yes</label>
+                <label class="btn btn-primary" ng-model="person.auto_generated" btn-radio="0">No</label>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
         <hr>
         <div class="form-group" ng-repeat="info in person.information|orderObjectBy:'code'" ng-class="info.state == 'add' ? 'info-add' : (info.state == 'remove' ? 'info-remove' : '')">
             <label class="col-sm-2 control-label">@{{ info.code }}</label>

@@ -57,13 +57,13 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
     $scope.load(id);
 }]);
 
-grimmApp.controller('personEditAddCodeController', ['$scope', '$modalInstance', 'Search', function ($scope, $modalInstance, Search) {
+grimmApp.controller('personEditAddCodeController', ['$scope', '$modalInstance', 'Persons', function ($scope, $modalInstance, Persons) {
 
     $scope.code = null;
 
     $scope.codes = [];
 
-    Search.codes().success(function (data) {
+    Persons.codes().success(function (data) {
         $scope.codes = data;
     });
 

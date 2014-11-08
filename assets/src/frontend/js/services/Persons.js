@@ -34,6 +34,10 @@ grimmApp.service("Persons", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return $http.get(serviceBackend + 'persons/' + id);
     }
 
+    this.codes = function () {
+        return $http.get(serviceBackend + 'persons/codes');
+    }
+
     this.save = function (person) {
         return $http.put(serviceBackend + 'persons/' + person.id, person);
     }

@@ -30,7 +30,7 @@ Route::group(['prefix' => 'search'], function () {
     Route::put('filters', 'Grimm\Controller\SearchController@saveFilter');
     Route::put('filters/public', 'Grimm\Controller\SearchController@publicFilter');
     Route::delete('filters/{id}', 'Grimm\Controller\SearchController@deleteFilter');
-    Route::post('distanceMap', 'Grimm\Controller\SearchController@computeDistanceMap');
+    Route::post('distanceMap', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\SearchController@computeDistanceMap']);
 
     Route::get('/{filterKey}', 'Grimm\Controller\SearchController@searchForm');
 });

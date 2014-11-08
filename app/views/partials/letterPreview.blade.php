@@ -1,8 +1,12 @@
 <div class="modal-header">
-    <h3 class="modal-title"><span class="glyphicon glyphicon-mail"></span> @{{ letter.id }} (date code: @{{ letter.code }})</h3>
+    <h3 class="modal-title">
+        Letter <strong>#@{{ letter.id }}</strong>
+        <span ng-show="letter.from_id">from <strong>@{{ letter.from.name }}</strong></span>
+        <span ng-show="letter.from_id">to <strong>@{{ letter.to.name }}</strong></span>
+    </h3>
 </div>
 <div class="modal-body">
-    <h3>Informations</h3>
+    <h3>Information</h3>
     <table class="table">
         <thead>
             <tr>
@@ -24,7 +28,7 @@
                  <span class="glyphicon glyphicon-arrow-right"></span>
                  <span class="glyphicon glyphicon-envelope"></span>
             </a>
-            <a href person-preview="person.id" class="btn btn-default form-control" ng-repeat="person in letter.senders">
+            <a href person-preview="person.id" class="btn form-control" ng-class="{ 'btn-default': !person.auto_generated, 'btn-warning': person.auto_generated }" ng-repeat="person in letter.senders">
                 <span class="glyphicon glyphicon-user"></span>
                 <span class="glyphicon glyphicon-arrow-right"></span>
                 <span class="glyphicon glyphicon-envelope"></span>
@@ -36,7 +40,7 @@
                 <span class="glyphicon glyphicon-arrow-right"></span>
                 <span class="glyphicon glyphicon-map-marker"></span>
             </a>
-            <a href person-preview="person.id" class="btn btn-default form-control" ng-repeat="person in letter.receivers">
+            <a href person-preview="person.id" class="btn form-control" ng-class="{ 'btn-default': !person.auto_generated, 'btn-warning': person.auto_generated }" ng-repeat="person in letter.receivers">
                 <span class="glyphicon glyphicon-envelope"></span>
                 <span class="glyphicon glyphicon-arrow-right"></span>
                 <span class="glyphicon glyphicon-user"></span>
