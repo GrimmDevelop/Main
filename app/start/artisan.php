@@ -18,3 +18,4 @@ Artisan::add(new AssignFromLocations);
 Artisan::add(new AssignToLocations);
 Artisan::add(new AssignSenderPersons);
 Artisan::add(new AssignReceiverPersons);
+Artisan::add(new CorrespondenceNetwork);
