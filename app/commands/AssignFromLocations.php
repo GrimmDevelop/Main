@@ -41,7 +41,8 @@ class AssignFromLocations extends Command {
      */
     public function fire()
     {
-        App::make('Grimm\Controller\Admin\AssignController')->from(999999999999);
+        $take = $this->option('take') == -1 ? 9999999999999 : abs((int)$this->option('take'));
+        App::make('Grimm\Controller\Admin\AssignController')->from($take);
     }
 
     /**
@@ -61,7 +62,9 @@ class AssignFromLocations extends Command {
      */
     protected function getOptions()
     {
-        return array();
+        return array(
+            array('take', 'take', InputOption::VALUE_OPTIONAL, "max rows per query", -1)
+        );
     }
 
 }

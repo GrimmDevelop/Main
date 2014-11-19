@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 class AssignReceiverPersons extends Command {
 
@@ -35,7 +36,8 @@ class AssignReceiverPersons extends Command {
      */
     public function fire()
     {
-        App::make('Grimm\Controller\Admin\AssignController')->receivers(999999999999);
+        $take = $this->option('take') == -1 ? 9999999999999 : abs((int)$this->option('take'));
+        App::make('Grimm\Controller\Admin\AssignController')->receivers($take);
     }
 
     /**
@@ -55,7 +57,9 @@ class AssignReceiverPersons extends Command {
      */
     protected function getOptions()
     {
-        return array();
+        return array(
+            array('take', 'take', InputOption::VALUE_OPTIONAL, "max rows per query", -1)
+        );
     }
 
 }
