@@ -275,11 +275,11 @@ class LetterController extends \Controller {
                     break;
 
                 case 'keep':
-                    if ($info = Information::find($info['id']))
+                    if ($infoObj = Information::find($info['id']))
                     {
-                        if ($info->data != $info['data'])
+                        if ($infoObj->data != $info['data'])
                         {
-                            $this->updateInformation($letter, $info, $info['data']);
+                            $this->updateInformation($letter, $infoObj, $info['data']);
                         }
                     }
                     break;
@@ -304,7 +304,7 @@ class LetterController extends \Controller {
             'data'      => $info['data']
         ]);
 
-        return $letter->info()->save(new Information([
+        return $letter->information()->save(new Information([
             'code' => $info['code'],
             'data' => $info['data']
         ]));
