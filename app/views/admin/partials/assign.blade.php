@@ -21,12 +21,14 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th></th>
+                    <th width="5%"></th>
+                    <th width="5%"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="location in locationsToCheck | orderBy:'name'">
                     <td>@{{ location.name }}</td>
+                    <td><a href letter-edit="location.letter"><span class="glyphicon glyphicon-envelope"></span></a></td>
                     <td><a href ng-click="search(location)"><span class="glyphicon glyphicon-search"></span></a></td>
                 </tr>
             </tbody>
@@ -41,13 +43,15 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th></th>
-                    <th>generate</th>
+                    <th width="5%"></th>
+                    <th width="5%"></th>
+                    <th width="5%">generate</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="person in personsToCheck | orderBy:'name'">
                     <td>@{{ person.name }}</td>
+                    <td><a href letter-edit="person.letter"><span class="glyphicon glyphicon-envelope"></span></a></td>
                     <td><a href ng-click="searchPerson(person)"><span class="glyphicon glyphicon-search"></span></a></td>
                     <td><a href ng-click="autoGenerate(person)"><span class="glyphicon glyphicon-new-window"></span></a></td>
                 </tr>

@@ -9,7 +9,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
     $scope.codes = [];
     $scope.results = {};
 
-    $scope.itemsPerPage = 100;
+    $scope.itemsPerPage = 30;
     $scope.currentPage = 1;
     $scope.itemsPerPageOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 300, 500];
 
@@ -120,6 +120,14 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
                 }
             });
         });
+    }
+
+    $scope.fieldTypeahead = function(value, field) {
+        if(field.code == '') {
+            return [];
+        }
+
+        return [];
     }
 
     Search.codes().success(function (codes) {

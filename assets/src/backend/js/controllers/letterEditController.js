@@ -54,6 +54,62 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
         });
     }
 
+
+    $scope.openPersonModal = function (assignMode) {
+
+        var modalInstance = $modal.open({
+            templateUrl: 'admin/partials/assign.' + assignMode.toLowerCase(),
+            controller: 'assignPersonController',
+            resolve: {
+                letter: function () {
+                    return $scope.letter;
+                },
+                mode: function () {
+                    return assignMode.toLowerCase();
+                }
+            }
+        });
+
+        /*modalInstance.result.then(function (result) {
+         Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
+         $scope.message = result;
+         $scope.reload($scope.itemsPerPage, $scope.currentPage);
+         }).error(function (result) {
+         $scope.message = result;
+         });
+         }, function () {
+
+         });*/
+    }
+
+    $scope.openLocationModal = function (assignMode) {
+
+        var modalInstance = $modal.open({
+            templateUrl: 'admin/partials/assign.' + assignMode.toLowerCase(),
+            controller: 'assignLocationController',
+            resolve: {
+                letter: function () {
+                    return $scope.letter;
+                },
+                mode: function () {
+                    return assignMode.toLowerCase();
+                }
+            }
+        });
+
+        /*modalInstance.result.then(function (result) {
+         Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
+         $scope.message = result;
+         $scope.reload($scope.itemsPerPage, $scope.currentPage);
+         }).error(function (result) {
+         $scope.message = result;
+         });
+         }, function () {
+
+         });*/
+    }
+
+
     $scope.load(id);
 }]);
 

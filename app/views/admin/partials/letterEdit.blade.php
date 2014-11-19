@@ -22,6 +22,21 @@
             </div>
         </div>
     </form>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div ng-repeat="sender in letter.senders">
+                <a href person-preview="sender.id">@{{ sender.name_2013 }}</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div ng-repeat="receiver in letter.receivers">
+                <a href person-preview="receiver.id">@{{ receiver.name_2013 }}</a>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="save()">Save</button>

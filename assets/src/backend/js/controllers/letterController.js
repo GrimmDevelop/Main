@@ -43,60 +43,6 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
 
     $scope.reload();
 
-    $scope.openPersonModal = function (currentLetter, assignMode) {
-
-        var modalInstance = $modal.open({
-            templateUrl: 'admin/partials/assign.' + assignMode.toLowerCase(),
-            controller: 'assignPersonController',
-            resolve: {
-                letter: function () {
-                    return currentLetter
-                },
-                mode: function () {
-                    return assignMode.toLowerCase();
-                }
-            }
-        });
-
-        /*modalInstance.result.then(function (result) {
-            Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
-                $scope.message = result;
-                $scope.reload($scope.itemsPerPage, $scope.currentPage);
-            }).error(function (result) {
-                $scope.message = result;
-            });
-        }, function () {
-
-        });*/
-    }
-
-    $scope.openLocationModal = function (currentLetter, assignMode) {
-
-        var modalInstance = $modal.open({
-            templateUrl: 'admin/partials/assign.' + assignMode.toLowerCase(),
-            controller: 'assignLocationController',
-            resolve: {
-                letter: function () {
-                    return currentLetter
-                },
-                mode: function () {
-                    return assignMode.toLowerCase();
-                }
-            }
-        });
-
-        /*modalInstance.result.then(function (result) {
-            Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
-                $scope.message = result;
-                $scope.reload($scope.itemsPerPage, $scope.currentPage);
-            }).error(function (result) {
-                $scope.message = result;
-            });
-        }, function () {
-
-        });*/
-    }
-
     $scope.openLetterId = null;
     $scope.openLetterWithId = function () {
         $scope.show($scope.openLetterId);
