@@ -32,10 +32,11 @@ Route::group(['prefix' => 'api'], function()
     // Person api
     Route::get('persons',               ['before' => 'grimm_access:none', 'uses' => 'Grimm\Controller\Api\PersonController@index']);
     Route::post('persons/search',       ['before' => 'grimm_access:none', 'uses' => 'Grimm\Controller\Api\PersonController@search']);
-    Route::get('persons/codes',        ['before' => 'grimm_access:none', 'uses' => 'Grimm\Controller\Api\PersonController@codes']);
+    Route::get('persons/codes',         ['before' => 'grimm_access:none', 'uses' => 'Grimm\Controller\Api\PersonController@codes']);
     Route::get('persons/{id}',          ['before' => 'grimm_access:none', 'uses' => 'Grimm\Controller\Api\PersonController@show']);
 
     Route::post('persons',              ['before' => 'grimm_access:persons.create', 'uses' => 'Grimm\Controller\Api\PersonController@store']);
+    Route::put('persons/{id}',          ['before' => 'grimm_access:persons.edit', 'uses' => 'Grimm\Controller\Api\PersonController@update']);
     Route::delete('persons/{id}',       ['before' => 'grimm_access:persons.delete', 'uses' => 'Grimm\Controller\Api\PersonController@destroy']);
 
     // User api

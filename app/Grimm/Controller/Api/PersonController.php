@@ -161,7 +161,18 @@ class PersonController extends \Controller {
      */
     public function update($id)
     {
-        // update
+        if (!($person = Person::find($id)))
+        {
+            return Response::json(['type' => 'danger', 'message' => 'unknown person ' . $id], 404);
+        }
+
+        if(Input::get('name_2013') != '') {
+            $person->name_2013 = Input::get('name_2013');
+        }
+
+        $person->save();
+
+        return Response::json(['type' => 'success', 'message' => 'changes saved'], 200);
     }
 
 
