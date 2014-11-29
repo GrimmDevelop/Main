@@ -30,6 +30,7 @@ class AssignController extends \Controller {
     {
         $failedLocations = [];
         $counter = 0;
+
         foreach ($this->getLetters('from', $take) as $letter)
         {
             foreach ($letter->information as $infor)
@@ -160,6 +161,10 @@ class AssignController extends \Controller {
 
     protected function getLetters($mode, $take)
     {
+        if($take <= 0) {
+            return [];
+        }
+
         $builder = Letter::query();
 
         switch ($mode)

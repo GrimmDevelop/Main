@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 class AssignFromLocations extends Command {
 
@@ -63,7 +64,7 @@ class AssignFromLocations extends Command {
     protected function getOptions()
     {
         return array(
-            array('take', 'take', InputOption::VALUE_OPTIONAL, "max rows per query", -1)
+            array('take', 't', InputOption::VALUE_OPTIONAL, "max rows per query", -1)
         );
     }
 

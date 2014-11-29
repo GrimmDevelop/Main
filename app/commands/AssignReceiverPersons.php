@@ -58,7 +58,7 @@ class AssignReceiverPersons extends Command {
     protected function getOptions()
     {
         return array(
-            array('take', 'take', InputOption::VALUE_OPTIONAL, "max rows per query", -1)
+            array('take', 't', InputOption::VALUE_OPTIONAL, "max rows per query", -1)
         );
     }
 

@@ -45,6 +45,8 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
 
     $scope.openLetterId = null;
     $scope.openLetterWithId = function () {
-        $scope.show($scope.openLetterId);
+        if($scope.openLetterId) {
+            $scope.show($scope.openLetterId);
+        }
     }
 }]);

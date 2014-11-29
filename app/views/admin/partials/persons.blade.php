@@ -3,9 +3,15 @@
     <div class="col-md-2" style="margin: 20px 0;">
         <select class="form-control" ng-model="itemsPerPage" ng-change="reload()" ng-options="option for option in itemsPerPageOptions"></select>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-8">
         <pagination total-items="persons.total" ng-model="currentPage" ng-change="reload()" items-per-page="persons.per_page"
             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
+    </div>
+    <div class="col-md-2" style="margin: 20px 0;">
+        <div class="btn-group input-group">
+            <input type="text" class="form-control" placeholder="name filter" ng-model="startsWith">
+            <span class="input-group-btn"><button class="btn btn-default" ng-click="reload()">apply</button></span>
+        </div>
     </div>
 </div>
 <div class="row">

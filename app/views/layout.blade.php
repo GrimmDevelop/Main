@@ -71,6 +71,9 @@
         </div>
         @endforeach
 
+        <div messages class="messages">
+            <div ng-repeat="message in messages" class="alert alert-@{{ message.type }}">@{{ message.text }}</div>
+        </div>
         @yield('body')
     </div>
 
