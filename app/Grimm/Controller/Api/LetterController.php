@@ -36,9 +36,9 @@ class LetterController extends \Controller {
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of letters as Paginator json object
      *
-     * @return Response
+     * @return Response|string
      */
     public function index()
     {
@@ -64,6 +64,9 @@ class LetterController extends \Controller {
         return json_encode($return);
     }
 
+    /**
+     * List's one letter json object per row
+     */
     public function stream()
     {
         $result = $this->loadItems(
@@ -81,7 +84,13 @@ class LetterController extends \Controller {
         }
     }
 
+    public function linkTable()
+    {
+
+    }
+
     /**
+     * builds a Paginator object containing all letters requested
      * @param $totalItems
      * @param array $with
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Pagination\Paginator
@@ -186,18 +195,7 @@ class LetterController extends \Controller {
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created letter in storage.
      *
      * @return Response
      */
@@ -208,7 +206,7 @@ class LetterController extends \Controller {
 
 
     /**
-     * Display the specified resource.
+     * Display the specified letter.
      *
      * @param  int $id
      * @return Response
@@ -222,21 +220,8 @@ class LetterController extends \Controller {
         return Response::json(array('type' => 'danger', 'message' => 'given id not found in database'), 404);
     }
 
-
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-
-    /**
-     * Update the specified resource in storage.
+     * Update the specified letter in storage.
      *
      * @param  int $id
      * @return Response
@@ -285,6 +270,12 @@ class LetterController extends \Controller {
         return Response::json(['type' => 'success', 'message' => 'changes saved'], 200);
     }
 
+    /**
+     * Adds a information to a letter
+     * @param Letter $letter
+     * @param array $info
+     * @return \Illuminate\Database\Eloquent\Model
+     */
     protected function addInformation(Letter $letter, array $info)
     {
         UserAction::log('letters.edit.add_information', [
@@ -299,6 +290,12 @@ class LetterController extends \Controller {
         ]));
     }
 
+    /**
+     * Updates a information from given letter and touches the letter
+     * @param Letter $letter
+     * @param Information $info
+     * @param $newData
+     */
     protected function updateInformation(Letter $letter, Information $info, $newData)
     {
         UserAction::log('letters.edit.update_information', [
@@ -313,6 +310,13 @@ class LetterController extends \Controller {
         $info->save();
     }
 
+    /**
+     * Remove the information from the letter and touches the letter
+     * @param Letter $letter
+     * @param Information $info
+     * @return bool|null
+     * @throws \Exception
+     */
     protected function removeInformation(Letter $letter, Information $info)
     {
         UserAction::log('letters.edit.remove_information', [
@@ -326,6 +330,11 @@ class LetterController extends \Controller {
         return $info->delete();
     }
 
+    /**
+     * Assigns an items to an object by given mode
+     * @param $mode
+     * @return JsonResponse|\Illuminate\Http\Response
+     */
     public function assign($mode)
     {
         if (!isset($this->assigner[$mode])) {
@@ -359,14 +368,28 @@ class LetterController extends \Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Removes the link between two objects
+     * @param $mode
+     * @return JsonResponse
+     */
+    public function unassign($mode)
+    {
+        return Response::json(array('type' => 'danger', 'message' => 'Unkown method ' . $mode));
+    }
+
+    /**
+     * Remove the specified letter from storage.
      *
      * @param  int $id
      * @return Response
      */
     public function destroy($id)
     {
-        //
-    }
+        if ($letter = Letter::find($id)) {
+            $letter->delete();
+            return \Response::json(array('type' => 'success', 'message' => 'Letter successfully deleted'), 200);
+        }
 
+        return \Response::json(array('type' => 'danger', 'message' => 'Letter id not found'), 404);
+    }
 }

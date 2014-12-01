@@ -10,6 +10,8 @@ grimmApp.controller('distanceMapController', ['$scope', '$interval', '$modalInst
 
     $scope.mapInstance = {};
 
+    $scope.computedLetters = mapData.computedLetters;
+
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     }
@@ -17,12 +19,12 @@ grimmApp.controller('distanceMapController', ['$scope', '$interval', '$modalInst
     var addLetterPathsToMap = function (polygonList, map) {
         $.each(polygonList, function (index, polygon) {
             var from = new google.maps.LatLng(
-                polygon.from.latitude,
-                polygon.from.longitude
+                polygon.lat1,
+                polygon.long1
             );
             var to = new google.maps.LatLng(
-                polygon.to.latitude,
-                polygon.to.longitude
+                polygon.lat2,
+                polygon.long2
             );
 
             new google.maps.Polyline({
@@ -44,8 +46,8 @@ grimmApp.controller('distanceMapController', ['$scope', '$interval', '$modalInst
         for (var i = 0, LtLgLen = mapData.borderData.length; i < LtLgLen; i++) {
             bounds.extend(
                 new google.maps.LatLng(
-                    mapData.borderData[i].latitude,
-                    mapData.borderData[i].longitude
+                    mapData.borderData[i].lat,
+                    mapData.borderData[i].long
                 )
             );
         }

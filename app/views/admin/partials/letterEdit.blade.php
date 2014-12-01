@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Letter @{{ letter.id }} - @{{ letter.date }}</h3>
+    <h3 class="modal-title">Letter #@{{ letter.id }} - @{{ letter.date }}</h3>
 </div>
 <div class="modal-body">
     <div class="alert" ng-show="message" ng-class="{'alert-danger': message.type=='danger', 'alert-success': message.type=='success'}">

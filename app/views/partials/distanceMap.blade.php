@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Distance map</h3>
+    <h3 class="modal-title">Distance map (@{{ computedLetters }} letters computed)</h3>
 </div>
 <div class="modal-body">
     <div class="row">
