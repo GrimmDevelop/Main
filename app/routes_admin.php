@@ -19,6 +19,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function () {
     Route::post('assign/cache/location',['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@cacheLocation']);
     Route::post('assign/cache/person',  ['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@cachePerson']);
 
+    Route::get('export/letters/codes',  ['before' => 'grimm_access:export.letters', 'uses' => 'Grimm\Controller\Admin\ExportController@letterCodes']);
+
     Route::get('mailing/list',          ['before' => 'grimm_access:mailinglist', 'uses' => 'Grimm\Controller\Admin\MailingListController@mailList']);
 
     // File administration
