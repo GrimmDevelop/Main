@@ -400,7 +400,10 @@ class SearchController extends \Controller {
     public function deleteFilter($id)
     {
         if ($user = Sentry::getUser()) {
-            if ($filter = $this->findFilter($user, $id)) {
+            $filter = [
+                'id' => $id
+            ];
+            if ($filter = $this->findFilter($user, $filter)) {
                 $filter->delete();
             }
 
