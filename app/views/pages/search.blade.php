@@ -27,9 +27,9 @@
                     <button type="button" class="btn btn-default" ng-click="newFilter()" ng-disabled="currentFilter.fields.length == 0">+</button>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default" ng-click="saveFilter()" ng-disabled="currentFilter.id == null">save current</button>
-                    <button type="button" class="btn btn-default" ng-click="deleteFilter()" ng-disabled="currentFilter.id == null">delete current</button>
-                    <button type="button" class="btn btn-default" ng-click="publicFilter()" ng-disabled="currentFilter.id == null || currentFilter.filter_key != null">public current</button>
+                    <button type="button" class="btn btn-default" ng-click="saveFilter()" ng-disabled="currentFilter.id == null" data-toggle="tooltip" title="save current filter"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                    <button type="button" class="btn btn-default" ng-click="deleteFilter()" ng-disabled="currentFilter.id == null" data-toggle="tooltip" title="delete current filter"><span class="glyphicon glyphicon-trash"></span></button>
+                    <button type="button" class="btn btn-default" ng-click="publicFilter()" ng-disabled="currentFilter.id == null || currentFilter.filter_key != null" data-toggle="tooltip" title="public filter"><span class="glyphicon glyphicon-share"></span></button>
                 </div>
 
                 <span class="btn-group" ng-show="currentFilter.id != null && currentFilter.filter_key != null">
