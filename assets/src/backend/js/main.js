@@ -30,6 +30,10 @@ grimmApp.config(['$routeProvider',
                 templateUrl: 'admin/partials/assign',
                 controller: 'assignController'
             })
+            .when('/export', {
+                templateUrl: 'admin/partials/export',
+                controller: 'exportController'
+            })
             .when('/mailing', {
                 templateUrl: 'admin/partials/mailingList',
                 controller: 'mailingListController'
