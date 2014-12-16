@@ -1,5 +1,7 @@
 jQuery(function ($) {
-    $('[data-toggle=tooltip]').tooltip();
+    $('[data-toggle=tooltip]').tooltip({
+        container: 'body'
+    });
 });
 
 var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ang-drag-drop"]);
