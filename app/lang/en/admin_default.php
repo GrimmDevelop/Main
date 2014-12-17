@@ -9,7 +9,10 @@ return array(
     'users_nav'     => 'Users',
 
     'import_nav'     => 'Importer',
+    'export_nav'     => 'Exporter',
+
     'assign_locations'     => 'Assigner',
+    'mailing'     => 'Mailer',
 
     'toggleNav' => 'Toggle navigation',
     'logout'    => 'Logout',
