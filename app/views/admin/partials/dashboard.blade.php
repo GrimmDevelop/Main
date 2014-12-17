@@ -31,7 +31,11 @@
                 </tr>
                 <tr>
                     <td><a href ng-click="go('/import')">{{ trans('admin_default.import_nav') }}</a></td>
-                    <td>importer used to import letters order persons from dbf files or locations from txt files</td>
+                    <td>importer used to import letters or persons from dbf files or locations from txt files</td>
+                </tr>
+                <tr>
+                    <td><a href ng-click="go('/export')">{{ trans('admin_default.export_nav') }}</a></td>
+                    <td>exporter used to export letters, locations or persons from database to given formats</td>
                 </tr>
                 <tr>
                     <td><a href ng-click="go('/assign')">{{ trans('admin_default.assign_locations') }}</a></td>
