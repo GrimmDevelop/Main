@@ -11,9 +11,7 @@
                 <div class="form-group">
                     <label class="col-sm-2">export format</label>
                     <div class="col-sm-10">
-                        <select class="form-control">
-                            <option>csv</option>
-                        </select>
+                        <select class="form-control" ng-model="format" ng-options="item for item in formats"></select>
                     </div>
                 </div>
             </tab>
@@ -27,5 +25,4 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="ok()">Export</button>
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
 </div>

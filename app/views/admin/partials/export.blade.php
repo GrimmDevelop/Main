@@ -6,10 +6,17 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <a href ng-click="letters()">Letters</a>
-    </div>
-    <div class="col-md-8">
-        Export letters
+    <div class="col-md-12">
+        <tabset>
+            <tab heading="Letters">
+                <div ng-controller="exportLettersController" ng-include="'admin/partials/export.letters'"></div>
+            </tab>
+            <tab heading="Locations">
+                <div></div>
+            </tab>
+            <tab heading="Persons">
+                <div></div>
+            </tab>
+        </tabset>
     </div>
 </div>

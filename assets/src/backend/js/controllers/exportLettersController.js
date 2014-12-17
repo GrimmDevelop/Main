@@ -1,16 +1,18 @@
-grimmApp.controller('exportLettersController', ['$scope', '$interval', '$modalInstance', 'Exporter', function ($scope, $interval, $modalInstance, Exporter) {
+grimmApp.controller('exportLettersController', ['$scope', '$interval', 'Exporter', function ($scope, $interval, Exporter) {
 
     $scope.codes = [];
+    $scope.formats = [];
 
     $scope.ok = function() {
         // start export
     }
 
-    $scope.cancel = function() {
-        // cancel
-    }
-
     Exporter.letterCodes().success(function(data) {
         $scope.codes = data;
+    });
+
+    Exporter.formats().success(function(data) {
+        $scope.formats = data;
+        $scope.format = data[0];
     });
 }]);
