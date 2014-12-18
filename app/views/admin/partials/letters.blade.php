@@ -45,9 +45,9 @@
         <table class="table">
             <tr ng-repeat="letter in letters.data">
                 <td><a href letter-edit="letter.id" class="btn btn-default">@{{ letter.id }}</a></td>
-                <td>@{{ letter.code }}</td>
+                <td>@{{ letter.date }}</td>
                 <td>
-                    <div ng-repeat="info in letter.information | filterCode:['absendeort','absort_ers','absender','empf_ort','empfaenger','dr']">@{{ info.code }} @{{ info.data }}</div>
+                    <div ng-repeat="info in letter.information | filterCode:['absendeort','absort_ers','absender','empf_ort','empfaenger','dr','hs']">@{{ info.code }} @{{ info.data }}</div>
                 </td>
                 <td>
                     <div class="row">

@@ -55,7 +55,7 @@
                     <tr>
                         <td><code>items_per_page</code></td>
                         <td><em>integer</em></td>
-                        <td>number <strong>objects</strong> that will come <strong>per page</strong></td>
+                        <td>number of <strong>objects</strong> delivered <strong>per page</strong></td>
                     </tr>
                     <tr>
                         <td><code>page</code></td>
