@@ -22,7 +22,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <form role="form">
             <div class="checkbox">
                 <label><input type="checkbox" ng-model="showLettersWithErrors.from" ng-change="reload()" /> show only letters with from errors</label>
@@ -37,6 +37,9 @@
                 <label><input type="checkbox" ng-model="showLettersWithErrors.receivers" ng-change="reload()" /> show only letters with receiver errors</label>
             </div>
         </form>
+    </div>
+    <div class="col-md-6">
+        <button class="btn btn-default" ng-click="createNewLetter()" tooltip="create new letter"><span class="glyphicon glyphicon-asterisk"></span></button>
     </div>
 </div>
 

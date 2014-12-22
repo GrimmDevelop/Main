@@ -23,20 +23,23 @@ Route::get('partials/{file}', 'Grimm\Controller\PartialsController@load');
 Route::group(['prefix' => 'search'], function () {
     Route::get('/', 'Grimm\Controller\SearchController@searchForm');
     Route::post('/', 'Grimm\Controller\SearchController@searchResult');
+
     Route::get('codes', 'Grimm\Controller\SearchController@codes');
+    Route::get('displayed/codes', 'Grimm\Controller\SearchController@displayedCodes');
+    Route::get('displayed/codes/short', 'Grimm\Controller\SearchController@displayedCodesShort');
+
+    // filter api
     Route::get('filters', 'Grimm\Controller\SearchController@loadFilters');
     Route::get('filters/{get}', 'Grimm\Controller\SearchController@loadFilter');
     Route::post('filters', 'Grimm\Controller\SearchController@newFilter');
     Route::put('filters', 'Grimm\Controller\SearchController@saveFilter');
     Route::put('filters/public', 'Grimm\Controller\SearchController@publicFilter');
     Route::delete('filters/{id}', 'Grimm\Controller\SearchController@deleteFilter');
+
     Route::post('distanceMap', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\SearchController@computeDistanceMap']);
 
     Route::get('/{filterKey}', 'Grimm\Controller\SearchController@searchForm');
 });
-
-Route::get('/api', 'Grimm\Controller\ApiController@overview');
-Route::post('/api/mailinglist', ['before' => 'csrf', 'uses' => 'Grimm\Controller\ApiController@addToMaillingList']);
 
 Route::post('/deploy/github', 'Grimm\Controller\DeployController@github');
 

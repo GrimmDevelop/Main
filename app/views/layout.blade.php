@@ -92,12 +92,7 @@
 
     @asset('js')
     <script>
-
         angular.module('grimmApp').constant('BASE_URL', '{{ url() }}');
-
-        $(function() {
-            $('.toggle_popover').popover();
-        });
     </script>
 </body>
 </html>
