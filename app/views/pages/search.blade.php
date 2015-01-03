@@ -51,10 +51,7 @@
 @endif
                     </tab>
                     <tab heading="display">
-                        display codes:
-                        <div class="checkbox" ng-repeat="code in codes" ng-if="code != ''">
-                            <label><input type="checkbox" ng-model="displayCodesTmp[code]" ng-change="toggleDisplayCode(code)"> @{{ code }}</label>
-                        </div>
+                        <div fields-selection="displayCodes"></div>
                     </tab>
                 </tabset>
             </form>
@@ -120,6 +117,16 @@
                     </div>
                 </div>
                 <hr>
+
+                <div class="row">
+                    <div class="col-md-2" style="margin: 20px 0;">
+                        <select class="form-control" ng-model="itemsPerPage" ng-change="search()" ng-options="option for option in itemsPerPageOptions"></select>
+                    </div>
+                    <div class="col-md-10">
+                        <pagination total-items="results.total" ng-model="currentPage" ng-change="search()" items-per-page="results.per_page"
+                            max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
+                    </div>
+                </div>
             </div>
             <div class="result" ng-show="results.total == 0">
                 nothing found

@@ -7,23 +7,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
     $scope.currentFilter.fields = [];
 
     $scope.displayCodes = ['absender', 'empfaenger', 'absendeort', 'absort_ers', 'empf_ort'];
-    $scope.displayCodesTmp = {};
 
-    for (var i = 0; i < $scope.displayCodes.length; i++) {
-        $scope.displayCodesTmp[$scope.displayCodes[i]] = true;
-    }
-
-    $scope.toggleDisplayCode = function(code) {
-        var index = $scope.displayCodes.indexOf(code);
-
-        if(index != -1) {
-            $scope.displayCodes.splice(index, 1);
-        } else {
-            $scope.displayCodes.push(code);
-        }
-    }
-
-    $scope.codes = [];
     $scope.results = {};
 
     $scope.itemsPerPage = 30;
@@ -146,11 +130,6 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
 
         return [];
     }
-
-    Search.codes().success(function (codes) {
-        codes.unshift("");
-        $scope.codes = codes;
-    });
 
     $scope.loadFilters();
 }]);
