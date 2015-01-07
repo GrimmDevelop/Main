@@ -31,13 +31,17 @@
                     <div class="checkbox">
                         <label><input type="checkbox" ng-model="showLettersWithErrors.receivers" ng-change="reload()" /> show only letters with receiver errors</label>
                     </div>
+                    <p>&nbsp;</p>
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="display.shortEdit" /> show <span class="glyphicon glyphicon-pencil"></span></label>
+                    </div>
                 </form>
             </tab>
-            <tab heading="display">
+            <tab heading="fields">
                 <div fields-selection="fields"></div>
             </tab>
             <tab heading="view">
-                <select ng-model="view.current" ng-options="item for item in view.all"></select>
+                <select ng-model="display.currentView" ng-change="changeView(display.currentView)" ng-options="item for item in display.views"></select>
             </tab>
         </tabset>
     </div>
@@ -54,7 +58,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12" ng-include="view.current"></div>
+    <div class="col-md-12" ng-include="display.currentView"></div>
 </div>
 
 <div class="row">

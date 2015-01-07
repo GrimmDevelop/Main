@@ -1,4 +1,4 @@
-grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function ($scope, $modal, Letters) {
+grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 'Display', 'Letters', function ($scope, $modal, MessagesService, DisplayService, Letters) {
 
     $scope.message = null;
     $scope.closeMessage = function () {
@@ -17,14 +17,39 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'Letters', function
         receivers: false
     };
 
+    $scope.display = {
+        currentView: null,
+        views: [],
+        shortEdit: true
+    };
+
+    DisplayService.views('letters').success(function(data) {
+        $scope.display.views = data;
+    });
+
+    DisplayService.defaultView('letters').success(function(data) {
+        $scope.display.currentView = data;
+    });
+
+    $scope.changeView = function(view) {
+        DisplayService.changeView('letters', view).success(function(data) {
+            $scope.display.currentView = data;
+        });
+    }
+
     $scope.view = {
-        current: 'admin/partials/views.letters.overview',
-        all: ['admin/partials/views.letters.overview', 'admin/partials/views.letters.data']
+        current: 'admin/partials/views.letters.data',
+        default: 'admin/partials/views.letters.data',
+        all: []
     };
     $scope.fields = ['absendeort','absort_ers','absender','empf_ort','empfaenger','dr','hs'];
 
+    $scope.editField = function(letterId, field) {
+        MessagesService.broadcast('success', 'Edit ' + field + " from letter #" + letterId);
+    }
+
     $scope.show = function (id) {
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl: 'admin/partials/letterEdit',
             controller: 'letterEditController',
             size: 'lg',
