@@ -80,10 +80,14 @@
         @yield('body')
     </div>
 
-@if(Sentry::check() && View::exists('admin.compiled'))
-    <!-- Partials -->
-    @include('admin.compiled')
-@endif
+    @if(View::exists('compiled'))
+        <!-- Partials -->
+        @include('compiled')
+    @endif
+    @if(Sentry::check() && View::exists('admin.compiled'))
+        <!-- Admin partials -->
+        @include('admin.compiled')
+    @endif
 
     <script src="{{ url('assets/js/main.js') }}"></script>
 @if(Sentry::check())
