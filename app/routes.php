@@ -13,6 +13,7 @@
 
 require_once('routes_admin.php');
 require_once('routes_api.php');
+require_once('routes_user.php');
 
 Route::get('/', function () {
     return Redirect::to(URL::to('search'));
@@ -40,8 +41,6 @@ Route::group(['prefix' => 'search'], function () {
 
     Route::get('/{filterKey}', 'Grimm\Controller\SearchController@searchForm');
 });
-
-Route::post('/deploy/github', 'Grimm\Controller\DeployController@github');
 
 App::missing(function ($exception) {
     return Redirect::to('/')->withErrors(
