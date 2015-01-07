@@ -8,9 +8,9 @@ use Cartalyst\Sentry\Users\UserExistsException;
 use Grimm\Auth\Models\User;
 use Input;
 use Sentry;
+use Validator;
 
-class UserController extends \Controller
-{
+class UserController extends \Controller {
 
     /**
      * Display a listing of the resource.
@@ -19,25 +19,7 @@ class UserController extends \Controller
      */
     public function index()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-        return User::all();
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
+        return User::with('groups')->get();
     }
 
 
@@ -48,20 +30,32 @@ class UserController extends \Controller
      */
     public function store()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.create'))) {
-            return \App::make('grimm.unauthorized');
+        $validator = Validator::make(
+            Input::only(['username', 'password', 'password_confirmation', 'email', 'activated']),
+            [
+                'username'  => 'required|min:5',
+                'email'     => 'required|email|unique:users',
+                'password'  => 'required|confirmed',
+                'activated' => 'required'
+            ]
+        );
+
+        if ($validator->fails())
+        {
+            $res = [];
+            foreach ($validator->messages()->toArray() as $field)
+            {
+                $res = array_merge($res, $field);
+            }
+
+            return \Response::json(array('error' => array('message' => $res)), 200);
         }
 
-        $data = Input::only(array(
-            'username', 'password', 'email'
-        ));
+        $user = Sentry::createUser(
+            Input::only(['username', 'first_name', 'last_name', 'password', 'email', 'activated'])
+        );
 
-        $user = new User($data);
-
-
-        // $user->save();
-
-        return \Response::json(array('error' => array('message' => 'Not implemented.')), 404);
+        return \Response::json(array('success' => array('message' => 'User created')), 200);
     }
 
 
@@ -73,29 +67,8 @@ class UserController extends \Controller
      */
     public function show($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.view'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-        return User::find($id)->toJson();
+        return User::find($id)->load('groups')->toJson();
     }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
-        return null;
-    }
-
 
     /**
      * Update the specified resource in storage.
@@ -105,10 +78,6 @@ class UserController extends \Controller
      */
     public function update($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.edit'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         $data = Input::only(array(
             'first_name',
             'last_name',
@@ -125,27 +94,33 @@ class UserController extends \Controller
         $user->last_name = $data['last_name'];
 
         $user->username = $data['username'];
-        if ($data['password'] != '') {
-            if ($data['password'] != $data['password_confirmation']) {
+        if ($data['password'] != '')
+        {
+            if ($data['password'] != $data['password_confirmation'])
+            {
                 return \Response::json(array('error' => array('message' => "Password and password confirmation didn\'t match.")), 500);
             }
 
             $user->password = $data['password'];
         }
 
-        if (!$user->activated && $data['activated']) {
+        if (!$user->activated && $data['activated'])
+        {
             $this->activation_code = null;
             $user->activated = true;
             $user->activated_at = new \DateTime();
-        } else if ($user->activated && !$data['activated']) {
+        } else if ($user->activated && !$data['activated'])
+        {
             $user->activated = false;
         }
 
         $user->email = $data['email'];
 
-        if ($user->save()) {
+        if ($user->save())
+        {
             return \Response::json(array('success' => array('message' => "User successfully saved!")));
-        } else {
+        } else
+        {
             return \Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
         }
     }
@@ -159,10 +134,6 @@ class UserController extends \Controller
      */
     public function destroy($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('users.delete'))) {
-            return \App::make('grimm.unauthorized');
-        }
-
         User::destroy($id);
     }
 

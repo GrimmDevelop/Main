@@ -3,7 +3,16 @@
 return array(
     'dashboard_nav' => 'Dashboard',
     'files_nav'     => 'Files',
+    'letters_nav'     => 'Letters',
+    'locations_nav'     => 'Locations',
+    'persons_nav'     => 'Persons',
     'users_nav'     => 'Users',
+
+    'import_nav'     => 'Importer',
+    'export_nav'     => 'Exporter',
+
+    'assign_locations'     => 'Assigner',
+    'mailing'     => 'Mailer',
 
     'toggleNav' => 'Toggle navigation',
     'logout'    => 'Logout',

@@ -1,0 +1,79 @@
+
+@import "bootstrap.less";
+
+@import "filebrowser";
+
+@import "signin";
+
+@import "api";
+
+.angular-google-map-container { height: 400px; }
+.angular-google-map.extended .angular-google-map-container { height: 600px; }
+
+@dashboard-title-bg: @navbar-default-bg;
+@dashboard-border-color: @navbar-default-border;
+@dashboard-border-radius: 5px;
+
+.dashboard-statistics {
+    margin: 15px 0;
+
+    .statistic {
+        border: 1px solid @dashboard-border-color;
+        border-radius: @dashboard-border-radius;
+
+        .title {
+            border-bottom: 1px solid @dashboard-border-color;
+            background-color: @dashboard-title-bg;
+        }
+
+        .title, .content {
+            padding: 5px;
+        }
+    }
+}
+
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -16px;
+    margin-left: -16px;
+    z-index: 1060;
+    background-color: #ffffff;
+    padding: 5px;
+
+    border: 1px solid @dashboard-border-color;
+    border-radius: @dashboard-border-radius;
+}
+
+.result {
+    margin: 15px 0;
+    border-top: 1px solid @dashboard-border-color;
+    padding-top: 5px;
+
+    hr.letter-separator {
+      margin-top: 40px;
+      margin-bottom: 60px;
+    }
+}
+
+.info-add {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: 2px solid @alert-success-bg;
+    border-radius: @alert-border-radius;
+}
+.info-remove {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: 2px solid @alert-danger-bg;
+    border-radius: @alert-border-radius;
+}
+
+.messages {
+    position: fixed;
+    width: 25%;
+    right: 10px;
+    top: 52px;
+    z-index: 999;
+}

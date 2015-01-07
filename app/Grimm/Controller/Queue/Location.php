@@ -4,9 +4,9 @@ namespace Grimm\Controller\Queue;
 
 use Grimm\Models\Location as Import;
 use Grimm\Converter\Location as Converter;
+use Illuminate\Database\QueryException;
 
-class Location extends \Controller
-{
+class Location extends \Controller {
 
     /**
      * @var Converter
@@ -20,7 +20,8 @@ class Location extends \Controller
 
     public function import($job, $data)
     {
-        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source'])) {
+        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source']))
+        {
             throw new \InvalidArgumentException('Cannot find source file ' . storage_path('upload') . $data['source']);
         }
 
@@ -28,9 +29,11 @@ class Location extends \Controller
 
         \Eloquent::unguard();
 
-        foreach ($this->converter->parse() as $record) {
-            if ($location = $this->firstOrCreate($record)) {
-                echo $record['id'] . "\n";
+        foreach ($this->converter->parse() as $record)
+        {
+            if ($location = $this->firstOrCreate($record))
+            {
+                // echo $record['id'] . "\n";
             }
         }
 
@@ -41,6 +44,14 @@ class Location extends \Controller
 
     public function firstOrCreate($record)
     {
-        return Import::firstOrCreate($record);
+        try
+        {
+            return Import::firstOrCreate($record);
+        } catch (QueryException $e)
+        {
+            echo $e->getMessage() . "\n";
+            echo $e->getSql() . "\n";
+            print_r($e->getBindings());
+        }
     }
 } 

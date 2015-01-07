@@ -4,9 +4,10 @@ namespace Grimm\Converter;
 
 use Grimm\Contract\Converter;
 use Grimm\Contract\RecordTransformer;
+use League\Csv\Reader;
 
-class Location implements Converter
-{
+class Location implements Converter {
+
     protected $cache = null;
     protected $filter = null;
     protected $source = null;
@@ -14,7 +15,7 @@ class Location implements Converter
     /**
      * @var RecordTransformer
      */
-    private $recordTransformer;
+    protected $recordTransformer;
 
     public function __construct(RecordTransformer $recordTransformer)
     {
@@ -28,7 +29,8 @@ class Location implements Converter
      */
     public function setSource($source)
     {
-        if (!file_exists($source)) {
+        if (!file_exists($source))
+        {
             throw new \InvalidArgumentException('Invalid source (file not found)');
         }
         $this->source = $source;
@@ -52,16 +54,26 @@ class Location implements Converter
     {
         $this->cache = array();
 
-        $handle = fopen($this->source, "r");
-        while ($record = fgetcsv($handle, 0, "	")) {
+        $handle = Reader::createFromPath($this->source);
+        $handle->setDelimiter("\t");
+
+        $read = $handle->query();
+
+        foreach ($read as $record)
+        {
+            if (count($record) < 19)
+            {
+                continue;
+            }
+
             $data = $this->recordTransformer->transform($record);
 
-            if ($data != null) {
+            if ($data != null)
+            {
                 $this->cache[] = $data;
                 yield $data;
             }
         }
-        fclose($handle);
     }
 
     /**
@@ -71,7 +83,8 @@ class Location implements Converter
      */
     public function toArray()
     {
-        if (is_null($this->cache)) {
+        if (is_null($this->cache))
+        {
             throw new \Exception("cache is null, run parse() first!");
         }
 
@@ -86,6 +99,6 @@ class Location implements Converter
      */
     public function toJson($options = 0)
     {
-        return json_encode($this->toArray());
+        return json_encode($this->toArray(), $options);
     }
 }

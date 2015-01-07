@@ -16,9 +16,12 @@ class CreateLettersTable extends Migration {
 		{
 			$table->increments('id');
 
-			$table->float('code');
+			$table->decimal('code', 13, 2);
 			$table->string('language');
-			$table->date('date');
+			$table->string('date');
+
+            $table->integer('from_id')->nullable()->unsigned()->index();
+            $table->integer('to_id')->nullable()->unsigned()->index();
 
 			$table->timestamps();
 		});
@@ -27,7 +30,7 @@ class CreateLettersTable extends Migration {
 		{
 			$table->increments('id');
 
-			$table->integer('letter_id')->index();
+			$table->integer('letter_id')->unsigned()->index();
 			$table->string('code')->index();
 
 			$table->text('data');

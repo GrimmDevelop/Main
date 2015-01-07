@@ -1,14 +1,6 @@
 {
     "repositories": [
         {
-            "url": "https://github.com/GrimmDevelop/LocationParser.git",
-            "type": "vcs"
-        },
-        {
-            "url": "https://github.com/GrimmDevelop/LetterParser.git",
-            "type": "vcs"
-        },
-        {
             "url": "https://github.com/GrimmDevelop/Assets.git",
             "type": "vcs"
         }
@@ -18,18 +10,18 @@
 	"keywords": ["Grimm", "Briefe", "Managment"],
 	"license": "MIT",
 	"require": {
-		"laravel/framework": "4.1.*",
+		"laravel/framework": "4.2.*",
 		"cartalyst/sentry": "2.1.*",
 		"pda/pheanstalk": "2.1.*",
         "elasticsearch/elasticsearch": "1.2.*",
         "dg/mysql-dump": "*@dev",
         "hisamu/php-xbase": "*@dev",
-        "grimmtools/locationparser": "*@dev",
-        "grimmtools/letterparser": "*@dev",
         "grimmtools/assets": "*@dev",
         "flowjs/flow-php-server": "0.2.*",
         "codeless/ziparchiveex": "1.0.*",
-        "barryvdh/laravel-ide-helper": "1.*"
+        "league/csv": "~6.0",
+        "barryvdh/laravel-ide-helper": "1.*",
+        "greggilbert/recaptcha": "1.0.7"
 	},
 	"autoload": {
 		"classmap": [

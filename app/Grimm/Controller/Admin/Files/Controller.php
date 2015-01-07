@@ -9,8 +9,8 @@ use App;
 use ZipArchiveEx;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
-class Controller extends \Controller
-{
+class Controller extends \Controller {
+
     private $store;
     private $path;
 
@@ -24,15 +24,19 @@ class Controller extends \Controller
         $this->store->setBaseUrl(URL::to('files'));
     }
 
-    public function resolveFile($file) {
+    public function resolveFile($file)
+    {
         $path = $this->store->buildPath($this->path->clean($file));
 
-        if(is_file($path)) {
+        if (is_file($path))
+        {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
             return Response::make(file_get_contents($path), 200)->header("Content-Type", finfo_file($finfo, $path));
         }
 
-        if(is_dir($path)) {
+        if (is_dir($path))
+        {
 
             $zipFile = storage_path('cache') . DIRECTORY_SEPARATOR . $file . ".zip";
 
@@ -60,7 +64,8 @@ class Controller extends \Controller
     {
         $path = Input::get('path');
 
-        if ($path === null || empty($path)) {
+        if ($path === null || empty($path))
+        {
             $path = '/';
         }
 
@@ -68,10 +73,13 @@ class Controller extends \Controller
 
         $path = $this->path->clean($path);
 
-        try {
+        try
+        {
             $files = $this->store->filesInFolder($path);
+
             return Response::json($files);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException $e)
+        {
             return Response::json(array("error" => 404, "message" => $e->getMessage()), 404);
         }
     }
@@ -82,11 +90,13 @@ class Controller extends \Controller
         $name = urldecode(Input::get('name'));
         $path = $this->path->clean($basepath) . DIRECTORY_SEPARATOR . $name;
 
-        try {
+        try
+        {
             $this->store->mkdir($path);
 
             return Response::make('Ok', 200);
-        } catch(Exception $e) {
+        } catch (Exception $e)
+        {
             return Response::make($e->getMessage(), 401);
         }
     }
@@ -99,13 +109,17 @@ class Controller extends \Controller
         $src = $this->store->buildPath($this->path->clean($src));
         $dest = $this->store->buildPath($this->path->clean($dest));
 
-        if ($src && $dest) {
-            if ($this->store->move($src, $dest)) {
+        if ($src && $dest)
+        {
+            if ($this->store->move($src, $dest))
+            {
                 return Response::json(array('message' => 'Files were moved successfully!'));
-            } else {
+            } else
+            {
                 return Response::json(array('message' => 'Unable to move to destination!'), 500);
             }
-        } else {
+        } else
+        {
             return Response::json(array('message' => 'Either src or dest does not exist'), 404);
         }
     }
@@ -119,14 +133,18 @@ class Controller extends \Controller
 
         $destExists = $this->store->buildPath($this->path->clean(dirname($src) . DIRECTORY_SEPARATOR . $dest));
 
-        if ($destExists) {
+        if ($destExists)
+        {
             return Response::json(array('message' => 'There is already a file called ' . $dest . '!'), 500);
         }
 
-        if ($src && $dest) {
-            if ($this->store->rename($src, $dest)) {
+        if ($src && $dest)
+        {
+            if ($this->store->rename($src, $dest))
+            {
                 return Response::json(array('message' => 'Files were moved successfully!'));
-            } else {
+            } else
+            {
                 return Response::json(array('message' => 'Unable to move to destination!'), 500);
             }
         }
@@ -138,14 +156,19 @@ class Controller extends \Controller
 
         $path = $this->store->buildPath($this->path->clean($path));
 
-        if ($path && is_file($path)) {
-            try {
+        if ($path && is_file($path))
+        {
+            try
+            {
                 $this->store->deleteFile($path);
+
                 return Response::json(array('message' => 'File was deleted successfully!'), 200);
-            } catch (Exception $e) {
+            } catch (Exception $e)
+            {
                 return Response::json(array('error' => 500, 'message' => $e->getMessage()), 500);
             }
-        } else {
+        } else
+        {
             return Response::json(array('error' => 404, 'message' => 'File does not exist or is not a file!'), 404);
         }
     }
@@ -156,14 +179,19 @@ class Controller extends \Controller
 
         $path = $this->store->buildPath($this->path->clean($path));
 
-        if ($path && is_dir($path)) {
-            try {
+        if ($path && is_dir($path))
+        {
+            try
+            {
                 $this->store->deleteFolder($path);
+
                 return Response::json(array('message' => 'Directory was deleted successfully!'), 200);
-            } catch (Exception $e) {
+            } catch (Exception $e)
+            {
                 return Response::json(array('error' => 500, 'message' => $e->getMessage()), 500);
             }
-        } else {
+        } else
+        {
             return Response::json(array('error' => 404, 'message' => 'File does not exist or is not a file!'), 404);
         }
     }
@@ -171,9 +199,11 @@ class Controller extends \Controller
     public function uploadGet()
     {
         $file = $this->initUploadFile();
-        if ($file->checkChunk()) {
+        if ($file->checkChunk())
+        {
             return $this->checkUploadStatus($file);
-        } else {
+        } else
+        {
             return Response::make('Not Found', 404);
         }
     }
@@ -181,10 +211,13 @@ class Controller extends \Controller
     public function uploadPost()
     {
         $file = $this->initUploadFile();
-        if ($file->validateChunk()) {
+        if ($file->validateChunk())
+        {
             $file->saveChunk();
+
             return $this->checkUploadStatus($file);
-        } else {
+        } else
+        {
             // error, invalid chunk upload request, retry
             return Response::make('Bad Request', 400);
         }
@@ -210,10 +243,12 @@ class Controller extends \Controller
 
         $filename = $this->store->makeUniqueFilename($filename, $vp);
 
-        if ($file->validateFile() && $file->save($vp . '/' . $filename)) {
+        if ($file->validateFile() && $file->save($vp . '/' . $filename))
+        {
             // File upload was completed
             return Response::make('Completed', 200);
-        } else {
+        } else
+        {
             // This is not a final chunk, continue to upload
             return Response::make('Chunk ok', 200);
         }

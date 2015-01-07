@@ -6,48 +6,41 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Grimm\Models\Letter;
 
-class Information extends Eloquent
-{
-    protected $table = 'letter_informations';
+class Information extends Eloquent {
+
+    protected $table = 'letter_information';
+
+    protected $fillable = ['code', 'data'];
 
     public function codes()
     {
         return array(
-            'code',
-            'language',
-            'prints',
-            'script_location',
-            'inc',
-            'concept',
-            'facsimile',
-            'transcription',
-            'duplicate',
-            /*
-             * TODO: better code
-             */
+            'abschrift',
+            'absendeort',
+            'absender',
+            'absort_ers',
+            'antw_verm',
             'auktkat',
-            /*
-             * TODO: better code
-             */
-            'deducted_from',
-
-            'received_probably',
-            'answered_probably',
-
-            'addition',
-
-            /*
-             * TODO: better code
-             */
+            'ausg_notiz',
             'ba',
+            'beilage',
+            'couvert',
+            'del',
+            'dr',
+            'empf_ort',
+            'empf_verm',
+            'empfaenger',
+            'erschl_aus',
+            'faks',
+            'gesehen_12',
+            'hs',
+            'inc',
+            'konzept',
+            'kopie',
             'nr_1992',
             'nr_1997',
-
-            'couvert',
-            'verz_in',
-            'beilage',
-            'ausg_notiz',
-            'tb_nr',
+            'senders',
+            'receivers'
         );
     }
 

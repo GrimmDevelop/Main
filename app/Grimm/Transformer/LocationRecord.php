@@ -29,11 +29,16 @@ class LocationRecord implements RecordTransformer {
         $record['admin2_code'] = $data[11];
         $record['admin3_code'] = $data[12];
         $record['admin4_code'] = $data[13];
-        $record['population'] = (int)$data[14];
-        $record['elevation'] = (int)$data[15];
-        $record['dem'] = (int)$data[16];
+        $record['population'] = (int) $data[14];
+        $record['elevation'] = (int) $data[15];
+        $record['dem'] = (int) $data[16];
         $record['timezone'] = $data[17];
         $record['modification_date'] = $data[18];
+
+        if ($record['feature_class'] != 'P')
+        {
+            return null;
+        }
 
         return $record;
     }

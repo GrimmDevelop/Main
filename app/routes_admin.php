@@ -5,59 +5,26 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function () {
         return View::make('admin.index');
     });
 
-    // Route::resource('users', 'Grimm\Controller\Admin\UserController');
-
-    Route::get('test', function () {
-
-        $converter = \App::make('Grimm\Converter\Letter');
-        $client = \App::make('Elasticsearch\Client');
-
-        $converter->setSource(storage_path('upload') . '/CORPUS.DBF');
-
-        echo "<html><head><meta charset='utf-8' /></head><body><pre>";
-
-        $bulk = array();
-
-        $i = 0;
-        foreach ($converter->parse() as $row) {
-            if ($i++ > 100) {
-
-                break;
-            }
-
-            try {
-                $result = $client->get(array(
-                    'index' => 'grimm',
-                    'type' => 'letter',
-                    'id' => $row['id']
-                ));
-                var_dump($result);
-            } catch (\Elasticsearch\Common\Exceptions\Missing404Exception $e) {
-                var_dump($e->getMessage());
-                $result = $client->index(array(
-                    'index' => 'grimm',
-                    'type' => 'letter',
-                    'id' => $row['id'],
-                    'body' => $row
-                ));
-
-                print_r($result);
-            }
-        }
-
-        echo "</pre></body></html>";
-
-    });
-
-    Route::post('import/letters', 'Grimm\Controller\Api\ImportController@startLetterImport');
-    Route::post('import/locations', 'Grimm\Controller\Api\ImportController@startLocationImport');
-    Route::post('import/persons', 'Grimm\Controller\Api\ImportController@startPersonImport');
+    Route::post('import/letters',       ['before' => 'grimm_access:import.letters', 'uses' => 'Grimm\Controller\Api\ImportController@startLetterImport']);
+    Route::post('import/locations',     ['before' => 'grimm_access:import.locations', 'uses' => 'Grimm\Controller\Api\ImportController@startLocationImport']);
+    Route::post('import/persons',       ['before' => 'grimm_access:import.persons', 'uses' => 'Grimm\Controller\Api\ImportController@startPersonImport']);
 
     Route::get('partials/{file}', 'Grimm\Controller\Admin\PartialsController@load');
 
-    //Route::get('upload', 'Grimm\Controller\Admin\FileController@uploadGet');
-    //Route::post('upload', 'Grimm\Controller\Admin\FileController@uploadPost');
+    Route::post('assign/from/{take}',   ['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@from']);
+    Route::post('assign/to/{take}',     ['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@to']);
+    Route::post('assign/senders/{take}',['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@senders']);
+    Route::post('assign/receivers/{take}',['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@receivers']);
 
+    Route::post('assign/cache/location',['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@cacheLocation']);
+    Route::post('assign/cache/person',  ['before' => 'grimm_access:assign', 'uses' => 'Grimm\Controller\Admin\AssignController@cachePerson']);
+
+    Route::get('export/formats',        ['before' => 'grimm_access:export', 'uses' => 'Grimm\Controller\Admin\ExportController@formats']);
+    Route::get('export/letters/codes',  ['before' => 'grimm_access:export.letters', 'uses' => 'Grimm\Controller\Admin\ExportController@letterCodes']);
+
+    Route::get('mailing/list',          ['before' => 'grimm_access:mailinglist', 'uses' => 'Grimm\Controller\Admin\MailingListController@mailList']);
+
+    // File administration
     $filesController = 'Grimm\Controller\Admin\Files\Controller';
 
     Route::get('files/list', $filesController . '@getFolder');
@@ -78,4 +45,4 @@ Route::get('login', array('as' => 'login', 'uses' => 'Grimm\Auth\LoginController
 Route::post('login/auth', array('before' => 'crsf', 'uses' => 'Grimm\Auth\LoginController@authenticate'));
 Route::get('logout', array('as' => 'logout', 'uses' => 'Grimm\Auth\LoginController@logout'));
 
-Route::get('files/{path}', 'Grimm\Controller\Admin\Files\Controller@resolveFile')->where('path', '(?:[^<>]*)');
+Route::get('files/{path}', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\Admin\Files\Controller@resolveFile'])->where('path', '(?:[^<>]*)');

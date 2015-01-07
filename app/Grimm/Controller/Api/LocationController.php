@@ -6,8 +6,7 @@ use Grimm\Models\Location;
 use Input;
 use Sentry;
 
-class LocationController extends \Controller
-{
+class LocationController extends \Controller {
 
     /**
      * Display a listing of the resource.
@@ -16,44 +15,59 @@ class LocationController extends \Controller
      */
     public function index()
     {
-        return Location::all();
+        $result = Location::orderBy('name')->paginate(abs((int) Input::get('items_per_page', 25)));
+
+        $return = new \stdClass();
+
+        $return->total = $result->getTotal();
+        $return->per_page = $result->getPerPage();
+        $return->current_page = $result->getCurrentPage();
+        $return->last_page = $result->getLastPage();
+        $return->from = $result->getFrom();
+        $return->to = $result->getTo();
+        $return->countries = Location::selectRaw("DISTINCT country_code")->orderBy('country_code')->get()->lists('country_code');
+        $return->data = $result->getCollection()->toArray();
+
+        return json_encode($return);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
+    public function search()
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
-            return \Response::json('Unauthorized action.', 403);
+        $builder = Location::query();
+
+        if (Input::get('ahead', false))
+        {
+            return $builder->where('name', 'like', \Input::get('name') . '%')->orderBy('population', 'desc')->take(5)->get();
+        } else
+        {
+            $builder->where('name', \Input::get('name'));
+            $builder->orWhere('asciiname', \Input::get('name'));
+
+            if (Input::get('in_alternate_names', false))
+            {
+                $builder->orWhere('alternatenames', 'like', '%,' . \Input::get('name') . ',%');
+            }
         }
 
-        $data = Input::only(array(// 'username', 'password', 'email'
-        ));
+        $result = $builder->paginate(abs((int) Input::get('items_per_page', 25)));
 
-        $location = new Location($data);
+        if ($result->count() > 0)
+        {
+            $return = new \stdClass();
 
-        // $user->save();
-    }
+            $return->total = $result->getTotal();
+            $return->per_page = $result->getPerPage();
+            $return->current_page = $result->getCurrentPage();
+            $return->last_page = $result->getLastPage();
+            $return->from = $result->getFrom();
+            $return->to = $result->getTo();
+            $return->data = $result->getCollection()->toArray();
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return Response
-     */
-    public function store()
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.create'))) {
-            return \Response::json('Unauthorized action.', 403);
+            return json_encode($return);
         }
 
-
+        return \Response::json(array('type' => 'danger', 'message' => 'Location not found'), 404);
     }
-
 
     /**
      * Display the specified resource.
@@ -63,42 +77,13 @@ class LocationController extends \Controller
      */
     public function show($id)
     {
-        return Location::find($id)->toJson();
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
-            return \Response::json('Unauthorized action.', 403);
+        if ($location = Location::find($id))
+        {
+            return $location->toJson();
         }
 
         return null;
     }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.edit'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
-
-        $location = Location::find($id);
-
-    }
-
 
     /**
      * Remove the specified resource from storage.
@@ -108,10 +93,6 @@ class LocationController extends \Controller
      */
     public function destroy($id)
     {
-        if (!(Sentry::check() && Sentry::getUser()->hasAccess('locations.delete'))) {
-            return \Response::json('Unauthorized action.', 403);
-        }
-
         Location::destroy($id);
     }
 

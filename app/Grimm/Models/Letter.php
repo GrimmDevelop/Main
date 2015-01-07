@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Grimm\Models\Letter\Information;
 use App;
 
-class Letter extends Eloquent
-{
+class Letter extends Eloquent {
+
     protected $table = 'letters';
 
 
-    public function informations($code = null)
+    public function information($code = null)
     {
-        $hasMany = $this->hasMany('Grimm\Models\Letter\Information');
+        $hasMany = $this->hasMany(Information::class);
 
-        if ($code !== null) {
+        if ($code !== null)
+        {
             $hasMany->where('code', $code);
         }
 
@@ -25,44 +26,48 @@ class Letter extends Eloquent
 
     public function codes()
     {
-        return App::make('Grimm\Models\Letter\Information')->codes();
+        return App::make(Information::class)->codes();
     }
 
     public function scopeWithCodes($codes)
     {
         $validCodes = $this->codes();
-        if (!is_array($codes)) {
+        if (!is_array($codes))
+        {
             $codes = array($codes);
         }
 
-        foreach ($codes as $code) {
-            if (!in_array($validCodes, $code)) {
+        foreach ($codes as $code)
+        {
+            if (!in_array($validCodes, $code))
+            {
                 throw new \InvalidArgumentException('Invalid letter information code: ' . $code);
             }
         }
 
-        return $this->with(array('informations' => function ($query) use ($codes) {
+        return $this->with(array('information' => function ($query) use ($codes)
+        {
             $query->whereIn('code', $codes);
         }));
     }
 
-    public function sender()
+    public function senders()
     {
-        return $this->belongsToMany('Grimmm\Models\Person', 'letters_sender');
+        return $this->belongsToMany(Person::class, 'letter_sender');
     }
 
     public function receivers()
     {
-        return $this->belongsToMany('Grimmm\Models\Person', 'letters_receiver');
+        return $this->belongsToMany(Person::class, 'letter_receiver');
     }
 
     public function from()
     {
-        return $this->belongsTo('Grimm\Model\Location', 'from_id');
+        return $this->belongsTo(Location::class, 'from_id');
     }
 
     public function to()
     {
-        return $this->belongsTo('Grimm\Model\Location', 'to_id');
+        return $this->belongsTo(Location::class, 'to_id');
     }
 }

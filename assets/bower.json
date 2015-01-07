@@ -1,0 +1,20 @@
+{
+  "name": "Grimm-Theme",
+  "dependencies": {
+    "jquery": "2.1.*",
+    "bootstrap": "3.2.*",
+    "angular": "~1.2.18",
+    "angular-route": "~1.2.18",
+    "angular-bootstrap": "~0.11.0",
+    "angular-google-maps": "2.0.7",
+    "angular-dialog-service": "~3.1.0",
+    "angular-sanitize": "~1.2.15",
+    "angular-dragdrop-ganarajpr": "~1.0.1",
+    "ng-flow": "~2",
+    "bluebird": "petkaantonov/bluebird#~2.3.5"
+  },
+  "resolutions": {
+    "angular-bootstrap": "~0.11.0",
+    "bootstrap": "~3.2.0"
+  }
+}
