@@ -6,6 +6,8 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
     $scope.currentFilter.filter_key = null;
     $scope.currentFilter.fields = [];
 
+    $scope.codes = [];
+
     $scope.displayCodes = ['absender', 'empfaenger', 'absendeort', 'absort_ers', 'empf_ort'];
 
     $scope.results = {};
@@ -130,6 +132,10 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
 
         return [];
     }
+
+    Search.codes().success(function(data) {
+        $scope.codes = data;
+    });
 
     $scope.loadFilters();
 }]);
