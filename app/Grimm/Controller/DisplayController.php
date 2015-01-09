@@ -37,10 +37,9 @@ class DisplayController extends \Controller {
         $views = $this->views($section);
 
         if (in_array($view, $views)) {
-            Session::set('defaultView.' . $section, $view);
-            return $view;
-        } else {
-            return $this->defaultView($section);
+            Session::put('defaultView.' . $section, $view);
         }
+
+        return $this->defaultView($section);
     }
 }
