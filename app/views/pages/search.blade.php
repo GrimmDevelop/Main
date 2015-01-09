@@ -30,7 +30,7 @@
 @if(Sentry::check())
                         <div class="btn-group">
                             <button type="button" class="btn btn-default" ng-repeat="filter in filters" ng-class="{ 'active': currentFilter.id == filter.id }" ng-click="loadFilter(filter)">@{{ $index + 1  }}</button>
-                            <button type="button" class="btn btn-default" ng-click="newFilter()" ng-disabled="currentFilter.fields.length == 0">+</button>
+                            <button type="button" class="btn btn-default" ng-click="newFilter()" data-toggle="tooltip" title="save as new filter" ng-disabled="currentFilter.fields.length == 0">+</button>
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default"
