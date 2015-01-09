@@ -17,7 +17,7 @@
                 @{{ user.username }}
             </div>
             <div class="col-sm-2">
-                <button ng-click="" style="width: 34px;" class="btn btn-danger">x</button>
+                <button ng-click="" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span></button>
             </div>
         </div>
     </form>
