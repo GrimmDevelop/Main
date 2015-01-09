@@ -1,6 +1,6 @@
 <?php
 
-namespace Grimm\Assigner;
+namespace Grimm\Assigner\Letters;
 
 use Grimm\Contract\Assigner;
 use Grimm\Contract\Unassigner;
@@ -10,7 +10,7 @@ use Grimm\Models\Location;
 use Grimm\Assigner\Exceptions\ObjectNotFoundException;
 use Grimm\Assigner\Exceptions\ItemNotFoundException;
 
-class LetterFrom implements Assigner, Unassigner {
+class From implements Assigner, Unassigner {
 
     /**
      * Assigns an item to an object

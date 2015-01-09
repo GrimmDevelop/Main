@@ -1,6 +1,6 @@
 <?php
 
-namespace Grimm\Assigner;
+namespace Grimm\Assigner\Letters;
 
 use Grimm\Assigner\Exceptions\ItemNotAssignedException;
 use Grimm\Contract\Assigner;
@@ -14,7 +14,7 @@ use Grimm\Assigner\Exceptions\ItemNotFoundException;
 use Grimm\Assigner\Exceptions\ItemAlreadyAssignedException;
 
 
-class LetterSender implements Assigner, Unassigner {
+class Sender implements Assigner, Unassigner {
 
     /**
      * Assigns an item to an object

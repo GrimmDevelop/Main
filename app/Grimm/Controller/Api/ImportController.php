@@ -2,7 +2,6 @@
 
 namespace Grimm\Controller\Api;
 
-use Sentry;
 use Queue;
 use Input;
 

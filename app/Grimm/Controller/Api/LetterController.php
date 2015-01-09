@@ -3,10 +3,10 @@
 namespace Grimm\Controller\Api;
 
 use Carbon\Carbon;
-use Grimm\Assigner\LetterFrom;
-use Grimm\Assigner\LetterTo;
-use Grimm\Assigner\LetterReceiver;
-use Grimm\Assigner\LetterSender;
+use Grimm\Assigner\Letters\From as LetterFrom;
+use Grimm\Assigner\Letters\To as LetterTo;
+use Grimm\Assigner\Letters\Receiver as LetterReceiver;
+use Grimm\Assigner\Letters\Sender as LetterSender;
 use Grimm\Assigner\Exceptions\ItemAlreadyAssignedException;
 use Grimm\Assigner\Exceptions\ItemNotFoundException;
 use Grimm\Assigner\Exceptions\ObjectNotFoundException;

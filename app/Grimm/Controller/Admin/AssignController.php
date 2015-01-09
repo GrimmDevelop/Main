@@ -2,17 +2,16 @@
 
 namespace Grimm\Controller\Admin;
 
-use Grimm\Assigner\LetterFrom;
-use Grimm\Assigner\LetterReceiver;
-use Grimm\Assigner\LetterSender;
-use Grimm\Assigner\LetterTo;
+use Grimm\Assigner\Letters\From as LetterFrom;
+use Grimm\Assigner\Letters\Receiver as LetterReceiver;
+use Grimm\Assigner\Letters\Sender as LetterSender;
+use Grimm\Assigner\Letters\To as LetterTo;
 use Grimm\Models\GeoCache;
 use Grimm\Models\Letter;
 use Grimm\Models\Location;
 use Grimm\Models\Person;
 use Grimm\Models\PersonCache;
 use Input;
-use Sentry;
 
 class AssignController extends \Controller {
 
@@ -31,25 +30,18 @@ class AssignController extends \Controller {
         $failedLocations = [];
         $counter = 0;
 
-        foreach ($this->getLetters('from', $take) as $letter)
-        {
-            foreach ($letter->information as $infor)
-            {
-                if ($infor->code == 'absendeort' || $infor->code == 'absort_ers')
-                {
-                    if ($location = $this->getLocation($infor->data))
-                    {
-                        try
-                        {
+        foreach ($this->getLetters('from', $take) as $letter) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'absendeort' || $info->code == 'absort_ers') {
+                    if ($location = $this->getLocation($info->data)) {
+                        try {
                             $this->assigner['from']->assign($letter, $location);
                             $counter ++;
-                        } catch (\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                         }
-                    } else
-                    {
+                    } else {
                         $failedLocations[] = [
-                            'name'   => $infor->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -64,25 +56,18 @@ class AssignController extends \Controller {
     {
         $failedLocations = [];
         $counter = 0;
-        foreach ($this->getLetters('to', $take) as $letter)
-        {
-            foreach ($letter->information as $info)
-            {
-                if ($info->code == 'empf_ort')
-                {
-                    if ($location = $this->getLocation($info->data))
-                    {
-                        try
-                        {
+        foreach ($this->getLetters('to', $take) as $letter) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'empf_ort') {
+                    if ($location = $this->getLocation($info->data)) {
+                        try {
                             $this->assigner['to']->assign($letter, $location);
                             $counter ++;
-                        } catch (\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                         }
-                    } else
-                    {
+                    } else {
                         $failedLocations[] = [
-                            'name'   => $info->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -97,25 +82,18 @@ class AssignController extends \Controller {
     {
         $failedPersons = [];
         $counter = 0;
-        foreach ($this->getLetters('senders', $take) as $letter)
-        {
-            foreach ($letter->information as $info)
-            {
-                if ($info->code == 'senders')
-                {
-                    if ($person = $this->getPerson($info->data))
-                    {
-                        try
-                        {
+        foreach ($this->getLetters('senders', $take) as $letter) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'senders') {
+                    if ($person = $this->getPerson($info->data)) {
+                        try {
                             $this->assigner['senders']->assign($letter, $person);
                             $counter ++;
-                        } catch (\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                         }
-                    } else
-                    {
+                    } else {
                         $failedPersons[] = [
-                            'name'   => $info->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -130,25 +108,18 @@ class AssignController extends \Controller {
     {
         $failedPersons = [];
         $counter = 0;
-        foreach ($this->getLetters('receivers', $take) as $letter)
-        {
-            foreach ($letter->information as $info)
-            {
-                if ($info->code == 'receivers')
-                {
-                    if ($person = $this->getPerson($info->data))
-                    {
-                        try
-                        {
+        foreach ($this->getLetters('receivers', $take) as $letter) {
+            foreach ($letter->information as $info) {
+                if ($info->code == 'receivers') {
+                    if ($person = $this->getPerson($info->data)) {
+                        try {
                             $this->assigner['receivers']->assign($letter, $person);
                             $counter ++;
-                        } catch (\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                         }
-                    } else
-                    {
+                    } else {
                         $failedPersons[] = [
-                            'name'   => $info->data,
+                            'name' => $info->data,
                             'letter' => $letter->id
                         ];
                     }
@@ -161,14 +132,13 @@ class AssignController extends \Controller {
 
     protected function getLetters($mode, $take)
     {
-        if($take <= 0) {
+        if ($take <= 0) {
             return [];
         }
 
         $builder = Letter::query();
 
-        switch ($mode)
-        {
+        switch ($mode) {
             case 'from':
                 $builder->where('from_id', null);
                 $builder->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
@@ -185,7 +155,7 @@ class AssignController extends \Controller {
                 break;
         }
 
-        $builder->take(abs((int) $take));
+        $builder->take(abs((int)$take));
 
         $builder->with('information');
 
@@ -194,14 +164,11 @@ class AssignController extends \Controller {
 
     protected function getPerson($name)
     {
-        if (!isset($this->cache[$name]))
-        {
+        if (!isset($this->cache[$name])) {
             $this->cache[$name] = Person::where('name_2013', $name)->first();
 
-            if (!$this->cache[$name])
-            {
-                if ($tmp = PersonCache::where('name', $name)->first())
-                {
+            if (!$this->cache[$name]) {
+                if ($tmp = PersonCache::where('name', $name)->first()) {
                     $this->cache[$name] = $tmp->person;
                 }
             }
@@ -212,26 +179,21 @@ class AssignController extends \Controller {
 
     protected function getLocation($name)
     {
-        if (!isset($this->cache[$name]))
-        {
+        if (!isset($this->cache[$name])) {
             $location = GeoCache::where('name', $name)->with('geo')->first();
 
-            if (!$location)
-            {
+            if (!$location) {
                 $locations = Location::where('name', $name)->orWhere('asciiname', $name)->orWhere('alternatenames', 'like', '%,' . $name . ',%')->get();
-                if ($locations->count() == 1)
-                {
+                if ($locations->count() == 1) {
                     $this->cache[$name] = $locations[0];
                     GeoCache::create([
-                        'name'   => $name,
+                        'name' => $name,
                         'geo_id' => $locations[0]->id
                     ]);
-                } else
-                {
+                } else {
                     $this->cache[$name] = null;
                 }
-            } else
-            {
+            } else {
                 $this->cache[$name] = $location->geo;
             }
         }

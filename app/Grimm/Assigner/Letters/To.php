@@ -1,6 +1,6 @@
 <?php
 
-namespace Grimm\Assigner;
+namespace Grimm\Assigner\Letters;
 
 use Grimm\Contract\Assigner;
 use Grimm\Models\Letter;
@@ -9,7 +9,7 @@ use Grimm\Models\Location;
 use Grimm\Assigner\Exceptions\ObjectNotFoundException;
 use Grimm\Assigner\Exceptions\ItemNotFoundException;
 
-class LetterTo implements Assigner {
+class To implements Assigner {
 
     /**
      * Assigns an item to an object
