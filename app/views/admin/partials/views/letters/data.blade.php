@@ -9,7 +9,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="item in letters.data">
-            <td letter-edit="item.id">@{{ item.id }}</td>
+            <td><a href letter-edit="item.id">@{{ item.id }}</a></td>
             <td>@{{ item.date }}</td>
             <td ng-repeat="field in fields">
                 <a href ng-click="editField(item.id, field)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
