@@ -26,9 +26,9 @@
                     <td>@{{ user.username }}</td>
                     <td>@{{ user.activated }}</td>
                     <td>
-                        <span ng-repeat="group in user.groups | orderObjectBy:'name'">
+                        <p ng-repeat="group in user.groups | orderObjectBy:'name'">
                             <a href group-preview="group.id">@{{ group.name }}</a>
-                        </span>
+                        </p>
                     </td>
                 </tr>
             </tbody>
