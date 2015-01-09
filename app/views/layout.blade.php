@@ -56,6 +56,7 @@
                 </ul>
                 <ul class="nav navbar-nav pull-right">
 @if(Sentry::check())
+                    <p class="navbar-text">{{ Sentry::getUser()->username  }}</p>
                     <li><a href="{{ url('logout') }}">{{ trans('menu.logout') }}</a></li>
 @else
                     <li><a href="{{ url('login') }}">{{ trans('menu.login') }}</a></li>
