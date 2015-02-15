@@ -9,6 +9,7 @@ use Grimm\Logging\UserActionLogger;
 use Grimm\Transformer\LetterRecord;
 use Grimm\Transformer\LocationRecord;
 use Grimm\Transformer\PersonRecord;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\ServiceProvider;
 
 class BootServiceProvider extends ServiceProvider {
@@ -27,6 +28,14 @@ class BootServiceProvider extends ServiceProvider {
      */
     public function register()
     {
+        $this->app->after(function($request, $response)
+        {
+            if($response instanceof JsonResponse) {
+                $json = ")]}',\n" . $response->getContent();
+                return $response->setContent($json);
+            }
+        });
+
         $this->app->bind('grimm.unauthorized', function ()
         {
             return \Response::json('Grimm Unauthorized', 401);
