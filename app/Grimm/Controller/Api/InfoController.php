@@ -3,6 +3,7 @@
 namespace Grimm\Controller\Api;
 
 use Illuminate\Filesystem\Filesystem;
+use Response;
 
 class InfoController extends \Controller {
 
@@ -18,7 +19,7 @@ class InfoController extends \Controller {
             $changelog = $this->file->get(storage_path('changelog.txt'));
         }
 
-        return json_encode([
+        return Response::json([
             'version' => '0.1',
             'changelog' => $changelog
         ]);

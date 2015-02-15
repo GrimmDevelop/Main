@@ -35,7 +35,7 @@
                     <li><a href="{{ url('api') }}">{{ trans('menu.api') }}</a></li>
                     <li><a href="{{ url(getenv('impressum')) }}">{{ trans('menu.impressum') }}</a></li>
 @if(Sentry::check())
-                    <li><a href="{{ url('admin') }}">{{ trans('menu.admin') }}</a></li>
+                    <li><a href="{{ url('admin') }}#/">{{ trans('menu.admin') }}</a></li>
                     <li class="dropdown">
                         <a href="#" data-toogle="dropdown" class="dropdown-toggle"><span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">

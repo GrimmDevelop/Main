@@ -1,12 +1,38 @@
 grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     var serviceBackend = BASE_URL + '/search';
 
-    this.search = function (filters, perPage, page) {
-        return $http.post(serviceBackend, {
-            filters: filters,
-            items_per_page: perPage,
-            page: page
-        });
+    this.search = function (filters, perPage, page, _with, onlyWithErrors) {
+        var params = {};
+
+        params.filters = filters;
+        params.items_per_page = perPage,
+        params.page = page;
+
+
+        if (typeof _with != 'undefined') {
+            params.with = _with;
+        }
+
+        if (typeof onlyWithErrors != 'undefined') {
+            var with_errors = [];
+
+            if (onlyWithErrors.from) {
+                with_errors.push('from');
+            }
+            if (onlyWithErrors.to) {
+                with_errors.push('to');
+            }
+            if (onlyWithErrors.senders) {
+                with_errors.push('senders');
+            }
+            if (onlyWithErrors.receivers) {
+                with_errors.push('receivers');
+            }
+
+            params.with_errors = with_errors;
+        }
+
+        return $http.post(serviceBackend, params);
     }
 
     this.distanceMap = function (filters) {

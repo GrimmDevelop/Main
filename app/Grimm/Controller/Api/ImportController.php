@@ -4,6 +4,7 @@ namespace Grimm\Controller\Api;
 
 use Queue;
 use Input;
+use Response;
 
 class ImportController extends \Controller {
 
@@ -13,21 +14,21 @@ class ImportController extends \Controller {
     {
         Queue::push('Grimm\Controller\Queue\Letter@importLetters', array('source' => Input::get('data')));
 
-        return \Response::json(array('success' => array('message' => 'Start importing letters.')));
+        return Response::json(array('success' => array('message' => 'Start importing letters.')));
     }
 
     public function startLocationImport()
     {
         Queue::push('Grimm\Controller\Queue\Location@import', array('source' => Input::get('data')));
 
-        return \Response::json(array('success' => array('message' => 'Start importing geo locations.')));
+        return Response::json(array('success' => array('message' => 'Start importing geo locations.')));
     }
 
     public function startPersonImport()
     {
         Queue::push('Grimm\Controller\Queue\Person@import', array('source' => Input::get('data')));
 
-        return \Response::json(array('success' => array('message' => 'Start importing persons.')));
+        return Response::json(array('success' => array('message' => 'Start importing persons.')));
     }
 
 }

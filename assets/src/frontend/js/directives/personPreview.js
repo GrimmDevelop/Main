@@ -7,6 +7,7 @@ grimmApp.directive("personPreview", ['$modal', 'Persons', function ($modal, Pers
                     $modal.open({
                         templateUrl: 'partials/personPreview',
                         controller: 'personPreviewController',
+                        size: 'lg',
                         resolve: {
                             person: function () {
                                 return data;

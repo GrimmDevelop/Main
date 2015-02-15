@@ -36,7 +36,7 @@ class PersonController extends \Controller {
         $return->to = $result->getTo();
         $return->data = $result->getCollection()->toArray();
 
-        return json_encode($return);
+        return Response::json($return);
     }
 
     public function search()
@@ -52,10 +52,10 @@ class PersonController extends \Controller {
         $result = $builder->get();
 
         if ($result->count() > 0) {
-            return $result->toJson();
+            return Response::json($result);
         }
 
-        return \Response::json(array('type' => 'danger', 'message' => 'Person not found'), 404);
+        return Response::json(array('type' => 'danger', 'message' => 'Person not found'), 404);
 
     }
 
@@ -152,7 +152,7 @@ class PersonController extends \Controller {
     public function show($id)
     {
         if ($person = Person::find($id)) {
-            return $person->load('information')->toJson();
+            return Response::json($person->load('information'));
         }
 
         return null;

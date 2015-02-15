@@ -7,7 +7,15 @@ use Session;
 
 class DisplayController extends \Controller {
 
-    public function views($section = null)
+    public function viewsAndDefault($section)
+    {
+        return \Response::json([
+            'views' => $this->views($section),
+            'default' => $this->defaultView($section),
+        ]);
+    }
+
+    public function views($section)
     {
         if (in_array($section, ['letters', 'locations', 'persons'])) {
             $base = 'admin/partials/';
@@ -22,16 +30,12 @@ class DisplayController extends \Controller {
         }, $views);
     }
 
-    public function defaultView($section = null)
+    public function defaultView($section)
     {
-        if (Session::has('defaultView.' . $section)) {
-            return Session::get('defaultView.' . $section);
-        }
-
-        return $this->views($section)[0];
+        return Session::get('defaultView.' . $section, $this->views($section)[0]);
     }
 
-    public function changeView($section = null)
+    public function changeView($section)
     {
         $view = Input::get('view');
         $views = $this->views($section);
@@ -40,6 +44,7 @@ class DisplayController extends \Controller {
             Session::put('defaultView.' . $section, $view);
         }
 
-        return $this->defaultView($section);
+        // required to trigger Session::put
+        return \Response::make($this->defaultView($section));
     }
 }

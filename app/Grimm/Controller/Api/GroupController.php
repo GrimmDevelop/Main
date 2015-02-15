@@ -5,6 +5,7 @@ namespace Grimm\Controller\Api;
 use Grimm\Auth\Models\Group;
 use Grimm\Auth\Models\User;
 use Input;
+use Response;
 use Sentry;
 use Validator;
 
@@ -17,7 +18,7 @@ class GroupController extends \Controller {
      */
     public function index()
     {
-        return Group::with('users')->get();
+        return Response::json(Group::with('users')->get());
     }
 
     /**
@@ -62,7 +63,7 @@ class GroupController extends \Controller {
      */
     public function show($id)
     {
-        return Group::find($id)->load('users');
+        return Response::json(Group::find($id)->load('users'));
     }
 
     /**

@@ -9,7 +9,7 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return $http.get(serviceBackend + 'letters/' + id);
     }
 
-    this.page = function (itemsPerPage, page, onlyWithErrors) {
+    this.page = function (itemsPerPage, page, onlyWithErrors, fields) {
 
         var params = {};
         if (typeof onlyWithErrors != 'undefined') {
@@ -40,6 +40,10 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
 
         if (typeof page != 'undefined') {
             params.page = page;
+        }
+
+        if (typeof fields != 'undefined' && fields.length > 0) {
+            params.fields = fields;
         }
 
         return $http.get(serviceBackend + 'letters', {
