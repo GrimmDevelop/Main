@@ -16,13 +16,13 @@ require_once('routes_api.php');
 require_once('routes_user.php');
 
 Route::get('/', function () {
-    return Redirect::to(URL::to('search'));
+    return Redirect::route('search');
 });
 
 Route::get('partials/{file}', 'Grimm\Controller\PartialsController@load');
 
 Route::group(['prefix' => 'search'], function () {
-    Route::get('/', 'Grimm\Controller\SearchController@searchForm');
+    Route::get('/', ['uses' => 'Grimm\Controller\SearchController@searchForm', 'as' => 'search']);
     Route::post('/', 'Grimm\Controller\SearchController@searchResult');
 
     Route::get('codes', 'Grimm\Controller\SearchController@codes');
@@ -39,11 +39,12 @@ Route::group(['prefix' => 'search'], function () {
 
     Route::post('distanceMap', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\SearchController@computeDistanceMap']);
 
+    // TODO: set flag to display search results on page load
     Route::get('/{filterKey}', 'Grimm\Controller\SearchController@searchForm');
 });
 
 App::missing(function ($exception) {
-    return Redirect::to('/')->withErrors(
+    return Redirect::route('search')->withErrors(
         array(
             '404' => $exception->getMessage()
         )

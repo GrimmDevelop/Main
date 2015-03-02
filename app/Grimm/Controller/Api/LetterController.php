@@ -118,7 +118,7 @@ class LetterController extends \Controller {
                 try {
                     $dateTime = Carbon::createFromFormat('Y-m-d', Input::get('updated_after'));
                 } catch (\InvalidArgumentException $e) {
-                    return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s]'), 500);
+                    return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s])'), 500);
                 }
             }
 

@@ -28,6 +28,9 @@ class BootServiceProvider extends ServiceProvider {
      */
     public function register()
     {
+        /**
+         * TODO: revert back to data object {"d": []}
+         */
         $this->app->after(function($request, $response)
         {
             if($response instanceof JsonResponse) {

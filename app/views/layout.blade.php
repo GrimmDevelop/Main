@@ -31,7 +31,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="mainnav">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('search') }}">{{ trans('menu.search') }}</a></li>
+                    <li><a href="{{ route('search') }}">{{ trans('menu.search') }}</a></li>
                     <li><a href="{{ url('api') }}">{{ trans('menu.api') }}</a></li>
                     <li><a href="{{ url(getenv('impressum')) }}">{{ trans('menu.impressum') }}</a></li>
 @if(Sentry::check())

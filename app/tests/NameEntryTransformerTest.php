@@ -1,6 +1,7 @@
 <?php
 
 use Grimm\Transformer\NameEntry;
+use Grimm\Values\NameSet;
 
 class NameEntryTransformerTest extends TestCase {
 
@@ -22,21 +23,10 @@ class NameEntryTransformerTest extends TestCase {
         ];
 
         $expectedDataArray = [
-            [
-                'last_name' => 'Lastname',
-                'first_name' => 'Firstname Secondfirstname',
-            ],
-            [
-                'last_name' => 'Lastname Secondlastname',
-                'first_name' => 'Firstname',
-            ],
-            [
-                'last_name' => 'Lastname Secondlastname',
-                'first_name' => 'Firstname Secondfirstname',
-            ],
-            [
-                'last_name' => 'Onlylastname',
-            ],
+            new NameSet('Lastname', 'Firstname Secondfirstname'),
+            new NameSet('Lastname Secondlastname', 'Firstname'),
+            new NameSet('Lastname Secondlastname', 'Firstname Secondfirstname'),
+            new NameSet('Onlylastname'),
         ];
 
         // Test
@@ -55,35 +45,18 @@ class NameEntryTransformerTest extends TestCase {
     {
         $testDataArray = [
             'Lastname1, Firstname1; Lastname2, Firstname2',
-            'Lastname1, Firstname1 Secondfirstname1; Lastname2, Firstname2;Lastname3 ; Lastname4, Firstname4',
+            'Lastname1, Firstname1 Secondfirstname1 ; Lastname2, Firstname2 ;Lastname3 ; Lastname4, Firstname4',
         ];
         $expectedDataArray = [
             [
-                [
-                    'last_name' => 'Lastname1',
-                    'first_name' => 'Firstname1',
-                ],
-                [
-                    'last_name' => 'Lastname2',
-                    'first_name' => 'Firstname2',
-                ]
+                new NameSet('Lastname1', 'Firstname1'),
+                new NameSet('Lastname2', 'Firstname2')
             ],
             [
-                [
-                    'last_name' => 'Lastname1',
-                    'first_name' => 'Firstname1 Secondfirstname1',
-                ],
-                [
-                    'last_name' => 'Lastname2',
-                    'first_name' => 'Firstname2',
-                ],
-                [
-                    'last_name' => 'Lastname3',
-                ],
-                [
-                    'last_name' => 'Lastname4',
-                    'first_name' => 'Firstname4',
-                ]
+                new NameSet('Lastname1', 'Firstname1 Secondfirstname1'),
+                new NameSet('Lastname2', 'Firstname2'),
+                new NameSet('Lastname3'),
+                new NameSet('Lastname4', 'Firstname4'),
             ]
         ];
 
@@ -91,10 +64,7 @@ class NameEntryTransformerTest extends TestCase {
         $result = [];
         for ($i = 1; $i <= 10; $i ++) {
             $names[] = "Lastname$i, Firstname$i";
-            $result[] = [
-                'last_name' => "Lastname$i",
-                'first_name' => "Firstname$i",
-            ];
+            $result[] = new NameSet("Lastname$i", "Firstname$i");
         }
         $testDataArray[] = implode('; ', $names);
         $expectedDataArray[] = $result;
@@ -111,4 +81,18 @@ class NameEntryTransformerTest extends TestCase {
         $this->assertEquals($expectedDataArray, $result);
     }
 
+    /**
+     * @ignore
+     */
+    public function testInNameOf()
+    {
+        $testName = 'Lastname, Firstname ;> Beliebige Institution';
+        $expectedResult = new NameSet('Lastname', 'Firstname', null, null, new NameSet('Beliebige Institution'));
+
+        $result = $this->getNameEntryTransformer()->extractData($testName);
+
+        $this->markTestSkipped();
+
+        $this->assertEquals($expectedResult, $result);
+    }
 }

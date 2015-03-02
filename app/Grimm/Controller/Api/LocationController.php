@@ -4,6 +4,7 @@ namespace Grimm\Controller\Api;
 
 use Grimm\Models\Location;
 use Input;
+use Response;
 
 class LocationController extends \Controller {
 
@@ -61,7 +62,7 @@ class LocationController extends \Controller {
             return Response::json($return);
         }
 
-        return \Response::json(array('type' => 'danger', 'message' => 'Location not found'), 404);
+        return Response::json(array('type' => 'danger', 'message' => 'Location not found'), 404);
     }
 
     /**

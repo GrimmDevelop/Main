@@ -3,9 +3,15 @@
 namespace Grimm\Transformer;
 
 use Grimm\Contract\EntryTransformer;
+use Grimm\Values\NameSet;
 
 class NameEntry implements EntryTransformer {
 
+    /**
+     * transforms name string into array of NameSets
+     * @param $names
+     * @return array
+     */
     public function transform($names)
     {
         $transformedNames = [];
@@ -17,28 +23,33 @@ class NameEntry implements EntryTransformer {
         return $transformedNames;
     }
 
+    /**
+     * Split semicolon separated names into array
+     * ignores semicolons followed by "<" or ">"
+     * @param $names
+     * @return array
+     */
     protected function splitNames($names)
     {
-        return array_filter(array_map('trim', explode(';', $names)));
+        return array_filter(array_map('trim', preg_split('/;(?![><])/', $names)));
     }
 
+    /**
+     *
+     * @param $stringName
+     * @return NameSet
+     */
     public function extractData($stringName)
     {
-        $nameSet = [
-            'last_name' => null,
-            'first_name' => null,
-            'birth_name' => null,
-            'widowed' => null,
-            'in_name_of' => null,
-            'as_member_of' => null,
-        ];
-
         $data = array_filter(array_map('trim', explode(',', $stringName)));
 
-        $nameSet['last_name'] = $data[0];
-        $nameSet['first_name'] = isset($data[1]) ? $data[1] : null;
+        $last_name = $data[0];
+        $first_name = isset($data[1]) ? $data[1] : null;
 
-        return array_filter($nameSet);
+        return new NameSet($last_name, $first_name);
+
+        /*
+        TODO: Implement name standards
 
         $name = preg_replace("/;([\\/~><])/", ":$1", $stringName);
 
@@ -61,5 +72,6 @@ class NameEntry implements EntryTransformer {
         }
 
         return trim($name);
+        */
     }
 }
