@@ -1,4 +1,4 @@
-grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons) {
+grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys) {
 
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
@@ -164,6 +164,15 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
 
     Search.codes().success(function(data) {
         $scope.letterInfo.codes = data;
+    });
+
+    // Hotkeys
+    hotkeys.add({
+        combo: 'ctrl+alt+n',
+        description: 'Add new field',
+        callback: function() {
+            $scope.addField();
+        }
     });
 
     $scope.loadFilters();

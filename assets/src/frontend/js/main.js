@@ -4,7 +4,7 @@ jQuery(function ($) {
     });
 });
 
-var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ang-drag-drop"]);
+var grimmApp = angular.module('grimmApp', ['ngRoute', "ui.bootstrap", "google-maps".ns(), "flow", "dialogs", "ang-drag-drop", "cfp.hotkeys"]);
 
 grimmApp.config(['$httpProvider', 'flowFactoryProvider', 'GoogleMapApiProvider'.ns(),
     function ($httpProvider, flowFactoryProvider, GoogleMapApi) {
