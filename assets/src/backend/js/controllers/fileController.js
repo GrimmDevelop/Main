@@ -12,7 +12,7 @@ grimmApp.controller('filesController', ['$scope', '$modal', 'FileBrowser', funct
         if (typeof ev !== 'undefined') {
             ev.preventDefault();
         }
-    }
+    };
 
     $scope.open_mkdir = function () {
         var modalInstance = $modal.open({
@@ -30,7 +30,7 @@ grimmApp.controller('filesController', ['$scope', '$modal', 'FileBrowser', funct
                 $scope.refresh();
             });
         });
-    }
+    };
 
     $scope.refresh = function (ev) {
         $scope.cd(browser.cwd());
@@ -43,7 +43,7 @@ grimmApp.controller('filesController', ['$scope', '$modal', 'FileBrowser', funct
     $scope.uploadComplete = function () {
         $scope.refresh();
         $scope.upload.flow.cancel();
-    }
+    };
 
     $scope.$on('browser-needs-refresh', function () {
         $scope.refresh();
@@ -63,7 +63,7 @@ grimmApp.controller('filesController', ['$scope', '$modal', 'FileBrowser', funct
 
     $scope.startUpload = function (event, files) {
         $scope.upload.flow.upload();
-    }
+    };
 
     $scope.queryBuild = function (flowFile, flowChunk) {
         return {'virtualPath': flowFile.virtualPath};
@@ -73,16 +73,16 @@ grimmApp.controller('filesController', ['$scope', '$modal', 'FileBrowser', funct
         $scope.$broadcast('file-clicked', file);
         $scope.selected = file.path;
 
-        if (typeof ev !== 'undefined') {
+        if (typeof $event !== 'undefined') {
             $event.preventDefault();
         }
-    }
+    };
 
     $scope.move = function (src, dest) {
         browser.move(src.path, dest.path).success(function () {
             $scope.refresh();
         });
-    }
+    };
 
     $scope.cd('/');
 }]);
@@ -97,7 +97,7 @@ grimmApp.controller('MkdirController', ['$scope', '$modalInstance', 'cwd', funct
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 
     $scope.hitEnter = function (evt) {
         if (angular.equals(evt.keyCode, 13) && !(angular.equals($scope.fields.dirname, null) || angular.equals($scope.fields.dirname, ''))) {

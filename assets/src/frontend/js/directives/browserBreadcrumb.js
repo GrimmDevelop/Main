@@ -19,7 +19,7 @@ grimmApp.directive("browserBreadcrumb", ['FileBrowser', function (browser) {
                 scope.onChange({'path': '/' + tmp.join('/')});
 
                 event.preventDefault();
-            }
+            };
 
             scope.buildToIndex = function (index) {
                 var tmp = [];
@@ -29,12 +29,12 @@ grimmApp.directive("browserBreadcrumb", ['FileBrowser', function (browser) {
                 }
 
                 return '/' + tmp.join('/');
-            }
+            };
 
             scope.$watch(function () {
                 return browser.cwd(true);
             }, function (newVal) {
-                var copy = newVal.slice()
+                var copy = newVal.slice();
                 copy.splice(0, 1);
                 scope.cwd = copy;
             });

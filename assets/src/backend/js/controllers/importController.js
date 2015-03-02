@@ -17,7 +17,7 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', 'ImportLocati
         if (typeof event !== 'undefined') {
             event.preventDefault();
         }
-    }
+    };
 
     $scope.startLetterImport = function (event, selectedLetterFile) {
         if (typeof event !== 'undefined') {
@@ -34,7 +34,7 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', 'ImportLocati
             });
 
         $scope.reset();
-    }
+    };
 
     $scope.startLocationImport = function (event, selectedLocationFile) {
         if (typeof event !== 'undefined') {
@@ -51,7 +51,7 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', 'ImportLocati
             });
 
         $scope.reset();
-    }
+    };
 
     $scope.startPersonImport = function (event, selectedPersonFile) {
         if (typeof event !== 'undefined') {
@@ -68,7 +68,7 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', 'ImportLocati
             });
 
         $scope.reset();
-    }
+    };
 
     $scope.reset = function () {
         $scope.mode = 'index';
@@ -76,5 +76,5 @@ grimmApp.controller('importController', ['$scope', 'ImportLetter', 'ImportLocati
         $scope.selectedLetterFile = null;
         $scope.selectedLocationFile = null;
         $scope.selectedPersonFile = null;
-    }
+    };
 }]);

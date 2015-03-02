@@ -20,7 +20,7 @@ grimmApp.service("Locations", ['$http', 'BASE_URL', function ($http, BASE_URL) {
 
     this.get = function (id) {
         return $http.get(serviceBackend + 'locations/' + id);
-    }
+    };
 
     this.search = function (name, in_alternate_names) {
         if (typeof in_alternate_names == 'undefined') {
@@ -31,7 +31,7 @@ grimmApp.service("Locations", ['$http', 'BASE_URL', function ($http, BASE_URL) {
             name: name,
             in_alternate_names: in_alternate_names
         });
-    }
+    };
 
     this.searchAhead = function (name) {
         return $http.post(serviceBackend + 'locations/search', {
@@ -39,6 +39,6 @@ grimmApp.service("Locations", ['$http', 'BASE_URL', function ($http, BASE_URL) {
             in_alternate_names: false,
             ahead: true
         });
-    }
+    };
 
 }]);

@@ -13,5 +13,5 @@ grimmApp.filter('filterCodeAndFill', ['$filter', function ($filter) {
         });
 
         return object;
-    }
+    };
 }]);

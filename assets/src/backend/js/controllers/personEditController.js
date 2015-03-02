@@ -4,7 +4,7 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 
     $scope.load = function (id) {
         Persons.get(id).success(function (data) {
@@ -12,10 +12,10 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
             $scope.person.information.map(function (item) {
                 item.state = 'keep';
             })
-        }).error(function (data) {
+        }).error(function () {
             $scope.cancel();
         });
-    }
+    };
 
     $scope.removeInformation = function (information) {
         if (information.state != 'add') {
@@ -27,15 +27,15 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
                 $scope.person.information.splice(index, 1);
             }
         }
-    }
+    };
 
     $scope.save = function () {
         // save person changes
 
-        Persons.save($scope.person).success(function (data) {
+        Persons.save($scope.person).success(function () {
             $scope.load(id);
         });
-    }
+    };
 
     $scope.addCode = function () {
         var modalInstance = $modal.open({
@@ -52,7 +52,7 @@ grimmApp.controller('personEditController', ['$scope', '$modal', '$modalInstance
         }, function () {
 
         });
-    }
+    };
 
     $scope.load(id);
 }]);
@@ -71,9 +71,9 @@ grimmApp.controller('personEditAddCodeController', ['$scope', '$modalInstance', 
         if ($scope.code != null && $scope.code != '') {
             $modalInstance.close($scope.code);
         }
-    }
+    };
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 }]);

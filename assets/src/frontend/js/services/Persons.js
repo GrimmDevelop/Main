@@ -36,15 +36,15 @@ grimmApp.service("Persons", ['$http', 'BASE_URL', function ($http, BASE_URL) {
 
     this.get = function (id) {
         return $http.get(serviceBackend + 'persons/' + id);
-    }
+    };
 
     this.codes = function () {
         return $http.get(serviceBackend + 'persons/codes');
-    }
+    };
 
     this.save = function (person) {
         return $http.put(serviceBackend + 'persons/' + person.id, person);
-    }
+    };
 
     this.search = function (name) {
         return $http.post(serviceBackend + 'persons/search', {
@@ -57,12 +57,12 @@ grimmApp.service("Persons", ['$http', 'BASE_URL', function ($http, BASE_URL) {
             "name": name,
             "ahead": 1
         });
-    }
+    };
 
     this.autoGenerate = function (name) {
         return $http.post(serviceBackend + 'persons', {
             name_2013: name,
             auto_generated: 1
         });
-    }
+    };
 }]);
