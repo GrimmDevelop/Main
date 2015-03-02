@@ -1,4 +1,4 @@
-grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters', 'Locations', 'Persons', function ($scope, $modal, Search, Letters, Locations, Persons) {
+grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons) {
 
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
@@ -68,7 +68,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
 
     $scope.sendMail = function () {
         if ($scope.currentFilter.filter_key != null) {
-            return 'mailto:?subject=Grimm%20Database%20-%20Filter&body=Filter%20link:%20' + $scope.currentFilter.filter_key;
+            return 'mailto:?subject=Grimm%20Database%20-%20Filter&body=Filter%20link:%20' + encodeURIComponent(BASE_URL + '/search/' + $scope.currentFilter.filter_key);
         }
     }
 
