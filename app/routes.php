@@ -39,8 +39,12 @@ Route::group(['prefix' => 'search'], function () {
 
     Route::post('distanceMap', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\SearchController@computeDistanceMap']);
 
+    Route::get('/dateRange', 'Grimm\Controller\SearchController@dateRange');
+
     // TODO: set flag to display search results on page load
     Route::get('/{filterKey}', 'Grimm\Controller\SearchController@searchForm');
+
+
 });
 
 App::missing(function ($exception) {

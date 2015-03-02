@@ -135,7 +135,20 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     }
 
     $scope.startDate = {};
+
     $scope.endDate = {};
+
+    Search.dateRange().success(function(response) {
+        var data = response.d;
+
+        $scope.startDate.minDate = new Date(data.min);
+        $scope.startDate.maxDate = new Date(data.max);
+        $scope.startDate.date = new Date(data.min);
+
+        $scope.endDate.minDate = new Date(data.min);
+        $scope.endDate.maxDate = new Date(data.max);
+        $scope.endDate.date = new Date(data.max);
+    });
 
     $scope.dateOptions = {
         formatYear: 'yy',

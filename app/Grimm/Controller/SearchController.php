@@ -2,6 +2,7 @@
 
 namespace Grimm\Controller;
 
+use Carbon\Carbon;
 use DB;
 use Grimm\Auth\Models\User;
 use Grimm\Models\Filter;
@@ -500,5 +501,15 @@ class SearchController extends \Controller {
     public function codes()
     {
         return Response::json($this->letter->codes());
+    }
+
+    public function dateRange()
+    {
+        $range = Letter::selectRaw('MIN(code) as min, MAX(code) as max')->first();
+
+        $min = (string)Carbon::createFromFormat("Ymd", substr($range->min, 0, -3))->format("Y-m-d");
+        $max = (string)Carbon::createFromFormat("Ymd", substr($range->max, 0, -3))->format("Y-m-d");
+
+        return Response::json(['d' => ['min' => $min, 'max' => $max]]);
     }
 }

@@ -5,7 +5,7 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         var params = {};
 
         params.filters = filters;
-        params.items_per_page = perPage,
+        params.items_per_page = perPage;
         params.page = page;
 
 
@@ -33,49 +33,53 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         }
 
         return $http.post(serviceBackend, params);
-    }
+    };
 
     this.distanceMap = function (filters) {
         return $http.post(serviceBackend + '/distanceMap', {
             filters: filters
         });
-    }
+    };
 
-    this.dateCodeBounds = function () {
+    /*this.dateCodeBounds = function () {
         return $http.post(serviceBackend + '/dataCodeBounds');
-    }
+    };*/
 
     this.codes = function () {
         return $http.get(serviceBackend + '/codes');
-    }
+    };
 
     this.loadFilters = function () {
         return $http.get(serviceBackend + '/filters');
-    }
+    };
 
     this.loadFilter = function (key) {
         return $http.get(serviceBackend + '/filters/' + key);
-    }
+    };
 
     this.newFilter = function (filter) {
         return $http.post(serviceBackend + '/filters', {
             filter: filter
         });
-    }
+    };
 
     this.saveFilter = function (filter) {
         return $http.put(serviceBackend + '/filters', {
             filter: filter
         });
-    }
+    };
 
     this.publicFilter = function (filter) {
         return $http.put(serviceBackend + '/filters/public', {
             filter: filter
         });
-    }
+    };
 
     this.deleteFilter = function(filter) {
         return $http.delete(serviceBackend + '/filters/' + filter.id);
+    };
+
+    this.dateRange = function() {
+        return $http.get(serviceBackend + '/dateRange');
     }
 }]);
