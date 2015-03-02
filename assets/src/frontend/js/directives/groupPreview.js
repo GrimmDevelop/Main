@@ -7,6 +7,7 @@ grimmApp.directive("groupPreview", ['$modal', 'UsersService', function ($modal, 
                     $modal.open({
                         templateUrl: 'admin/partials/groupPreview',
                         controller: 'groupPreviewController',
+                        size: 'lg',
                         resolve: {
                             group: function () {
                                 return data;

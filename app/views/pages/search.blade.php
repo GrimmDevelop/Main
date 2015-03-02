@@ -6,8 +6,26 @@
             <form role="form" ng-submit="search()">
                 <tabset>
                     <tab heading="filter">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="startDate.date" is-open="startDate.opened" min-date="startDate.minDate" max-date="startDate.maxDate" datepicker-options="dateOptions" close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open(startDate, $event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="endDate.date" is-open="endDate.opened" min-date="endDate.minDate" max-date="endDate.maxDate" datepicker-options="dateOptions" close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open(endDate, $event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
                         <div class="form-group row" ng-repeat="field in currentFilter.fields">
-                            <div class="col-md-2 control-label"><select class="form-control" ng-model="field.code" ng-options="code for code in codes"></select></div>
+                            <div class="col-md-2 control-label"><select class="form-control" ng-model="field.code" ng-options="code for code in letterInfo.codes"></select></div>
                             <div class="col-md-2"><select class="form-control" ng-model="field.compare">
                                 <option>equals</option>
                                 <option>contains</option>
@@ -51,7 +69,7 @@
 @endif
                     </tab>
                     <tab heading="display">
-                        <div fields-selection="displayCodes"></div>
+                        <div fields-selection="displayCodes" fields-codes="letterInfo.codes"></div>
                     </tab>
                 </tabset>
             </form>

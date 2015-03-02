@@ -7,10 +7,12 @@ use Grimm\Auth\Models\User;
 use Grimm\Models\Filter;
 use Grimm\Models\Letter;
 use Grimm\Models\Location;
+use Response;
 use URL;
 use View;
 use Input;
 use Sentry;
+
 
 class SearchController extends \Controller {
 
@@ -42,7 +44,7 @@ class SearchController extends \Controller {
     public function searchResult()
     {
         $result = $this->buildSearchQuery(
-            ['information'],
+            Input::get('with', ['information']),
             Input::get('filters', [])
         )->paginate(abs((int)Input::get('items_per_page', 100)));
 
@@ -56,7 +58,7 @@ class SearchController extends \Controller {
         $return->to = $result->getTo();
         $return->data = $result->getCollection()->toArray();
 
-        return json_encode($return);
+        return Response::json($return);
     }
 
     protected $distanceMapData;
@@ -64,6 +66,7 @@ class SearchController extends \Controller {
     protected $tmpAddedBorderIds;
 
     /**
+     * TODO: nothing to do in the SearchController
      * Builds a json string containing computed letter count, border data and the line coordinates as latitude and longitude objects
      * @return string
      */
@@ -115,7 +118,7 @@ class SearchController extends \Controller {
             }
         }
 
-        return json_encode($this->distanceMapData);
+        return Response::json($this->distanceMapData);
     }
 
     /**
@@ -213,11 +216,37 @@ class SearchController extends \Controller {
         $query = Letter::query();
 
         foreach ($with as $load) {
-            $query->with($load);
+            if (in_array($load, ['information', 'senders', 'receivers', 'from', 'to'])) {
+                $query->with($load);
+            }
         }
 
         foreach ($filters as $filter) {
             $this->buildWhere($query, $filter);
+        }
+
+        if (Sentry::check()) {
+            $query->where(function ($query) {
+                foreach (Input::get('with_errors', []) as $error) {
+                    switch ($error) {
+                        case "from":
+                            $this->withFromErrors($query);
+                            break;
+
+                        case "to":
+                            $this->withToErrors($query);
+                            break;
+
+                        case "senders":
+                            $this->withSendersErrors($query);
+                            break;
+
+                        case "receivers":
+                            $this->withReceiversErrors($query);
+                            break;
+                    }
+                }
+            });
         }
 
         return $query;
@@ -277,6 +306,48 @@ class SearchController extends \Controller {
     }
 
     /**
+     * @param $query
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withFromErrors(Builder $query)
+    {
+        return $query->orWhere(function ($query) {
+            $query->where('from_id', null);
+            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
+        });
+    }
+
+    /**
+     * @param $query
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withToErrors(Builder $query)
+    {
+        return $query->orWhere(function ($query) {
+            $query->where('to_id', null);
+            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
+        });
+    }
+
+    /**
+     * @param $query
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withSendersErrors(Builder $query)
+    {
+        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+    }
+
+    /**
+     * @param $query
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function withReceiversErrors(Builder $query)
+    {
+        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+    }
+
+    /**
      * Returns a json array containing all filters from current user
      * @return string
      */
@@ -294,10 +365,10 @@ class SearchController extends \Controller {
                 $tmp['fields'] = json_decode($filter->fields);
                 $result[] = $tmp;
             }
-            return json_encode($result);
+            return Response::json($result);
         }
 
-        return "[]";
+        return Response::json([]);
     }
 
     /**
@@ -312,7 +383,7 @@ class SearchController extends \Controller {
             $tmp['id'] = null;
             $tmp['filter_key'] = $filter->filter_key;
             $tmp['fields'] = json_decode($filter->fields);
-            return $tmp;
+            return Response::json($tmp);
         }
         return null;
     }
@@ -428,6 +499,6 @@ class SearchController extends \Controller {
 
     public function codes()
     {
-        return $this->letter->codes();
+        return Response::json($this->letter->codes());
     }
 }

@@ -3,7 +3,13 @@
 @section('body')
     <div class="alert alert-danger">
         <strong>Danger!</strong> Api is experimental and may change significantly over time!<br>
-        If you find any errors, please send them to <a href="mailto:{{ Config::get('mail.from.address') }}">{{ Config::get('mail.from.name') }}</a>
+        If you find any errors, please send them to <a href="mailto:{{ Config::get('mail.from.address') }}">{{ Config::get('mail.from.name') }}</a>.
+    </div>
+
+    <div class="alert alert-info">
+        <string>Info!</string> Every JSON Response returns the prefix <code>")]}',\n"</code><br>
+        Read more at: <a href="https://docs.angularjs.org/api/ng/service/$http#security-considerations" target="_blank">https://docs.angularjs.org/api/ng/service/$http#security-considerations</a>.<br>
+        It will be ignored in given examples.
     </div>
 
     @if(count($errors))
@@ -40,6 +46,8 @@
         <div class="row">
         <div class="col-md-6">
             <p><strong>Request</strong></p>
+
+            <p>Required rights: <em>none</em></p>
 
             <p>Provide a <a href="#pagination-object">pagination</a> object that includes the total amount of letters, letters per page and the <a href="#letter-object">letter</a> objects.</p>
 

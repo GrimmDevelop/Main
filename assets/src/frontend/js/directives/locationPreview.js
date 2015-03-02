@@ -7,6 +7,7 @@ grimmApp.directive("locationPreview", ['$modal', 'Locations', function ($modal, 
                     $modal.open({
                         templateUrl: 'partials/locationPreview',
                         controller: 'locationPreviewController',
+                        size: 'lg',
                         resolve: {
                             location: function () {
                                 return data;

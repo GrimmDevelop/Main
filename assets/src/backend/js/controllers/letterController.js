@@ -1,4 +1,4 @@
-grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 'Display', 'Letters', function ($scope, $modal, MessagesService, DisplayService, Letters) {
+grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 'Display', 'Letters', 'Search', function ($scope, $modal, MessagesService, DisplayService, Letters, Search) {
 
     $scope.message = null;
     $scope.closeMessage = function () {
@@ -23,60 +23,87 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         shortEdit: true
     };
 
-    DisplayService.views('letters').success(function(data) {
-        $scope.display.views = data;
-    });
+    $scope.currentFilter = {};
+    $scope.currentFilter.id = null;
+    $scope.currentFilter.filter_key = null;
+    $scope.currentFilter.fields = [];
 
-    DisplayService.defaultView('letters').success(function(data) {
-        $scope.display.currentView = data;
-    });
+    $scope.letterInfo = {
+        codes: []
+    };
 
-    $scope.changeView = function(view) {
-        DisplayService.changeView('letters', view).success(function(data) {
-            $scope.display.currentView = data;
+    $scope.addField = function () {
+        $scope.result = {};
+
+        $scope.currentFilter.fields.push({
+            code: "",
+            compare: "equals",
+            value: ""
         });
     }
 
-    $scope.view = {
-        current: 'admin/partials/views.letters.data',
-        default: 'admin/partials/views.letters.data',
-        all: []
-    };
-    $scope.fields = ['absendeort','absort_ers','absender','empf_ort','empfaenger','dr','hs'];
+    $scope.removeField = function (field) {
+        $scope.result = {};
 
-    $scope.editField = function(letterId, field) {
+        var index = $scope.currentFilter.fields.indexOf(field);
+
+        if (index > -1) {
+            $scope.currentFilter.fields.splice(index, 1);
+        }
+    }
+
+    Search.codes().success(function (data) {
+        $scope.letterInfo.codes = data;
+    });
+
+    DisplayService.viewsAndDefault('letters').success(function (data) {
+        $scope.display.views = data.views;
+        $scope.display.currentView = data.default;
+    });
+
+    $scope.changeView = function (view) {
+        DisplayService.changeView('letters', view).success(function (data) {
+            //$scope.display.currentView = data;
+        });
+    }
+
+    $scope.fields = ['absendeort', 'absort_ers', 'absender', 'empf_ort', 'empfaenger', 'dr', 'hs'];
+
+    $scope.editColumn = function (field) {
+        MessagesService.broadcast('success', 'Edit complete column ' + field);
+    }
+
+    $scope.editField = function (letterId, field) {
         MessagesService.broadcast('success', 'Edit ' + field + " from letter #" + letterId);
     }
 
-    $scope.show = function (id) {
-        $modal.open({
-            templateUrl: 'admin/partials/letterEdit',
-            controller: 'letterEditController',
-            size: 'lg',
-            resolve: {
-                id: function () {
-                    return id;
-                }
-            }
-        });
-    };
-
     $scope.reload = function () {
-
-        var itemsPerPage = $scope.itemsPerPage;
-        var currentPage = $scope.currentPage;
-        var showLettersWithErrors = $scope.showLettersWithErrors;
-
-        Letters.page(itemsPerPage, currentPage, showLettersWithErrors).success(function (data) {
+        Search.search(
+            $scope.currentFilter.fields,
+            $scope.itemsPerPage,
+            $scope.currentPage,
+            ['information', 'senders', 'receivers', 'from', 'to'],
+            $scope.showLettersWithErrors
+        ).success(function (data) {
             $scope.letters = data;
         });
+
+        /*
+         var itemsPerPage = $scope.itemsPerPage;
+         var currentPage = $scope.currentPage;
+         var showLettersWithErrors = ;
+         var filters = $scope.currentFilter.fields;
+
+         Letters.page(itemsPerPage, currentPage, showLettersWithErrors, filters).success(function (data) {
+         $scope.letters = data;
+         });*/
     }
 
     $scope.reload();
 
     $scope.openLetterId = null;
     $scope.openLetterWithId = function () {
-        if($scope.openLetterId) {
+        if ($scope.openLetterId) {
             $scope.show($scope.openLetterId);
         }
     }

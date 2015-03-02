@@ -4,6 +4,7 @@ namespace Grimm\Controller\Api;
 
 use Grimm\Auth\Models\User;
 use Input;
+use Response;
 use Sentry;
 use Validator;
 
@@ -16,7 +17,7 @@ class UserController extends \Controller {
      */
     public function index()
     {
-        return User::with('groups')->get();
+        return Response::json(User::with('groups')->get());
     }
 
 
@@ -43,14 +44,14 @@ class UserController extends \Controller {
                 $res = array_merge($res, $field);
             }
 
-            return \Response::json(array('error' => array('message' => $res)), 200);
+            return Response::json(array('error' => array('message' => $res)), 200);
         }
 
         $user = Sentry::createUser(
             Input::only(['username', 'first_name', 'last_name', 'password', 'email', 'activated'])
         );
 
-        return \Response::json(array('success' => array('message' => 'User created')), 200);
+        return Response::json(array('success' => array('message' => 'User created')), 200);
     }
 
 
@@ -62,7 +63,7 @@ class UserController extends \Controller {
      */
     public function show($id)
     {
-        return User::find($id)->load('groups')->toJson();
+        return Response::json(User::find($id)->load('groups'));
     }
 
     /**
@@ -91,7 +92,7 @@ class UserController extends \Controller {
         $user->username = $data['username'];
         if ($data['password'] != '') {
             if ($data['password'] != $data['password_confirmation']) {
-                return \Response::json(array('error' => array('message' => "Password and password confirmation didn\'t match.")), 500);
+                return Response::json(array('error' => array('message' => "Password and password confirmation didn\'t match.")), 500);
             }
 
             $user->password = $data['password'];
@@ -108,9 +109,9 @@ class UserController extends \Controller {
         $user->email = $data['email'];
 
         if ($user->save()) {
-            return \Response::json(array('success' => array('message' => "User successfully saved!")));
+            return Response::json(array('success' => array('message' => "User successfully saved!")));
         } else {
-            return \Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
+            return Response::json(array('error' => array('message' => "Upps, something went wrong while saving!")), 500);
         }
     }
 

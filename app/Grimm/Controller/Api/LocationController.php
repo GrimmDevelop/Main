@@ -4,6 +4,7 @@ namespace Grimm\Controller\Api;
 
 use Grimm\Models\Location;
 use Input;
+use Response;
 
 class LocationController extends \Controller {
 
@@ -27,7 +28,7 @@ class LocationController extends \Controller {
         $return->countries = Location::selectRaw("DISTINCT country_code")->orderBy('country_code')->get()->lists('country_code');
         $return->data = $result->getCollection()->toArray();
 
-        return json_encode($return);
+        return Response::json($return);
     }
 
     public function search()
@@ -58,10 +59,10 @@ class LocationController extends \Controller {
             $return->to = $result->getTo();
             $return->data = $result->getCollection()->toArray();
 
-            return json_encode($return);
+            return Response::json($return);
         }
 
-        return \Response::json(array('type' => 'danger', 'message' => 'Location not found'), 404);
+        return Response::json(array('type' => 'danger', 'message' => 'Location not found'), 404);
     }
 
     /**
@@ -73,7 +74,7 @@ class LocationController extends \Controller {
     public function show($id)
     {
         if ($location = Location::find($id)) {
-            return $location->toJson();
+            return Response::json($location);
         }
 
         return null;

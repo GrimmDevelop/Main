@@ -918,4 +918,34 @@ class User extends Model implements UserInterface {
     {
         return $this->hasMany(Filter::class);
     }
+
+    public function getOption($key, $default = null)
+    {
+        if (isset($this->options[$key])) {
+            return $this->options[$key];
+        }
+
+        return $default;
+    }
+
+    public function setOption($key, $value)
+    {
+        if ($value !== null) {
+            $this->options[$key] = $value;
+        } else {
+            unset($this->options[$key]);
+        }
+
+        return $this;
+    }
+
+    public function getOptionsAttribute($value)
+    {
+        return json_decode($this->attributes['options']);
+    }
+
+    public function setOptionsAttribute($value)
+    {
+        $this->attributes['options'] = json_encode($value);
+    }
 }

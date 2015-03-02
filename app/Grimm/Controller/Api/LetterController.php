@@ -61,7 +61,7 @@ class LetterController extends \Controller {
         $return->to = $result->getTo();
         $return->data = $result->getCollection()->toArray();
 
-        return json_encode($return);
+        return Response::json($return);
     }
 
     /**
@@ -118,7 +118,7 @@ class LetterController extends \Controller {
                 try {
                     $dateTime = Carbon::createFromFormat('Y-m-d', Input::get('updated_after'));
                 } catch (\InvalidArgumentException $e) {
-                    return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s]'), 500);
+                    return Response::json(array('type' => 'danger', 'given date does not fit format (Y-m-d [h:i:s])'), 500);
                 }
             }
 
@@ -214,7 +214,7 @@ class LetterController extends \Controller {
     public function show($id)
     {
         if ($letter = Letter::find($id)) {
-            return $letter->load('information', 'senders', 'receivers', 'from', 'to')->toJson();
+            return Response::json($letter->load('information', 'senders', 'receivers', 'from', 'to'));
         }
 
         return Response::json(array('type' => 'danger', 'message' => 'given id not found in database'), 404);
@@ -354,16 +354,16 @@ class LetterController extends \Controller {
                 Input::get('item_id')
             )
             ) {
-                return \Response::json(array('type' => 'success', 'message' => $itemResponseName . ' assigned to letter'), 200);
+                return Response::json(array('type' => 'success', 'message' => $itemResponseName . ' assigned to letter'), 200);
             } else {
-                return \Response::json(array('type' => 'danger', 'message' => 'Unknown error occured'), 200);
+                return Response::json(array('type' => 'danger', 'message' => 'Unknown error occured'), 200);
             }
         } catch (ObjectNotFoundException $e) {
-            return \Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);
+            return Response::json(array('type' => 'danger', 'message' => 'Letter not found'), 404);
         } catch (ItemNotFoundException $e) {
-            return \Response::json(array('type' => 'danger', 'message' => $itemResponseName . ' not found'), 404);
+            return Response::json(array('type' => 'danger', 'message' => $itemResponseName . ' not found'), 404);
         } catch (ItemAlreadyAssignedException $e) {
-            return \Response::make(array('type' => 'warning', 'message' => $itemResponseName . ' already assigned'), 200);
+            return Response::make(array('type' => 'warning', 'message' => $itemResponseName . ' already assigned'), 200);
         }
     }
 
@@ -387,9 +387,9 @@ class LetterController extends \Controller {
     {
         if ($letter = Letter::find($id)) {
             $letter->delete();
-            return \Response::json(array('type' => 'success', 'message' => 'Letter successfully deleted'), 200);
+            return Response::json(array('type' => 'success', 'message' => 'Letter successfully deleted'), 200);
         }
 
-        return \Response::json(array('type' => 'danger', 'message' => 'Letter id not found'), 404);
+        return Response::json(array('type' => 'danger', 'message' => 'Letter id not found'), 404);
     }
 }

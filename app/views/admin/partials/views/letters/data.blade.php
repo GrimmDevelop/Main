@@ -4,7 +4,10 @@
         <tr>
             <th>id</th>
             <th>date</th>
-            <th ng-repeat="field in fields">@{{ field }}</th>
+            <th ng-repeat="field in fields">
+                <a href ng-click="editColumn(field)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
+                @{{ field }}
+            </th>
         </tr>
     </thead>
     <tbody>

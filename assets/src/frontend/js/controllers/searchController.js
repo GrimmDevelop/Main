@@ -1,12 +1,13 @@
 grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters', 'Locations', 'Persons', function ($scope, $modal, Search, Letters, Locations, Persons) {
 
-    $scope.filters = [];
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
     $scope.currentFilter.filter_key = null;
     $scope.currentFilter.fields = [];
 
-    $scope.codes = [];
+    $scope.letterInfo = {
+        codes: []
+    };
 
     $scope.displayCodes = ['absender', 'empfaenger', 'absendeort', 'absort_ers', 'empf_ort'];
 
@@ -133,8 +134,23 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'Search', 'Letters'
         return [];
     }
 
+    $scope.startDate = {};
+    $scope.endDate = {};
+
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+    };
+
+    $scope.open = function(date, $event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        date.opened = true;
+    };
+
     Search.codes().success(function(data) {
-        $scope.codes = data;
+        $scope.letterInfo.codes = data;
     });
 
     $scope.loadFilters();

@@ -2,6 +2,7 @@
 
 use Grimm\Models\Person;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 class CorrespondenceNetwork extends Command {
 
@@ -18,6 +19,10 @@ class CorrespondenceNetwork extends Command {
      * @var string
      */
     protected $description = 'build up a correspondence network.';
+
+    protected $displayUnknown = false;
+
+    protected $personTable = [];
 
     /**
      * Create a new command instance.
@@ -36,11 +41,12 @@ class CorrespondenceNetwork extends Command {
      */
     public function fire()
     {
-        $persons = Person::orderBy('name_2013')->take(30)->get();
-        $persons2 = clone $persons;
+        $persons = Person::orderBy('name_2013')->take(abs((int)$this->option('take')))->get();
+        $personsX = clone $persons;
+        $personsY = clone $persons;
 
-        foreach($persons as $person1) {
-            foreach($persons2 as $person2) {
+        foreach($personsX as $person1) {
+            foreach($personsY as $person2) {
                 $this->updateRelation($person1->id, $person2->id, PHP_INT_MAX);
             }
         }
@@ -61,8 +67,6 @@ class CorrespondenceNetwork extends Command {
 
         $this->dumpRelationTable();
     }
-
-    protected $personTable = [];
 
     protected function updateRelation($p1, $p2, $d)
     {
@@ -89,7 +93,13 @@ class CorrespondenceNetwork extends Command {
     {
         foreach ($this->personTable as $id1 => $data) {
             foreach ($data as $id2 => $d) {
-                echo "$id1  $id2    $d\n";
+                if($d == PHP_INT_MAX) {
+                    if($this->displayUnknown) {
+                        echo str_pad($id1, 7, " ", STR_PAD_LEFT) . "  " . str_pad($id2, 7, " ", STR_PAD_LEFT) . "    unknown\n";
+                    }
+                } else {
+                    echo str_pad($id1, 7, " ", STR_PAD_LEFT) . "  " . str_pad($id2, 7, " ", STR_PAD_LEFT) . "    $d\n";
+                }
             }
         }
     }
@@ -111,7 +121,9 @@ class CorrespondenceNetwork extends Command {
      */
     protected function getOptions()
     {
-        return array();
+        return array(
+            array('take', 't', InputOption::VALUE_OPTIONAL, "max rows per query", 30)
+        );
     }
 
 }
