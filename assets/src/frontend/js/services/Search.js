@@ -81,5 +81,5 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
 
     this.dateRange = function() {
         return $http.get(serviceBackend + '/dateRange');
-    }
+    };
 }]);

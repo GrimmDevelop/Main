@@ -40,7 +40,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
             compare: "equals",
             value: ""
         });
-    }
+    };
 
     $scope.removeField = function (field) {
         $scope.result = {};
@@ -50,7 +50,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         if (index > -1) {
             $scope.currentFilter.fields.splice(index, 1);
         }
-    }
+    };
 
     Search.codes().success(function (data) {
         $scope.letterInfo.codes = data;
@@ -65,17 +65,17 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         DisplayService.changeView('letters', view).success(function (data) {
             //$scope.display.currentView = data;
         });
-    }
+    };
 
     $scope.fields = ['absendeort', 'absort_ers', 'absender', 'empf_ort', 'empfaenger', 'dr', 'hs'];
 
     $scope.editColumn = function (field) {
         MessagesService.broadcast('success', 'Edit complete column ' + field);
-    }
+    };
 
     $scope.editField = function (letterId, field) {
         MessagesService.broadcast('success', 'Edit ' + field + " from letter #" + letterId);
-    }
+    };
 
     $scope.reload = function () {
         Search.search(
@@ -97,7 +97,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
          Letters.page(itemsPerPage, currentPage, showLettersWithErrors, filters).success(function (data) {
          $scope.letters = data;
          });*/
-    }
+    };
 
     $scope.reload();
 
@@ -106,5 +106,5 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         if ($scope.openLetterId) {
             $scope.show($scope.openLetterId);
         }
-    }
+    };
 }]);

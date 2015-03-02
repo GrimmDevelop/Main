@@ -6,5 +6,5 @@ grimmApp.filter('joinObject', ['$filter', function ($filter) {
         return items.map(function (item) {
             return item[field];
         }).join(seperator);
-    }
+    };
 }]);

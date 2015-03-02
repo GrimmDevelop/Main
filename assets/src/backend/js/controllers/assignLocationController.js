@@ -15,7 +15,7 @@ grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations'
     };
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 
     $scope.search = function (name) {
         // show loader
@@ -28,7 +28,7 @@ grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations'
             $scope.message = data;
             // hide loader show red cross
         });
-    }
+    };
 
     $scope.select = function (item) {
         $scope.selectedItem = item.id;
@@ -36,7 +36,7 @@ grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations'
             type: "success",
             message: "Location selected with geo id " + $scope.selectedItem
         };
-    }
+    };
 
     $scope.show = function (item) {
         $modal.open({
@@ -56,5 +56,5 @@ grimmApp.controller('assignLocationController', ['$scope', '$modal', 'Locations'
                 return item.name;
             });
         });
-    }
+    };
 }]);

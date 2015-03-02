@@ -13,7 +13,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
     $scope.resetLists = function () {
         $scope.locationsToCheck = [];
         $scope.personsToCheck = [];
-    }
+    };
 
     $scope.from = function () {
         $scope.resetLists();
@@ -24,7 +24,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         }).error(function (data) {
             $scope.message = data;
         });
-    }
+    };
 
     $scope.to = function () {
         $scope.resetLists();
@@ -35,7 +35,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         }).error(function (data) {
             $scope.message = data;
         });
-    }
+    };
 
     $scope.senders = function () {
         $scope.resetLists();
@@ -46,7 +46,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         }).error(function (data) {
             $scope.message = data;
         });
-    }
+    };
 
     $scope.receivers = function () {
         $scope.resetLists();
@@ -57,7 +57,7 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         }).error(function (data) {
             $scope.message = data;
         });
-    }
+    };
 
     $scope.search = function (location) {
         var modalInstance = $modal.open({
@@ -71,13 +71,13 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         });
 
         modalInstance.result.then(function (result) {
-            Assigner.cacheLocation(location.name, result).success(function (result) {
+            Assigner.cacheLocation(location.name, result).success(function () {
                 removeLocationFromList(location);
             });
         }, function () {
 
         });
-    }
+    };
 
     $scope.searchPerson = function (person) {
         var modalInstance = $modal.open({
@@ -91,19 +91,19 @@ grimmApp.controller('assignController', ['$scope', '$modal', 'Assigner', 'Person
         });
 
         modalInstance.result.then(function (result) {
-            Assigner.cachePerson(person.name, result).success(function (result) {
+            Assigner.cachePerson(person.name, result).success(function () {
                 removePersonFromList(person);
             });
         }, function () {
 
         });
-    }
+    };
 
     $scope.autoGenerate = function (person) {
-        Persons.autoGenerate(person.name).success(function (data) {
+        Persons.autoGenerate(person.name).success(function () {
             removePersonFromList(person);
         });
-    }
+    };
 
     function removeLocationFromList(location) {
         $scope.locationsToCheck = $scope.locationsToCheck.filter(function (item) {

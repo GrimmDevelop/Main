@@ -5,6 +5,6 @@ grimmApp.service("MessagesService", ['$rootScope', function ($rootScope) {
             type: type,
             text: text
         });
-    }
+    };
 
 }]);

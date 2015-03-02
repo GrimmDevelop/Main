@@ -4,7 +4,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 
     $scope.load = function (id) {
         Letters.get(id).success(function (data) {
@@ -12,10 +12,10 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
             $scope.letter.information.map(function (item) {
                 item.state = 'keep';
             })
-        }).error(function (data) {
+        }).error(function () {
             $scope.cancel();
         });
-    }
+    };
 
     $scope.removeInformation = function (information) {
         if (information.state != 'add') {
@@ -27,15 +27,15 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
                 $scope.letter.information.splice(index, 1);
             }
         }
-    }
+    };
 
     $scope.save = function () {
         // save letter changes
 
-        Letters.save($scope.letter).success(function (data) {
+        Letters.save($scope.letter).success(function () {
             $scope.load(id);
         });
-    }
+    };
 
     $scope.addCode = function () {
         var modalInstance = $modal.open({
@@ -52,7 +52,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
         }, function () {
 
         });
-    }
+    };
 
 
     $scope.openPersonModal = function (assignMode) {
@@ -80,7 +80,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
          }, function () {
 
          });*/
-    }
+    };
 
     $scope.openLocationModal = function (assignMode) {
 
@@ -107,7 +107,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
          }, function () {
 
          });*/
-    }
+    };
 
 
     $scope.load(id);
@@ -127,9 +127,9 @@ grimmApp.controller('letterEditAddCodeController', ['$scope', '$modalInstance', 
         if ($scope.code != null && $scope.code != '') {
             $modalInstance.close($scope.code);
         }
-    }
+    };
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 }]);

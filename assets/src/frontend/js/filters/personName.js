@@ -3,5 +3,5 @@ grimmApp.filter('personName', function () {
         return items.map(function (item) {
             return item.name_2013;
         });
-    }
+    };
 });

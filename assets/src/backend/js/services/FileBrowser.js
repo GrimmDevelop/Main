@@ -53,7 +53,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function ($http, BASE_URL)
                 'dest': destPath
             }
         })
-    }
+    };
 
     this.mkdir = function (basepath, name) {
         return $http.get(serviceBackend + '/mkdir', {
@@ -88,7 +88,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function ($http, BASE_URL)
                 'dest': dest
             }
         })
-    }
+    };
 
     /**
      * Returns the currently loaded path
@@ -123,7 +123,7 @@ grimmApp.service("FileBrowser", ['$http', 'BASE_URL', function ($http, BASE_URL)
             return '/';
         }
         return path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
-    }
+    };
 
     this.dirname = _dirname;
 
