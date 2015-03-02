@@ -7,6 +7,8 @@
 
 @import "api";
 
+@import "../../../theme_components/bower/angular-hotkeys/build/hotkeys.min.css";
+
 .angular-google-map-container { height: 400px; }
 .angular-google-map.extended .angular-google-map-container { height: 600px; }
 
@@ -76,4 +78,28 @@
     right: 10px;
     top: 52px;
     z-index: 999;
+}
+
+.tab-pane {
+    background: #f8f8f8;
+    border: 1px solid @gray-lighter;
+    border-top: none;
+    box-shadow: 0 0 3px #b7b7b7;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    padding: 10px;
+}
+
+.shortcut-help {
+    margin-top: 10px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.nav-tabs a {
+    cursor: pointer;
+}
+
+.display-filters .checkbox {
+    margin-top: 3px;
 }

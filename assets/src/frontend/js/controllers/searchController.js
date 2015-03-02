@@ -27,7 +27,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
             compare: "equals",
             value: ""
         });
-    }
+    };
 
     $scope.removeField = function (field) {
         $scope.result = {};
@@ -37,7 +37,13 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         if (index > -1) {
             $scope.currentFilter.fields.splice(index, 1);
         }
-    }
+    };
+
+    $scope.removeLastField = function () {
+        $scope.result = {};
+
+        $scope.currentFilter.fields.pop();
+    };
 
     $scope.loadFilters = function () {
         $scope.result = {};
@@ -48,7 +54,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 // $scope.loadFilter($scope.filters[0]);
             }
         });
-    }
+    };
 
     $scope.loadFilter = function (filter) {
         if (filter != null) {
@@ -64,19 +70,19 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.currentFilter = filter;
             }
         }
-    }
+    };
 
     $scope.sendMail = function () {
         if ($scope.currentFilter.filter_key != null) {
             return 'mailto:?subject=Grimm%20Database%20-%20Filter&body=Filter%20link:%20' + encodeURIComponent(BASE_URL + '/search/' + $scope.currentFilter.filter_key);
         }
-    }
+    };
 
     $scope.newFilter = function () {
         Search.newFilter($scope.currentFilter).success(function (data) {
             $scope.filters = data;
         });
-    }
+    };
 
     $scope.saveFilter = function () {
         if ($scope.currentFilter.id != null) {
@@ -84,7 +90,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.filters = data;
             });
         }
-    }
+    };
 
     $scope.deleteFilter = function () {
         if ($scope.currentFilter.id != null) {
@@ -95,7 +101,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.filters = data;
             });
         }
-    }
+    };
 
     $scope.publicFilter = function () {
         if ($scope.currentFilter.id != null) {
@@ -103,13 +109,13 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.loadFilters();
             });
         }
-    }
+    };
 
     $scope.search = function () {
         Search.search($scope.currentFilter.fields, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
             $scope.results = data;
         });
-    }
+    };
 
     $scope.viewDistanceMap = function () {
         Search.distanceMap($scope.currentFilter.fields).success(function (data) {
@@ -124,7 +130,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 }
             });
         });
-    }
+    };
 
     $scope.fieldTypeahead = function (value, field) {
         if (field.code == '') {
@@ -132,7 +138,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         }
 
         return [];
-    }
+    };
 
     $scope.startDate = {};
 
@@ -172,6 +178,14 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         description: 'Add new field',
         callback: function() {
             $scope.addField();
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+d',
+        description: 'Delete last field',
+        callback: function() {
+            $scope.removeLastField();
         }
     });
 

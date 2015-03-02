@@ -3,7 +3,7 @@
 @section('body')
     <div class="row">
         <div class="col-md-12" ng-controller="searchController" ng-init="loadFilter('{{ $filter_key }}')">
-            <form role="form" ng-submit="search()">
+            <form class="search-form" role="form" ng-submit="search()">
                 <tabset>
                     <tab heading="filter">
                         <div class="form-group row">
@@ -69,10 +69,19 @@
 @endif
                     </tab>
                     <tab heading="display">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>Display Codes:</p>
+                            </div>
+                        </div>
                         <div fields-selection="displayCodes" fields-codes="letterInfo.codes"></div>
                     </tab>
                 </tabset>
             </form>
+
+            <div class="shortcut-help">
+                <p>Press <kbd>?</kbd> for a list of all available shortcuts!</p>
+            </div>
 
             <div class="result" ng-show="results.total > 0">
 
