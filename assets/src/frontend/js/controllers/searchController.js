@@ -227,7 +227,24 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
         callback: function(event) {
             event.preventDefault();
+            if ($scope.tabIsActive('quicksearch')) {
+                focus('quicksearch.Id');
+            }
             $scope.tabstatus.quicksearch = true;
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+f',
+        description: 'Search by filters',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('filter')) {
+                focus('filter.start');
+            }
+
+            $scope.tabstatus.filter = true;
         }
     });
 
