@@ -21,12 +21,12 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
             state: "add",
             code: "empfangsort",
             date: ""
-        },
+        }
     ];
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 
     $scope.removeInformation = function (information) {
         if (information.state != 'add') {
@@ -38,13 +38,13 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
                 $scope.letter.information.splice(index, 1);
             }
         }
-    }
+    };
 
     $scope.save = function () {
-        Letters.save($scope.letter).success(function (data) {
+        Letters.save($scope.letter).success(function () {
             $modalInstance.dismiss('cancel');
         });
-    }
+    };
 
     $scope.addCode = function () {
         var modalInstance = $modal.open({
@@ -61,5 +61,5 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
         }, function () {
 
         });
-    }
+    };
 }]);

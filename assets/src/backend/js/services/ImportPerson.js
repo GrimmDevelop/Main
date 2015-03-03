@@ -5,5 +5,5 @@ grimmApp.service("ImportPerson", ['$http', 'BASE_URL', function ($http, BASE_URL
         return $http.post(serviceBackend, {
             "data": selectedFile
         });
-    }
+    };
 }]);

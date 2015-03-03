@@ -3,5 +3,5 @@ grimmApp.filter('filterCode', function () {
         return items.filter(function (item) {
             return codes.indexOf(item.code) != -1;
         });
-    }
+    };
 });

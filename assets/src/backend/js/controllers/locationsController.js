@@ -11,7 +11,7 @@ grimmApp.controller('locationsController', ['$scope', '$modal', 'Locations', fun
         Locations.all(itemsPerPage, currentPage).success(function (data) {
             $scope.locations = data;
         });
-    }
+    };
 
     $scope.reload($scope.itemsPerPage, $scope.currentPage);
 }]);

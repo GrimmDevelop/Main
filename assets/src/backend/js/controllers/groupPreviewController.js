@@ -3,5 +3,5 @@ grimmApp.controller('groupPreviewController', ['$scope', '$interval', '$modalIns
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 }]);

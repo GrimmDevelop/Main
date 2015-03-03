@@ -6,7 +6,7 @@ grimmApp.controller('assignPersonController', ['$scope', '$modalInstance', 'Pers
     $scope.showMessage = function (message) {
         $scope.closeMessage();
         $scope.message = message;
-    }
+    };
     $scope.closeMessage = function () {
         $scope.message = null;
     };
@@ -19,7 +19,7 @@ grimmApp.controller('assignPersonController', ['$scope', '$modalInstance', 'Pers
     };
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
 
     $scope.search = function (name) {
         // show loader
@@ -35,17 +35,17 @@ grimmApp.controller('assignPersonController', ['$scope', '$modalInstance', 'Pers
             $scope.message = data;
             // hide loader show red cross
         });
-    }
+    };
 
     $scope.unassign = function(sender) {
         Letters.unassign().success(function(data) {
 
         });
-    }
+    };
 
     $scope.select = function (item) {
         $scope.selectedItem = item;
-    }
+    };
 
     $scope.typeSearch = function (name) {
         return Persons.searchAhead(name).then(function (response) {
@@ -53,5 +53,5 @@ grimmApp.controller('assignPersonController', ['$scope', '$modalInstance', 'Pers
                 return item.name;
             });
         });
-    }
+    };
 }]);
