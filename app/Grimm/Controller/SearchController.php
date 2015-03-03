@@ -2,9 +2,9 @@
 
 namespace Grimm\Controller;
 
-use Carbon\Carbon;
 use Grimm\Auth\Models\User;
-use Grimm\Models\Letter;
+use Grimm\OutputTransformer\ArrayOutput;
+use Grimm\OutputTransformer\JsonPaginationOutput;
 use Grimm\Search\FilterService;
 use Grimm\Search\SearchService;
 use Response;
@@ -24,11 +24,24 @@ class SearchController extends \Controller {
      * @var FilterService
      */
     private $filterService;
+    /**
+     * @var JsonPaginationOutput
+     */
+    private $paginationOutput;
+    /**
+     * @var ArrayOutput
+     */
+    private $arrayOutput;
 
-    public function __construct(SearchService $searchService, FilterService $filterService)
+    public function __construct(SearchService $searchService,
+                                FilterService $filterService,
+                                JsonPaginationOutput $paginationOutput,
+                                ArrayOutput $arrayOutput)
     {
         $this->searchService = $searchService;
         $this->filterService = $filterService;
+        $this->paginationOutput = $paginationOutput;
+        $this->arrayOutput = $arrayOutput;
     }
 
     /**
@@ -85,7 +98,7 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $result = $this->filterService->loadFiltersForUser($user);
 
-            return Response::json($result);
+            return $this->createJsonResponse($result);
         }
 
         return Response::json([]);
@@ -101,7 +114,7 @@ class SearchController extends \Controller {
         $filter = $this->filterService->getFilterByKey($key);
 
         if ($filter !== null) {
-            return Response::json($filter);
+            return $this->createJsonResponse($filter);
         }
 
         return null;
@@ -175,33 +188,32 @@ class SearchController extends \Controller {
 
     public function codes()
     {
-        return Response::json($this->searchService->getCodes());
+        return $this->createJsonResponse($this->searchService->getCodes());
     }
 
     public function dateRange()
     {
         $range = $this->searchService->getDateRange();
 
-        return Response::json(['d' => $range->toArray()]);
+
+        return $this->createJsonResponse($range);
     }
 
     /**
-     * TODO: Extract this in some kind of OutputTransformer
      * @param $result \Illuminate\Pagination\Paginator
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createSearchOutput($result)
+    protected function createSearchOutput($result)
     {
-        $return = new \stdClass();
+        return Response::json($this->paginationOutput->transform($result));
+    }
 
-        $return->total = $result->getTotal();
-        $return->per_page = $result->getPerPage();
-        $return->current_page = $result->getCurrentPage();
-        $return->last_page = $result->getLastPage();
-        $return->from = $result->getFrom();
-        $return->to = $result->getTo();
-        $return->data = $result->getCollection()->toArray();
-
-        return Response::json($return);
+    /**
+     * @param $data
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createJsonResponse($data)
+    {
+        return Response::json($this->arrayOutput->transform($data));
     }
 }

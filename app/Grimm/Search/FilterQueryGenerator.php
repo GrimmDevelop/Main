@@ -8,6 +8,11 @@ use Illuminate\Database\Query\Builder;
 use Input;
 use Sentry;
 
+/**
+ * TODO: This class does not only smell, it stinks!
+ * Class FilterQueryGenerator
+ * @package Grimm\Search
+ */
 class FilterQueryGenerator {
     /**
      * Builds the search query containing all requested and filtered letters

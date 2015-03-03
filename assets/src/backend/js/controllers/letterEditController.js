@@ -120,7 +120,7 @@ grimmApp.controller('letterEditAddCodeController', ['$scope', '$modalInstance', 
     $scope.codes = [];
 
     Search.codes().success(function (data) {
-        $scope.codes = data;
+        $scope.codes = data.data;
     });
 
     $scope.ok = function () {
