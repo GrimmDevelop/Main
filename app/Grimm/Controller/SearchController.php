@@ -39,7 +39,6 @@ class SearchController extends \Controller {
     {
         $filterKey = preg_replace('/[^\w]/', '', $filterKey);
         return View::make('pages.search', array(
-            'codes' => $this->letter->codes(),
             'filter_key' => $filterKey
         ));
     }

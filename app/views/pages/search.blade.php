@@ -41,10 +41,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span> Add Filter</button>
                         </div>
                         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-title="start search">
-                            <span class="glyphicon glyphicon-search"></span>
+                            <span class="glyphicon glyphicon-search"></span> Search
                         </button>
 @if(Sentry::check())
                         <div class="btn-group">
