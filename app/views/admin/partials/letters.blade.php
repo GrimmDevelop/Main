@@ -15,6 +15,15 @@
 </div>
 
 <div class="row">
+    <div class="col-sm-2">
+        <button class="btn btn-default" letter-create><span class="glyphicon glyphicon-new-window"></span></button>
+    </div>
+    <div class="col-sm-10">
+
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-12">
         <tabset>
             <tab heading="filter">
