@@ -1,4 +1,4 @@
-grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys) {
+grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', 'focus', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys, focus) {
 
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
@@ -213,6 +213,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         description: 'Enable Quicksearch',
         callback: function() {
             $scope.quicksearch.enabled = true;
+            focus('quicksearch.Id');
         }
     });
 

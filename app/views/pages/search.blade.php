@@ -75,7 +75,7 @@
                             <div class="form-group">
                                 <label class="col-md-2 control-label" for="letter_id">Letter ID:</label>
                                 <div class="control-group col-md-10">
-                                    <input type="text" class="form-control" ng-model="quicksearch.id" />
+                                    <input type="text" class="form-control" ng-model="quicksearch.id" focus-on="quicksearch.Id" />
                                 </div>
                             </div>
                             <div class="form-group">
