@@ -35,6 +35,14 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return $http.post(serviceBackend, params);
     };
 
+    this.findById = function(id) {
+        return $http.get(serviceBackend + '/find/' + id);
+    };
+
+    this.findByCode = function(code) {
+        return $http.get(serviceBackend + '/code/' + code);
+    };
+
     this.distanceMap = function (filters) {
         return $http.post(serviceBackend + '/distanceMap', {
             filters: filters

@@ -19,6 +19,12 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
 
     $scope.dateCodeBounds = {};
 
+    $scope.quicksearch = {
+        id : null,
+        code: null,
+        enabled: false
+    };
+
     $scope.addField = function () {
         $scope.result = {};
 
@@ -117,6 +123,19 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         });
     };
 
+    $scope.findByIdentifierOrCode = function() {
+        if ($scope.quicksearch.id != null) {
+            $scope.quicksearch.code = null;
+            Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
+                $scope.results = data;
+            });
+        } else if ($scope.quicksearch.code != null) {
+            Search.findByCode($scope.quicksearch.code).success(function(data) {
+                $scope.results = data;
+            });
+        }
+    };
+
     $scope.viewDistanceMap = function () {
         Search.distanceMap($scope.currentFilter.fields).success(function (data) {
             $modal.open({
@@ -186,6 +205,14 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         description: 'Delete last field',
         callback: function() {
             $scope.removeLastField();
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+i',
+        description: 'Enable Quicksearch',
+        callback: function() {
+            $scope.quicksearch.enabled = true;
         }
     });
 

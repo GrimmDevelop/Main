@@ -3,9 +3,10 @@
 @section('body')
     <div class="row">
         <div class="col-md-12" ng-controller="searchController" ng-init="loadFilter('{{ $filter_key }}')">
-            <form class="search-form" role="form" ng-submit="search()">
+            <div class="search-form">
                 <tabset>
-                    <tab heading="filter">
+                    <tab heading="Filter">
+                        <form class="search-form" role="form" ng-submit="search()">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <p class="input-group">
@@ -67,8 +68,30 @@
                             <a href="@{{ sendMail() }}" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span></a>
                         </span>
 @endif
+                        </form>
                     </tab>
-                    <tab heading="display">
+                    <tab heading="Quicksearch" active="quicksearch.enabled">
+                        <form class="form-horizontal" ng-submit="findByIdentifierOrCode()">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label" for="letter_id">Letter ID:</label>
+                                <div class="control-group col-md-10">
+                                    <input type="text" class="form-control" ng-model="quicksearch.id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label" for="letter_code">Letter Code:</label>
+                                <div class="control-group col-md-10">
+                                    <input type="text" class="form-control" ng-model="quicksearch.code" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-2">
+                                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </tab>
+                    <tab heading="Display Properties">
                         <div class="row">
                             <div class="col-md-12">
                                 <p>Display Codes:</p>
@@ -77,7 +100,8 @@
                         <div fields-selection="displayCodes" fields-codes="letterInfo.codes"></div>
                     </tab>
                 </tabset>
-            </form>
+
+            </div>
 
             <div class="shortcut-help">
                 <p>Press <kbd>?</kbd> for a list of all available shortcuts!</p>

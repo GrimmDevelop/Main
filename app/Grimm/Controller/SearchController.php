@@ -8,6 +8,7 @@ use Grimm\Auth\Models\User;
 use Grimm\Models\Filter;
 use Grimm\Models\Letter;
 use Grimm\Models\Location;
+use Grimm\Search\FilterParser;
 use Response;
 use URL;
 use View;
@@ -18,10 +19,15 @@ use Sentry;
 class SearchController extends \Controller {
 
     protected $letter;
+    /**
+     * @var FilterParser
+     */
+    private $filterParser;
 
-    public function __construct(Letter $letter)
+    public function __construct(Letter $letter, FilterParser $filterParser)
     {
         $this->letter = $letter;
+        $this->filterParser = $filterParser;
     }
 
     /**
@@ -44,175 +50,42 @@ class SearchController extends \Controller {
      */
     public function searchResult()
     {
-        $result = $this->buildSearchQuery(
+        $result = $this->filterParser->buildSearchQuery(
             Input::get('with', ['information']),
             Input::get('filters', [])
         )->paginate(abs((int)Input::get('items_per_page', 100)));
 
-        $return = new \stdClass();
-
-        $return->total = $result->getTotal();
-        $return->per_page = $result->getPerPage();
-        $return->current_page = $result->getCurrentPage();
-        $return->last_page = $result->getLastPage();
-        $return->from = $result->getFrom();
-        $return->to = $result->getTo();
-        $return->data = $result->getCollection()->toArray();
-
-        return Response::json($return);
+        return $this->createSearchOutput($result);
     }
 
-    protected $distanceMapData;
-
-    protected $tmpAddedBorderIds;
-
-    /**
-     * TODO: nothing to do in the SearchController
-     * Builds a json string containing computed letter count, border data and the line coordinates as latitude and longitude objects
-     * @return string
-     */
-    public function computeDistanceMap()
+    public function findById($id)
     {
-        $query = Letter::select(
-            'letters.id as letter_id',
-            DB::raw('COUNT(letters.id) as `count`'),
-            'f.id as from_id',
-            'f.latitude as from_lat',
-            'f.longitude as from_long',
-            't.id as to_id',
-            't.latitude as to_lat',
-            't.longitude as to_long'
-        )
-            ->join('locations as f', 'letters.from_id', '=', 'f.id')
-            ->join('locations as t', 'letters.to_id', '=', 't.id')
-            ->whereRaw('`f`.`id` != `t`.`id`')
-            ->groupBy('from_id', 'to_id');
+        $query = $this->createFindBuilder(Input::get('with', ['information']));
 
-        foreach (Input::get('filters', []) as $filter) {
-            $this->buildWhere($query, $filter);
-        }
+        $result = $query->whereHas('information', function ($q) use ($id) {
 
-        $this->tmpAddedBorderIds = [];
+            return $q->whereRaw("(code = 'nr_1992' or code = 'nr_1997')")->where('data', $id);
+        })->orWhere('id', $id)->paginate(abs((int)Input::get('items_per_page', 100)));
 
-        $this->distanceMapData = new \stdClass();
-        $this->distanceMapData->computedLetters = 0;
-        $this->distanceMapData->borderData = [];
-        $this->distanceMapData->polylines = [];
-
-        foreach ($query->get() as $dataSet) {
-            $this->addBorderData($dataSet->from_id, $dataSet->from_lat, $dataSet->from_long);
-            $this->addBorderData($dataSet->to_id, $dataSet->to_lat, $dataSet->to_long);
-
-            if (($index = $this->indexOfPolyline($dataSet->from_id, $dataSet->to_id)) != - 1) {
-                $this->distanceMapData->computedLetters++;
-                $this->distanceMapData->polylines[$index]['count'] ++;
-            } else {
-                $this->addPolyline(
-                    $dataSet->from_id,
-                    $dataSet->from_lat,
-                    $dataSet->from_long,
-                    $dataSet->to_id,
-                    $dataSet->to_lat,
-                    $dataSet->to_long,
-                    $dataSet->count
-                );
-            }
-        }
-
-        return Response::json($this->distanceMapData);
+        return $this->createSearchOutput($result);
     }
 
-    /**
-     * Adds border data to map data
-     * @param $id
-     * @param $latitude
-     * @param $longitude
-     */
-    protected function addBorderData($id, $latitude, $longitude)
+    public function findByCode($code)
     {
-        if(isset($this->tmpBorderData[$id])) {
-            return;
-        }
-
-        $this->tmpAddedBorderIds[$id] = true;
-
-        $position = new \stdClass();
-        $position->lat = $latitude;
-        $position->long = $longitude;
-
-        $this->distanceMapData->borderData[] = $position;
+        return $this->findForField('code', $code);
     }
 
-    /**
-     * returns the index of a poly line, else -1
-     * @param $id1
-     * @param $id2
-     * @return int|string
-     */
-    protected function indexOfPolyline($id1, $id2)
+    protected function findForField($fieldName, $fieldValue)
     {
-        if ($id1 > $id2) {
-            $t = $id2;
-            $id2 = $id1;
-            $id1 = $t;
-        }
 
-        foreach ($this->distanceMapData->polylines as $index => $line) {
-            if ($line['id1'] == $id1 && $line['id2'] == $id2) {
-                return $index;
-            }
-        }
+        $query = $this->createFindBuilder(Input::get('with', ['information']));
 
-        return - 1;
+        $result = $query->where($fieldName, $fieldValue)->paginate(1);
+
+        return $this->createSearchOutput($result);
     }
 
-    /**
-     * Adds a line to map data, always with smallest id first
-     * @param $fromId
-     * @param $fromLat
-     * @param $fromLong
-     * @param $toId
-     * @param $toLat
-     * @param $toLong
-     * @param $count
-     */
-    protected function addPolyline($fromId, $fromLat, $fromLong, $toId, $toLat, $toLong, $count)
-    {
-        if ($fromId > $toId) {
-            $id1 = $toId;
-            $lat1 = $toLat;
-            $long1 = $toLong;
-            $id2 = $fromId;
-            $lat2 = $fromLat;
-            $long2 = $fromLong;
-        } else {
-            $id1 = $fromId;
-            $lat1 = $fromLat;
-            $long1 = $fromLong;
-            $id2 = $toId;
-            $lat2 = $toLat;
-            $long2 = $toLong;
-        }
-
-        $this->distanceMapData->computedLetters+= $count;
-        $this->distanceMapData->polylines[] = [
-            'id1' => $id1,
-            'id2' => $id2,
-            'lat1' => $lat1,
-            'long1' => $long1,
-            'lat2' => $lat2,
-            'long2' => $long2,
-            'count' => $count
-        ];
-    }
-
-    /**
-     * Builds the search query containing all requested and filtered letters
-     * @param $with
-     * @param $filters
-     * @return \Illuminate\Database\Eloquent\Builder|static
-     */
-    protected function buildSearchQuery($with, $filters)
+    protected function createFindBuilder($with)
     {
         $query = Letter::query();
 
@@ -222,130 +95,7 @@ class SearchController extends \Controller {
             }
         }
 
-        foreach ($filters as $filter) {
-            $this->buildWhere($query, $filter);
-        }
-
-        if (Sentry::check()) {
-            $query->where(function ($query) {
-                foreach (Input::get('with_errors', []) as $error) {
-                    switch ($error) {
-                        case "from":
-                            $this->withFromErrors($query);
-                            break;
-
-                        case "to":
-                            $this->withToErrors($query);
-                            break;
-
-                        case "senders":
-                            $this->withSendersErrors($query);
-                            break;
-
-                        case "receivers":
-                            $this->withReceiversErrors($query);
-                            break;
-                    }
-                }
-            });
-        }
-
         return $query;
-    }
-
-    /**
-     * Build a filter where query and appends it to a given one
-     * @param $query
-     * @param $filter
-     * @return mixed
-     */
-    protected function buildWhere($query, $filter)
-    {
-        if ($filter['code'] == '') {
-            return $query;
-        }
-
-        return $query->whereHas('information', function ($q) use ($filter) {
-            $compare = $this->getCompare($filter['compare'], $filter['value']);
-
-            return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
-        });
-    }
-
-    /**
-     * convert's a compare string and a value to a valid mysql form
-     * @param $string
-     * @param $value
-     * @return array
-     */
-    protected function getCompare($string, $value)
-    {
-        switch ($string) {
-            case 'contains':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value%"
-                );
-            case 'starts with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "$value%"
-                );
-            case 'ends with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value"
-                );
-
-            case "equals":
-            default:
-                return array(
-                    'compare' => '=',
-                    'value' => $value
-                );
-        }
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withFromErrors(Builder $query)
-    {
-        return $query->orWhere(function ($query) {
-            $query->where('from_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
-        });
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withToErrors(Builder $query)
-    {
-        return $query->orWhere(function ($query) {
-            $query->where('to_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
-        });
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withSendersErrors(Builder $query)
-    {
-        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withReceiversErrors(Builder $query)
-    {
-        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
     }
 
     /**
@@ -511,5 +261,24 @@ class SearchController extends \Controller {
         $max = (string)Carbon::createFromFormat("Ymd", substr($range->max, 0, -3))->format("Y-m-d");
 
         return Response::json(['d' => ['min' => $min, 'max' => $max]]);
+    }
+
+    /**
+     * @param $result
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createSearchOutput($result)
+    {
+        $return = new \stdClass();
+
+        $return->total = $result->getTotal();
+        $return->per_page = $result->getPerPage();
+        $return->current_page = $result->getCurrentPage();
+        $return->last_page = $result->getLastPage();
+        $return->from = $result->getFrom();
+        $return->to = $result->getTo();
+        $return->data = $result->getCollection()->toArray();
+
+        return Response::json($return);
     }
 }
