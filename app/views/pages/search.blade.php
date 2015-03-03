@@ -26,19 +26,7 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-repeat="field in currentFilter.fields">
-                            <div class="col-md-2 control-label"><select class="form-control" ng-model="field.code" ng-options="code for code in letterInfo.codes"></select></div>
-                            <div class="col-md-2"><select class="form-control" ng-model="field.compare">
-                                <option>equals</option>
-                                <option>contains</option>
-                                <option>starts with</option>
-                                <option>ends with</option>
-                            </select></div>
-                            <div class="col-md-7">
-                                <input type="text" class="form-control" ng-model="field.value" typeahead="value for value in fieldTypeahead($viewValue, field)" />
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-danger" ng-click="removeField(field)" tooltip="remove field"><span class="glyphicon glyphicon-minus"></span></button>
-                            </div>
+                            <field-row field="field" codes="letterInfo.codes" on-remove="removeField(field)"></field-row>
                         </div>
                         <div class="form-group">
                             <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span> Add Filter</button>
