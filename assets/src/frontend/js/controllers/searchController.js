@@ -200,8 +200,10 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     hotkeys.add({
         combo: 'ctrl+alt+n',
         description: 'Add new field',
-        callback: function() {
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
             if ($scope.tabIsActive('filter')) {
+                event.preventDefault();
                 $scope.addField();
             }
         }
@@ -210,8 +212,10 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     hotkeys.add({
         combo: 'ctrl+alt+d',
         description: 'Delete last field',
-        callback: function() {
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
             if ($scope.tabIsActive('filter')) {
+                event.preventDefault();
                 $scope.removeLastField();
             }
         }
@@ -220,7 +224,9 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     hotkeys.add({
         combo: 'ctrl+alt+i',
         description: 'Enable Quicksearch',
-        callback: function() {
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            event.preventDefault();
             $scope.tabstatus.quicksearch = true;
         }
     });
