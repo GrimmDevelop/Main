@@ -21,8 +21,13 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
 
     $scope.quicksearch = {
         id : null,
-        code: null,
-        enabled: false
+        code: null
+    };
+
+    $scope.tabstatus = {
+        filter: true,
+        quicksearch: false,
+        display: false
     };
 
     $scope.addField = function () {
@@ -124,7 +129,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     };
 
     $scope.findByIdentifierOrCode = function() {
-        if ($scope.quicksearch.id != null) {
+        if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
             $scope.quicksearch.code = null;
             Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
                 $scope.results = data;
@@ -196,7 +201,9 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         combo: 'ctrl+alt+n',
         description: 'Add new field',
         callback: function() {
-            $scope.addField();
+            if ($scope.tabIsActive('filter')) {
+                $scope.addField();
+            }
         }
     });
 
@@ -204,7 +211,9 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         combo: 'ctrl+alt+d',
         description: 'Delete last field',
         callback: function() {
-            $scope.removeLastField();
+            if ($scope.tabIsActive('filter')) {
+                $scope.removeLastField();
+            }
         }
     });
 
@@ -212,10 +221,25 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         combo: 'ctrl+alt+i',
         description: 'Enable Quicksearch',
         callback: function() {
-            $scope.quicksearch.enabled = true;
+            $scope.tabstatus.quicksearch = true;
+        }
+    });
+
+    $scope.$watch('tabstatus.quicksearch', function(newVal, oldVal) {
+        if (newVal) {
             focus('quicksearch.Id');
         }
     });
+
+    $scope.$watch('tabstatus.filter', function(newVal) {
+        if (newVal) {
+            focus('filter.start');
+        }
+    });
+
+    $scope.tabIsActive = function(tabname) {
+        return !!$scope.tabstatus[tabname];
+    };
 
     $scope.loadFilters();
 }]);
