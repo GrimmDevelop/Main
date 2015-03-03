@@ -11,7 +11,7 @@ namespace Grimm\Controller;
 
 use DB;
 use Grimm\Models\Letter;
-use Grimm\Search\FilterParser;
+use Grimm\Search\FilterQueryGenerator;
 use Input;
 use Response;
 
@@ -25,7 +25,7 @@ class DistanceMapController extends \Controller {
      */
     private $filterParser;
 
-    function __construct(FilterParser $filterParser)
+    function __construct(FilterQueryGenerator $filterParser)
     {
         $this->filterParser = $filterParser;
     }

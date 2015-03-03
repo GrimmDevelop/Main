@@ -3,12 +3,10 @@
 namespace Grimm\Controller;
 
 use Carbon\Carbon;
-use DB;
 use Grimm\Auth\Models\User;
-use Grimm\Models\Filter;
 use Grimm\Models\Letter;
-use Grimm\Models\Location;
-use Grimm\Search\FilterParser;
+use Grimm\Search\FilterService;
+use Grimm\Search\SearchService;
 use Response;
 use URL;
 use View;
@@ -18,16 +16,19 @@ use Sentry;
 
 class SearchController extends \Controller {
 
-    protected $letter;
     /**
-     * @var FilterParser
+     * @var SearchService
      */
-    private $filterParser;
+    private $searchService;
+    /**
+     * @var FilterService
+     */
+    private $filterService;
 
-    public function __construct(Letter $letter, FilterParser $filterParser)
+    public function __construct(SearchService $searchService, FilterService $filterService)
     {
-        $this->letter = $letter;
-        $this->filterParser = $filterParser;
+        $this->searchService = $searchService;
+        $this->filterService = $filterService;
     }
 
     /**
@@ -49,52 +50,29 @@ class SearchController extends \Controller {
      */
     public function searchResult()
     {
-        $result = $this->filterParser->buildSearchQuery(
-            Input::get('with', ['information']),
-            Input::get('filters', [])
-        )->paginate(abs((int)Input::get('items_per_page', 100)));
+        $perPage = abs((int)Input::get('items_per_page', 100));
+
+        $result = $this->searchService->search(Input::get('with', ['information']),Input::get('filters', []), $perPage);
 
         return $this->createSearchOutput($result);
     }
 
     public function findById($id)
     {
-        $query = $this->createFindBuilder(Input::get('with', ['information']));
 
-        $result = $query->whereHas('information', function ($q) use ($id) {
+        $itemsPerPage = abs((int)Input::get('items_per_page', 100));
 
-            return $q->whereRaw("(code = 'nr_1992' or code = 'nr_1997')")->where('data', $id);
-        })->orWhere('id', $id)->paginate(abs((int)Input::get('items_per_page', 100)));
+        $result = $this->searchService->findById($id, Input::get('with', ['information']), true, $itemsPerPage);
 
         return $this->createSearchOutput($result);
     }
 
     public function findByCode($code)
     {
-        return $this->findForField('code', $code);
-    }
+        $itemsPerPage = abs((int)Input::get('items_per_page', 100));
 
-    protected function findForField($fieldName, $fieldValue)
-    {
-
-        $query = $this->createFindBuilder(Input::get('with', ['information']));
-
-        $result = $query->where($fieldName, $fieldValue)->paginate(1);
-
+        $result = $this->searchService->findByCode($code, Input::get('with', ['information']), $itemsPerPage);
         return $this->createSearchOutput($result);
-    }
-
-    protected function createFindBuilder($with)
-    {
-        $query = Letter::query();
-
-        foreach ($with as $load) {
-            if (in_array($load, ['information', 'senders', 'receivers', 'from', 'to'])) {
-                $query->with($load);
-            }
-        }
-
-        return $query;
     }
 
     /**
@@ -105,16 +83,8 @@ class SearchController extends \Controller {
     {
         User::find(0); // Eloquent - Sentry bug fix hack...
         if ($user = Sentry::getUser()) {
-            $filters = $user->filters()->get();
+            $result = $this->filterService->loadFiltersForUser($user);
 
-            $result = [];
-            foreach ($filters as $filter) {
-                $tmp = [];
-                $tmp['id'] = $filter->id;
-                $tmp['filter_key'] = $filter->filter_key;
-                $tmp['fields'] = json_decode($filter->fields);
-                $result[] = $tmp;
-            }
             return Response::json($result);
         }
 
@@ -128,14 +98,14 @@ class SearchController extends \Controller {
      */
     public function loadFilter($key)
     {
-        if ($filter = Filter::where('filter_key', $key)->first()) {
-            $tmp = [];
-            $tmp['id'] = null;
-            $tmp['filter_key'] = $filter->filter_key;
-            $tmp['fields'] = json_decode($filter->fields);
-            return Response::json($tmp);
+        $filter = $this->filterService->getFilterByKey($key);
+
+        if ($filter !== null) {
+            return Response::json($filter);
         }
+
         return null;
+
     }
 
     /**
@@ -147,29 +117,14 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
 
-            if (!($filterObj = $this->findFilter($user, $filter))) {
-                return null;
+            $token = $this->filterService->publishFilter($user, $filter);
+
+            if ($token !== null) {
+                return URL::to('search/' . $token);
             }
-
-            if ($filterObj->filter_key != null) {
-                return URL::to('search/' . $filterObj->filter_key);
-            }
-
-            $filterObj->filter_key = $this->generateKey($filterObj->id);
-            $filterObj->save();
-
-            return URL::to('search/' . $filterObj->filter_key);
         }
-    }
 
-    /**
-     * generates a unique public filter key
-     * @param $id
-     * @return string
-     */
-    protected function generateKey($id)
-    {
-        return time() . '_' . md5($id . rand(0, 100));
+        return null;
     }
 
     /**
@@ -181,14 +136,9 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
 
-            if (empty($filter['fields'])) {
-                return $this->loadFilters();
-            }
+            $this->filterService->newFilter($user, $filter);
 
-            $user->filters()->save(new Filter([
-                'fields' => json_encode($filter['fields'])
-            ]));
-
+            // TODO: maybe include error message
             return $this->loadFilters();
         }
     }
@@ -202,13 +152,9 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
 
-            if (!($filterObj = $this->findFilter($user, $filter))) {
-                return $this->loadFilters();
-            }
+            $this->filterService->saveFilter($user, $filter);
 
-            $filterObj->fields = json_encode(($filter['fields']));
-            $filterObj->save();
-
+            // TODO: maybe include error message
             return $this->loadFilters();
         }
     }
@@ -221,49 +167,27 @@ class SearchController extends \Controller {
     public function deleteFilter($id)
     {
         if ($user = Sentry::getUser()) {
-            $filter = [
-                'id' => $id
-            ];
-            if ($filter = $this->findFilter($user, $filter)) {
-                $filter->delete();
-            }
+            $this->filterService->deleteFilter($user, $id);
 
             return $this->loadFilters();
         }
     }
 
-    /**
-     *
-     * @param User $user
-     * @param $filter
-     * @return null
-     */
-    protected function findFilter(User $user, $filter)
-    {
-        if (empty($filter['id'])) {
-            return null;
-        }
-
-        return $user->filters()->where('id', $filter['id'])->first();
-    }
-
     public function codes()
     {
-        return Response::json($this->letter->codes());
+        return Response::json($this->searchService->getCodes());
     }
 
     public function dateRange()
     {
-        $range = Letter::selectRaw('MIN(code) as min, MAX(code) as max')->first();
+        $range = $this->searchService->getDateRange();
 
-        $min = (string)Carbon::createFromFormat("Ymd", substr($range->min, 0, -3))->format("Y-m-d");
-        $max = (string)Carbon::createFromFormat("Ymd", substr($range->max, 0, -3))->format("Y-m-d");
-
-        return Response::json(['d' => ['min' => $min, 'max' => $max]]);
+        return Response::json(['d' => $range->toArray()]);
     }
 
     /**
-     * @param $result
+     * TODO: Extract this in some kind of OutputTransformer
+     * @param $result \Illuminate\Pagination\Paginator
      * @return \Illuminate\Http\JsonResponse
      */
     public function createSearchOutput($result)

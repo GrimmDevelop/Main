@@ -8,7 +8,7 @@ use Illuminate\Database\Query\Builder;
 use Input;
 use Sentry;
 
-class FilterParser {
+class FilterQueryGenerator {
     /**
      * Builds the search query containing all requested and filtered letters
      * @param $with
