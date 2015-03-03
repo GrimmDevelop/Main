@@ -3,7 +3,7 @@ grimmApp.directive('fieldRow', ['BASE_URL', function(BASE_URL) {
     return {
         restrict: 'E',
         link: function(scope, element, attrs) {
-
+            element.find('.code-selector').focus();
         },
         templateUrl: BASE_URL+'/partials/fieldRow',
         scope: {
