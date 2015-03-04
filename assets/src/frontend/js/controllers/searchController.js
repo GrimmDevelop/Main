@@ -59,7 +59,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     $scope.loadFilters = function () {
         $scope.result = {};
         Search.loadFilters().success(function (data) {
-            $scope.filters = data;
+            $scope.filters = data.data;
 
             if ($scope.filters.length > 0) {
                 // $scope.loadFilter($scope.filters[0]);
@@ -73,7 +73,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 if (filter != '') {
                     Search.loadFilter(filter).success(function (data) {
                         if (data != '') {
-                            $scope.currentFilter = data;
+                            $scope.currentFilter = data.data;
                         }
                     });
                 }
@@ -169,7 +169,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     $scope.endDate = {};
 
     Search.dateRange().success(function(response) {
-        var data = response.d;
+        var data = response.data;
 
         $scope.startDate.minDate = new Date(data.min);
         $scope.startDate.maxDate = new Date(data.max);
@@ -192,8 +192,8 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         date.opened = true;
     };
 
-    Search.codes().success(function(data) {
-        $scope.letterInfo.codes = data;
+    Search.codes(true).success(function(data) {
+        $scope.letterInfo.codes = data.data;
     });
 
     // Hotkeys
@@ -227,7 +227,24 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
         callback: function(event) {
             event.preventDefault();
+            if ($scope.tabIsActive('quicksearch')) {
+                focus('quicksearch.Id');
+            }
             $scope.tabstatus.quicksearch = true;
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+f',
+        description: 'Search by filters',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('filter')) {
+                focus('filter.start');
+            }
+
+            $scope.tabstatus.filter = true;
         }
     });
 

@@ -15,13 +15,13 @@ class Letter extends Eloquent {
     protected $table = 'letters';
 
     protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+    protected $fillable = ['code', 'date', 'language'];
 
     public function information($code = null)
     {
         $hasMany = $this->hasMany(Information::class);
 
-        if ($code !== null)
-        {
+        if ($code !== null) {
             $hasMany->where('code', $code);
         }
 
@@ -36,21 +36,17 @@ class Letter extends Eloquent {
     public function scopeWithCodes($codes)
     {
         $validCodes = $this->codes();
-        if (!is_array($codes))
-        {
+        if (!is_array($codes)) {
             $codes = array($codes);
         }
 
-        foreach ($codes as $code)
-        {
-            if (!in_array($validCodes, $code))
-            {
+        foreach ($codes as $code) {
+            if (!in_array($validCodes, $code)) {
                 throw new \InvalidArgumentException('Invalid letter information code: ' . $code);
             }
         }
 
-        return $this->with(array('information' => function ($query) use ($codes)
-        {
+        return $this->with(array('information' => function ($query) use ($codes) {
             $query->whereIn('code', $codes);
         }));
     }

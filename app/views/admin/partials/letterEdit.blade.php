@@ -41,5 +41,6 @@
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="save()">Save</button>
     <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" ng-click="delete()">Delete</button>
     <button class="btn btn-warning" ng-click="load(letter.id)"><span class="glyphicon glyphicon-refresh"></span></button>
 </div>

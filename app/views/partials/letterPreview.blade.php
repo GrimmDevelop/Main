@@ -7,6 +7,7 @@
 </div>
 <div class="modal-body">
     <h3>Information</h3>
+    <p><strong>Code:</strong> @{{ letter.code }}</p>
     <table class="table">
         <thead>
             <tr>

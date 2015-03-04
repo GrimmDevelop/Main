@@ -3,19 +3,27 @@
 namespace Grimm\Search;
 
 
+use Carbon\Carbon;
 use Grimm\Models\Letter;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Input;
 use Sentry;
 
-class FilterParser {
+/**
+ * TODO: This class does not only smell, it stinks!
+ * Class FilterQueryGenerator
+ * @package Grimm\Search
+ */
+class FilterQueryGenerator {
+
     /**
      * Builds the search query containing all requested and filtered letters
      * @param $with
      * @param $filters
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @param $updatedAfter
+     * @return Builder|static
      */
-    public function buildSearchQuery($with, $filters)
+    public function buildSearchQuery($with, $filters, $updatedAfter)
     {
         $query = Letter::query();
 
@@ -27,6 +35,23 @@ class FilterParser {
 
         foreach ($filters as $filter) {
             $this->buildWhere($query, $filter);
+        }
+
+        if ($updatedAfter !== null) {
+            $dateTime = null;
+
+            try {
+                $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', $updatedAfter);
+            } catch (\InvalidArgumentException $e) {
+                try {
+                    $dateTime = Carbon::createFromFormat('Y-m-d', $updatedAfter);
+                } catch (\InvalidArgumentException $e) {
+                }
+            }
+
+            if($dateTime) {
+                $query->where('updated_at', '>=', $dateTime);
+            }
         }
 
         if (Sentry::check()) {
@@ -111,7 +136,7 @@ class FilterParser {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withFromErrors(Builder $query)
     {
@@ -123,7 +148,7 @@ class FilterParser {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withToErrors(Builder $query)
     {
@@ -135,7 +160,7 @@ class FilterParser {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withSendersErrors(Builder $query)
     {
@@ -144,7 +169,7 @@ class FilterParser {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withReceiversErrors(Builder $query)
     {
