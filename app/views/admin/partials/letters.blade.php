@@ -26,25 +26,16 @@
 <div class="row">
     <div class="col-md-12">
         <tabset>
-            <tab heading="filter">
+            <tab heading="Filter">
                 <form role="form" ng-submit="reload()">
                     <div class="form-group row" ng-repeat="field in currentFilter.fields">
-                        <div class="col-md-2 control-label"><select class="form-control" ng-model="field.code" ng-options="code for code in letterInfo.codes"></select></div>
-                        <div class="col-md-2"><select class="form-control" ng-model="field.compare">
-                                <option>equals</option>
-                                <option>contains</option>
-                                <option>starts with</option>
-                                <option>ends with</option>
-                            </select></div>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" ng-model="field.value" typeahead="value for value in fieldTypeahead($viewValue, field)" />
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-danger" ng-click="removeField(field)" tooltip="remove field"><span class="glyphicon glyphicon-minus"></span></button>
-                        </div>
+                        <field-row field="field" codes="letterInfo.codes" on-remove="removeField(field)"></field-row>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span></button>
+                        <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add Filter
+                        </button>
                     </div>
                     <div class="checkbox">
                         <label><input type="checkbox" ng-model="showLettersWithErrors.from" /> show only letters with from errors</label>
@@ -58,20 +49,23 @@
                     <div class="checkbox">
                         <label><input type="checkbox" ng-model="showLettersWithErrors.receivers" /> show only letters with receiver errors</label>
                     </div>
-                    <p>&nbsp;</p>
-                    <div class="checkbox">
-                        <label><input type="checkbox" ng-model="display.shortEdit" /> show <span class="glyphicon glyphicon-pencil"></span></label>
-                    </div>
                     <button type="submit" class="btn btn-primary" tooltip="apply filter">
                         <span class="glyphicon glyphicon-refresh"></span>
+                        Apply filters
                     </button>
                 </form>
             </tab>
-            <tab heading="fields">
+            <tab heading="Display properties">
+                <div class="form-group">
+                    <label class="control-label">View:</label>
+                    <select ng-model="display.currentView" ng-change="changeView(display.currentView)" ng-options="item for item in display.views"></select>
+                </div>
+
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="display.shortEdit" /> show <span class="glyphicon glyphicon-pencil"></span></label>
+                </div>
+
                 <div fields-selection="fields" fields-codes="letterInfo.codes"></div>
-            </tab>
-            <tab heading="view">
-                <select ng-model="display.currentView" ng-change="changeView(display.currentView)" ng-options="item for item in display.views"></select>
             </tab>
         </tabset>
     </div>

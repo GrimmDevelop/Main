@@ -1,4 +1,4 @@
-<form class="form-horizontal" role="form" ng-submit="save()">
+<form class="form-horizontal" name="letterCreateForm" role="form" ng-submit="save()">
     <div class="modal-header">
         <h3 class="modal-title">Creating new letter</h3>
     </div>
@@ -7,10 +7,11 @@
             @{{ message.message }}
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error': !letterCreateForm.letterCode.$valid}">
             <label class="col-sm-2 control-label">Code</label>
             <div class="col-sm-8">
-                <input class="form-control" type="text" ng-model="letter.code" ng-pattern="/\d\d\d\d\d\d\d\d\.\d\d/">
+                <input type="text" ng-pattern="/^[0-9]{8}\.[0-9]{2}$/" ng-model="letter.code" name="letterCode" class="form-control ng-dirty ng-valid ng-valid-pattern">
+                <span ng-show="!letterCreateForm.letterCode.$valid" class="help-block">Invalid format of the given letter code!</span>
             </div>
         </div>
         <div class="form-group">
@@ -25,17 +26,17 @@
                 <input class="form-control" type="text" ng-model="info.data" ng-readonly="info.state == 'remove'">
             </div>
             <div class="col-sm-2">
-                <button ng-click="removeInformation(info)" style="width: 34px;" class="btn btn-danger">-</button>
+                <button type="button" ng-click="removeInformation(info)" style="width: 34px;" class="btn btn-danger">-</button>
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-10 col-sm-1">
-                <button ng-click="addCode()" style="width: 34px;" class="btn btn-success">+</button>
+                <button type="button" ng-click="addCode()" style="width: 34px;" class="btn btn-success">+</button>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="submit">Save</button>
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
     </div>
 </form>

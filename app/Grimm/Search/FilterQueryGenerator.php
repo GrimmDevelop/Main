@@ -3,6 +3,7 @@
 namespace Grimm\Search;
 
 
+use Carbon\Carbon;
 use Grimm\Models\Letter;
 use Illuminate\Database\Eloquent\Builder;
 use Input;
@@ -14,13 +15,15 @@ use Sentry;
  * @package Grimm\Search
  */
 class FilterQueryGenerator {
+
     /**
      * Builds the search query containing all requested and filtered letters
      * @param $with
      * @param $filters
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @param $updatedAfter
+     * @return Builder|static
      */
-    public function buildSearchQuery($with, $filters)
+    public function buildSearchQuery($with, $filters, $updatedAfter)
     {
         $query = Letter::query();
 
@@ -32,6 +35,23 @@ class FilterQueryGenerator {
 
         foreach ($filters as $filter) {
             $this->buildWhere($query, $filter);
+        }
+
+        if ($updatedAfter !== null) {
+            $dateTime = null;
+
+            try {
+                $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', $updatedAfter);
+            } catch (\InvalidArgumentException $e) {
+                try {
+                    $dateTime = Carbon::createFromFormat('Y-m-d', $updatedAfter);
+                } catch (\InvalidArgumentException $e) {
+                }
+            }
+
+            if($dateTime) {
+                $query->where('updated_at', '>=', $dateTime);
+            }
         }
 
         if (Sentry::check()) {

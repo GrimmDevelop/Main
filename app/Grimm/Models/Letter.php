@@ -11,6 +11,7 @@ class Letter extends Eloquent {
 
     protected $table = 'letters';
 
+    protected $fillable = ['code', 'date', 'language'];
 
     public function information($code = null)
     {
