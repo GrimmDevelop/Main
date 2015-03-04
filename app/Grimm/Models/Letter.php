@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Grimm\Models\Letter\Information;
 use App;
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
 class Letter extends Eloquent {
 
+    use SoftDeletingTrait;
+
     protected $table = 'letters';
 
+    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
 
     public function information($code = null)
     {
