@@ -37,9 +37,12 @@ Route::group(['prefix' => 'search'], function () {
     Route::put('filters/public', 'Grimm\Controller\SearchController@publicFilter');
     Route::delete('filters/{id}', 'Grimm\Controller\SearchController@deleteFilter');
 
-    Route::post('distanceMap', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\SearchController@computeDistanceMap']);
+    Route::post('distanceMap', ['before' => 'grimm_auth', 'uses' => 'Grimm\Controller\DistanceMapController@computeDistanceMap']);
 
     Route::get('/dateRange', 'Grimm\Controller\SearchController@dateRange');
+
+    Route::get('/find/{id}', 'Grimm\Controller\SearchController@findById');
+    Route::get('/code/{code}', 'Grimm\Controller\SearchController@findByCode');
 
     // TODO: set flag to display search results on page load
     Route::get('/{filterKey}', 'Grimm\Controller\SearchController@searchForm');

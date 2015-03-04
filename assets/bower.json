@@ -11,7 +11,8 @@
     "angular-sanitize": "~1.2.15",
     "angular-dragdrop-ganarajpr": "~1.0.1",
     "ng-flow": "~2",
-    "bluebird": "petkaantonov/bluebird#~2.3.5"
+    "bluebird": "petkaantonov/bluebird#~2.3.5",
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5"
   },
   "resolutions": {
     "angular-bootstrap": "~0.11.0",
