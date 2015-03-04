@@ -1,6 +1,8 @@
-grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstance', 'Letters', 'id', function ($scope, $modal, $modalInstance, Letters) {
+grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstance', 'Letters', function ($scope, $modal, $modalInstance, Letters) {
 
     $scope.letter = {};
+    $scope.letter.code = "18000101.00";
+
     $scope.letter.information = [
         {
             state: "add",
@@ -19,7 +21,7 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
         },
         {
             state: "add",
-            code: "empfangsort",
+            code: "empf_ort",
             date: ""
         }
     ];
@@ -41,7 +43,7 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
     };
 
     $scope.save = function () {
-        Letters.save($scope.letter).success(function () {
+        Letters.create($scope.letter).success(function () {
             $modalInstance.dismiss('cancel');
         });
     };

@@ -20,7 +20,18 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     $scope.display = {
         currentView: null,
         views: [],
-        shortEdit: true
+        shortEdit: false
+    };
+
+    $scope.quicksearch = {
+        id : null,
+        code: null
+    };
+
+    $scope.tabstatus = {
+        filter: true,
+        quicksearch: false,
+        display: false
     };
 
     $scope.currentFilter = {};
@@ -52,7 +63,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         }
     };
 
-    Search.codes().success(function (data) {
+    Search.codes(1).success(function (data) {
         $scope.letterInfo.codes = data.data;
     });
 
@@ -69,8 +80,10 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
 
     $scope.fields = ['absendeort', 'absort_ers', 'absender', 'empf_ort', 'empfaenger', 'dr', 'hs'];
 
-    $scope.editColumn = function (field) {
+    $scope.editColumn = function (field, event) {
         MessagesService.broadcast('success', 'Edit complete column ' + field);
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     $scope.editField = function (letterId, field) {
@@ -99,12 +112,18 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
          });*/
     };
 
-    $scope.reload();
-
-    $scope.openLetterId = null;
-    $scope.openLetterWithId = function () {
-        if ($scope.openLetterId) {
-            $scope.show($scope.openLetterId);
+    $scope.findByIdentifierOrCode = function() {
+        if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
+            $scope.quicksearch.code = null;
+            Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
+                $scope.letters = data;
+            });
+        } else if ($scope.quicksearch.code != null) {
+            Search.findByCode($scope.quicksearch.code).success(function(data) {
+                $scope.letters = data;
+            });
         }
     };
+
+    $scope.reload();
 }]);

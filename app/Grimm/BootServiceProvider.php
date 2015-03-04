@@ -5,6 +5,8 @@ namespace Grimm;
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
 use Grimm\Converter\Person;
+use Grimm\Letter\EloquentLetterService;
+use Grimm\Letter\LetterService;
 use Grimm\Logging\UserActionLogger;
 use Grimm\Search\EloquentFilterService;
 use Grimm\Search\EloquentSearchService;
@@ -74,6 +76,10 @@ class BootServiceProvider extends ServiceProvider {
 
         $this->app->bind(FilterService::class, function() {
             return $this->app->make(EloquentFilterService::class);
+        });
+
+        $this->app->bind(LetterService::class, function() {
+            return $this->app->make(EloquentLetterService::class);
         });
     }
 
