@@ -2,12 +2,11 @@
 
 namespace Grimm\Controller;
 
-use Carbon\Carbon;
-use DB;
 use Grimm\Auth\Models\User;
-use Grimm\Models\Filter;
-use Grimm\Models\Letter;
-use Grimm\Models\Location;
+use Grimm\OutputTransformer\ArrayOutput;
+use Grimm\OutputTransformer\JsonPaginationOutput;
+use Grimm\Search\FilterService;
+use Grimm\Search\SearchService;
 use Response;
 use URL;
 use View;
@@ -17,11 +16,32 @@ use Sentry;
 
 class SearchController extends \Controller {
 
-    protected $letter;
+    /**
+     * @var SearchService
+     */
+    private $searchService;
+    /**
+     * @var FilterService
+     */
+    private $filterService;
+    /**
+     * @var JsonPaginationOutput
+     */
+    private $paginationOutput;
+    /**
+     * @var ArrayOutput
+     */
+    private $arrayOutput;
 
-    public function __construct(Letter $letter)
+    public function __construct(SearchService $searchService,
+                                FilterService $filterService,
+                                JsonPaginationOutput $paginationOutput,
+                                ArrayOutput $arrayOutput)
     {
-        $this->letter = $letter;
+        $this->searchService = $searchService;
+        $this->filterService = $filterService;
+        $this->paginationOutput = $paginationOutput;
+        $this->arrayOutput = $arrayOutput;
     }
 
     /**
@@ -33,7 +53,6 @@ class SearchController extends \Controller {
     {
         $filterKey = preg_replace('/[^\w]/', '', $filterKey);
         return View::make('pages.search', array(
-            'codes' => $this->letter->codes(),
             'filter_key' => $filterKey
         ));
     }
@@ -44,308 +63,29 @@ class SearchController extends \Controller {
      */
     public function searchResult()
     {
-        $result = $this->buildSearchQuery(
-            Input::get('with', ['information']),
-            Input::get('filters', [])
-        )->paginate(abs((int)Input::get('items_per_page', 100)));
+        $perPage = abs((int)Input::get('items_per_page', 100));
 
-        $return = new \stdClass();
+        $result = $this->searchService->search(Input::get('with', ['information']),Input::get('filters', []), $perPage);
 
-        $return->total = $result->getTotal();
-        $return->per_page = $result->getPerPage();
-        $return->current_page = $result->getCurrentPage();
-        $return->last_page = $result->getLastPage();
-        $return->from = $result->getFrom();
-        $return->to = $result->getTo();
-        $return->data = $result->getCollection()->toArray();
-
-        return Response::json($return);
+        return $this->createSearchOutput($result);
     }
 
-    protected $distanceMapData;
-
-    protected $tmpAddedBorderIds;
-
-    /**
-     * TODO: nothing to do in the SearchController
-     * Builds a json string containing computed letter count, border data and the line coordinates as latitude and longitude objects
-     * @return string
-     */
-    public function computeDistanceMap()
+    public function findById($id)
     {
-        $query = Letter::select(
-            'letters.id as letter_id',
-            DB::raw('COUNT(letters.id) as `count`'),
-            'f.id as from_id',
-            'f.latitude as from_lat',
-            'f.longitude as from_long',
-            't.id as to_id',
-            't.latitude as to_lat',
-            't.longitude as to_long'
-        )
-            ->join('locations as f', 'letters.from_id', '=', 'f.id')
-            ->join('locations as t', 'letters.to_id', '=', 't.id')
-            ->whereRaw('`f`.`id` != `t`.`id`')
-            ->groupBy('from_id', 'to_id');
 
-        foreach (Input::get('filters', []) as $filter) {
-            $this->buildWhere($query, $filter);
-        }
+        $itemsPerPage = abs((int)Input::get('items_per_page', 100));
 
-        $this->tmpAddedBorderIds = [];
+        $result = $this->searchService->findById($id, Input::get('with', ['information']), true, $itemsPerPage);
 
-        $this->distanceMapData = new \stdClass();
-        $this->distanceMapData->computedLetters = 0;
-        $this->distanceMapData->borderData = [];
-        $this->distanceMapData->polylines = [];
-
-        foreach ($query->get() as $dataSet) {
-            $this->addBorderData($dataSet->from_id, $dataSet->from_lat, $dataSet->from_long);
-            $this->addBorderData($dataSet->to_id, $dataSet->to_lat, $dataSet->to_long);
-
-            if (($index = $this->indexOfPolyline($dataSet->from_id, $dataSet->to_id)) != - 1) {
-                $this->distanceMapData->computedLetters++;
-                $this->distanceMapData->polylines[$index]['count'] ++;
-            } else {
-                $this->addPolyline(
-                    $dataSet->from_id,
-                    $dataSet->from_lat,
-                    $dataSet->from_long,
-                    $dataSet->to_id,
-                    $dataSet->to_lat,
-                    $dataSet->to_long,
-                    $dataSet->count
-                );
-            }
-        }
-
-        return Response::json($this->distanceMapData);
+        return $this->createSearchOutput($result);
     }
 
-    /**
-     * Adds border data to map data
-     * @param $id
-     * @param $latitude
-     * @param $longitude
-     */
-    protected function addBorderData($id, $latitude, $longitude)
+    public function findByCode($code)
     {
-        if(isset($this->tmpBorderData[$id])) {
-            return;
-        }
+        $itemsPerPage = abs((int)Input::get('items_per_page', 100));
 
-        $this->tmpAddedBorderIds[$id] = true;
-
-        $position = new \stdClass();
-        $position->lat = $latitude;
-        $position->long = $longitude;
-
-        $this->distanceMapData->borderData[] = $position;
-    }
-
-    /**
-     * returns the index of a poly line, else -1
-     * @param $id1
-     * @param $id2
-     * @return int|string
-     */
-    protected function indexOfPolyline($id1, $id2)
-    {
-        if ($id1 > $id2) {
-            $t = $id2;
-            $id2 = $id1;
-            $id1 = $t;
-        }
-
-        foreach ($this->distanceMapData->polylines as $index => $line) {
-            if ($line['id1'] == $id1 && $line['id2'] == $id2) {
-                return $index;
-            }
-        }
-
-        return - 1;
-    }
-
-    /**
-     * Adds a line to map data, always with smallest id first
-     * @param $fromId
-     * @param $fromLat
-     * @param $fromLong
-     * @param $toId
-     * @param $toLat
-     * @param $toLong
-     * @param $count
-     */
-    protected function addPolyline($fromId, $fromLat, $fromLong, $toId, $toLat, $toLong, $count)
-    {
-        if ($fromId > $toId) {
-            $id1 = $toId;
-            $lat1 = $toLat;
-            $long1 = $toLong;
-            $id2 = $fromId;
-            $lat2 = $fromLat;
-            $long2 = $fromLong;
-        } else {
-            $id1 = $fromId;
-            $lat1 = $fromLat;
-            $long1 = $fromLong;
-            $id2 = $toId;
-            $lat2 = $toLat;
-            $long2 = $toLong;
-        }
-
-        $this->distanceMapData->computedLetters+= $count;
-        $this->distanceMapData->polylines[] = [
-            'id1' => $id1,
-            'id2' => $id2,
-            'lat1' => $lat1,
-            'long1' => $long1,
-            'lat2' => $lat2,
-            'long2' => $long2,
-            'count' => $count
-        ];
-    }
-
-    /**
-     * Builds the search query containing all requested and filtered letters
-     * @param $with
-     * @param $filters
-     * @return \Illuminate\Database\Eloquent\Builder|static
-     */
-    protected function buildSearchQuery($with, $filters)
-    {
-        $query = Letter::query();
-
-        foreach ($with as $load) {
-            if (in_array($load, ['information', 'senders', 'receivers', 'from', 'to'])) {
-                $query->with($load);
-            }
-        }
-
-        foreach ($filters as $filter) {
-            $this->buildWhere($query, $filter);
-        }
-
-        if (Sentry::check()) {
-            $query->where(function ($query) {
-                foreach (Input::get('with_errors', []) as $error) {
-                    switch ($error) {
-                        case "from":
-                            $this->withFromErrors($query);
-                            break;
-
-                        case "to":
-                            $this->withToErrors($query);
-                            break;
-
-                        case "senders":
-                            $this->withSendersErrors($query);
-                            break;
-
-                        case "receivers":
-                            $this->withReceiversErrors($query);
-                            break;
-                    }
-                }
-            });
-        }
-
-        return $query;
-    }
-
-    /**
-     * Build a filter where query and appends it to a given one
-     * @param $query
-     * @param $filter
-     * @return mixed
-     */
-    protected function buildWhere($query, $filter)
-    {
-        if ($filter['code'] == '') {
-            return $query;
-        }
-
-        return $query->whereHas('information', function ($q) use ($filter) {
-            $compare = $this->getCompare($filter['compare'], $filter['value']);
-
-            return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
-        });
-    }
-
-    /**
-     * convert's a compare string and a value to a valid mysql form
-     * @param $string
-     * @param $value
-     * @return array
-     */
-    protected function getCompare($string, $value)
-    {
-        switch ($string) {
-            case 'contains':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value%"
-                );
-            case 'starts with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "$value%"
-                );
-            case 'ends with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value"
-                );
-
-            case "equals":
-            default:
-                return array(
-                    'compare' => '=',
-                    'value' => $value
-                );
-        }
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withFromErrors(Builder $query)
-    {
-        return $query->orWhere(function ($query) {
-            $query->where('from_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
-        });
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withToErrors(Builder $query)
-    {
-        return $query->orWhere(function ($query) {
-            $query->where('to_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
-        });
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withSendersErrors(Builder $query)
-    {
-        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
-     */
-    protected function withReceiversErrors(Builder $query)
-    {
-        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+        $result = $this->searchService->findByCode($code, Input::get('with', ['information']), $itemsPerPage);
+        return $this->createSearchOutput($result);
     }
 
     /**
@@ -356,17 +96,9 @@ class SearchController extends \Controller {
     {
         User::find(0); // Eloquent - Sentry bug fix hack...
         if ($user = Sentry::getUser()) {
-            $filters = $user->filters()->get();
+            $result = $this->filterService->loadFiltersForUser($user);
 
-            $result = [];
-            foreach ($filters as $filter) {
-                $tmp = [];
-                $tmp['id'] = $filter->id;
-                $tmp['filter_key'] = $filter->filter_key;
-                $tmp['fields'] = json_decode($filter->fields);
-                $result[] = $tmp;
-            }
-            return Response::json($result);
+            return $this->createJsonResponse($result);
         }
 
         return Response::json([]);
@@ -379,14 +111,14 @@ class SearchController extends \Controller {
      */
     public function loadFilter($key)
     {
-        if ($filter = Filter::where('filter_key', $key)->first()) {
-            $tmp = [];
-            $tmp['id'] = null;
-            $tmp['filter_key'] = $filter->filter_key;
-            $tmp['fields'] = json_decode($filter->fields);
-            return Response::json($tmp);
+        $filter = $this->filterService->getFilterByKey($key);
+
+        if ($filter !== null) {
+            return $this->createJsonResponse($filter);
         }
+
         return null;
+
     }
 
     /**
@@ -398,29 +130,14 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
 
-            if (!($filterObj = $this->findFilter($user, $filter))) {
-                return null;
+            $token = $this->filterService->publishFilter($user, $filter);
+
+            if ($token !== null) {
+                return URL::to('search/' . $token);
             }
-
-            if ($filterObj->filter_key != null) {
-                return URL::to('search/' . $filterObj->filter_key);
-            }
-
-            $filterObj->filter_key = $this->generateKey($filterObj->id);
-            $filterObj->save();
-
-            return URL::to('search/' . $filterObj->filter_key);
         }
-    }
 
-    /**
-     * generates a unique public filter key
-     * @param $id
-     * @return string
-     */
-    protected function generateKey($id)
-    {
-        return time() . '_' . md5($id . rand(0, 100));
+        return null;
     }
 
     /**
@@ -432,14 +149,9 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
 
-            if (empty($filter['fields'])) {
-                return $this->loadFilters();
-            }
+            $this->filterService->newFilter($user, $filter);
 
-            $user->filters()->save(new Filter([
-                'fields' => json_encode($filter['fields'])
-            ]));
-
+            // TODO: maybe include error message
             return $this->loadFilters();
         }
     }
@@ -453,13 +165,9 @@ class SearchController extends \Controller {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
 
-            if (!($filterObj = $this->findFilter($user, $filter))) {
-                return $this->loadFilters();
-            }
+            $this->filterService->saveFilter($user, $filter);
 
-            $filterObj->fields = json_encode(($filter['fields']));
-            $filterObj->save();
-
+            // TODO: maybe include error message
             return $this->loadFilters();
         }
     }
@@ -472,44 +180,41 @@ class SearchController extends \Controller {
     public function deleteFilter($id)
     {
         if ($user = Sentry::getUser()) {
-            $filter = [
-                'id' => $id
-            ];
-            if ($filter = $this->findFilter($user, $filter)) {
-                $filter->delete();
-            }
+            $this->filterService->deleteFilter($user, $id);
 
             return $this->loadFilters();
         }
     }
 
-    /**
-     *
-     * @param User $user
-     * @param $filter
-     * @return null
-     */
-    protected function findFilter(User $user, $filter)
-    {
-        if (empty($filter['id'])) {
-            return null;
-        }
-
-        return $user->filters()->where('id', $filter['id'])->first();
-    }
-
     public function codes()
     {
-        return Response::json($this->letter->codes());
+        $localized = Input::has('localized');
+        return $this->createJsonResponse($this->searchService->getCodes($localized));
     }
 
     public function dateRange()
     {
-        $range = Letter::selectRaw('MIN(code) as min, MAX(code) as max')->first();
+        $range = $this->searchService->getDateRange();
 
-        $min = (string)Carbon::createFromFormat("Ymd", substr($range->min, 0, -3))->format("Y-m-d");
-        $max = (string)Carbon::createFromFormat("Ymd", substr($range->max, 0, -3))->format("Y-m-d");
 
-        return Response::json(['d' => ['min' => $min, 'max' => $max]]);
+        return $this->createJsonResponse($range);
+    }
+
+    /**
+     * @param $result \Illuminate\Pagination\Paginator
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function createSearchOutput($result)
+    {
+        return Response::json($this->paginationOutput->transform($result));
+    }
+
+    /**
+     * @param $data
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createJsonResponse($data)
+    {
+        return Response::json($this->arrayOutput->transform($data));
     }
 }

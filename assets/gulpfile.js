@@ -21,7 +21,8 @@ var third_party = [
     "theme_components/bower/angular-bootstrap/ui-bootstrap-tpls.min.js",
     "theme_components/bower/ng-flow/dist/ng-flow-standalone.min.js",
     "theme_components/bower/angular-dialog-service/dialogs.min.js",
-    "theme_components/bower/angular-dragdrop-ganarajpr/draganddrop.js"
+    "theme_components/bower/angular-dragdrop-ganarajpr/draganddrop.js",
+    "theme_components/bower/angular-hotkeys/build/hotkeys.min.js"
 ];
 
 gulp.task('frontend_less', function() {
