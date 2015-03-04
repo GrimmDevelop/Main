@@ -23,6 +23,17 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         shortEdit: false
     };
 
+    $scope.quicksearch = {
+        id : null,
+        code: null
+    };
+
+    $scope.tabstatus = {
+        filter: true,
+        quicksearch: false,
+        display: false
+    };
+
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
     $scope.currentFilter.filter_key = null;
@@ -101,12 +112,18 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
          });*/
     };
 
-    $scope.reload();
-
-    $scope.openLetterId = null;
-    $scope.openLetterWithId = function () {
-        if ($scope.openLetterId) {
-            $scope.show($scope.openLetterId);
+    $scope.findByIdentifierOrCode = function() {
+        if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
+            $scope.quicksearch.code = null;
+            Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
+                $scope.letters = data;
+            });
+        } else if ($scope.quicksearch.code != null) {
+            Search.findByCode($scope.quicksearch.code).success(function(data) {
+                $scope.letters = data;
+            });
         }
     };
+
+    $scope.reload();
 }]);

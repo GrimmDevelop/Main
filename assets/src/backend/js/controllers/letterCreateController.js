@@ -21,7 +21,7 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
         },
         {
             state: "add",
-            code: "empfangsort",
+            code: "empf_ort",
             date: ""
         }
     ];
