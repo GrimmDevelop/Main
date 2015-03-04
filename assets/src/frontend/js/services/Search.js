@@ -54,7 +54,12 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     };*/
 
     this.codes = function () {
-        return $http.get(serviceBackend + '/codes');
+        if (arguments.length > 0 && arguments[0]) {
+            var params = {'localized': 1};
+        } else {
+            var params = {};
+        }
+        return $http.get(serviceBackend + '/codes', {params: params});
     };
 
     this.loadFilters = function () {

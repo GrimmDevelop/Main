@@ -188,7 +188,8 @@ class SearchController extends \Controller {
 
     public function codes()
     {
-        return $this->createJsonResponse($this->searchService->getCodes());
+        $localized = Input::has('localized');
+        return $this->createJsonResponse($this->searchService->getCodes($localized));
     }
 
     public function dateRange()

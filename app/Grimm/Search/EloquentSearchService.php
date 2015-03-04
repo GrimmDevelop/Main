@@ -28,9 +28,17 @@ class EloquentSearchService implements SearchService {
 
     public function getCodes($localized = false)
     {
+        // TODO: Really localize the codes
+        if ($localized) {
+            $theCodes = $this->letter->codes();
+            $result = [];
+            foreach ($theCodes as $code) {
+                $result[$code] = $this->translateCode($code);
+            }
 
+            return $result;
+        }
         return $this->letter->codes();
-        // TODO: Implement getCodes() method.
     }
 
     /**
@@ -113,5 +121,14 @@ class EloquentSearchService implements SearchService {
         $max = Carbon::createFromFormat("Ymd", substr($range->max, 0, -3));
 
         return new DateRange($min, $max);
+    }
+
+    /**
+     * @param $code
+     * @return string
+     */
+    protected function translateCode($code)
+    {
+        return ucfirst($code);
     }
 }

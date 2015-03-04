@@ -192,7 +192,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         date.opened = true;
     };
 
-    Search.codes().success(function(data) {
+    Search.codes(true).success(function(data) {
         $scope.letterInfo.codes = data.data;
     });
 
