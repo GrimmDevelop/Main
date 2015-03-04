@@ -92,9 +92,19 @@
                                 class="glyphicon glyphicon-pencil"></span></label>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>Display Codes:</p>
+                    </div>
+                </div>
+
                 <div fields-selection="fields" fields-codes="letterInfo.codes"></div>
             </tab>
         </tabset>
+
+        <div class="shortcut-help">
+            <p>Press <kbd>?</kbd> for a list of all available shortcuts!</p>
+        </div>
     </div>
 </div>
 

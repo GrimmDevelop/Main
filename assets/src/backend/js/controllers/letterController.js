@@ -63,7 +63,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         }
     };
 
-    Search.codes(1).success(function (data) {
+    Search.codes(true).success(function (data) {
         $scope.letterInfo.codes = data.data;
     });
 
@@ -100,16 +100,6 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         ).success(function (data) {
             $scope.letters = data;
         });
-
-        /*
-         var itemsPerPage = $scope.itemsPerPage;
-         var currentPage = $scope.currentPage;
-         var showLettersWithErrors = ;
-         var filters = $scope.currentFilter.fields;
-
-         Letters.page(itemsPerPage, currentPage, showLettersWithErrors, filters).success(function (data) {
-         $scope.letters = data;
-         });*/
     };
 
     $scope.findByIdentifierOrCode = function() {

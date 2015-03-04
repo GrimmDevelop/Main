@@ -72,4 +72,8 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     this.save = function (letter) {
         return $http.put(serviceBackend + 'letters/' + letter.id, letter);
     };
+
+    this.delete = function(letter) {
+        return $http.delete(serviceBackend + 'letters/' + letter.id);
+    };
 }]);

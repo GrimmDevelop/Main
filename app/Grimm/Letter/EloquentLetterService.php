@@ -38,6 +38,10 @@ class EloquentLetterService implements LetterService {
     {
         \Eloquent::unguard();
 
+        if(!preg_match('/^[0-9]{8}\.[0-9]{2}$/', $data['code'])) {
+            return false;
+        }
+
         $letter = new Letter([
             'code' => 0,
             'date' => '',
@@ -67,6 +71,10 @@ class EloquentLetterService implements LetterService {
         $letter = $this->findById($id);
 
         if (!$letter) {
+            return false;
+        }
+
+        if(!preg_match('/^[0-9]{8}\.[0-9]{2}$/', $data['code'])) {
             return false;
         }
 

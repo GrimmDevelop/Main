@@ -37,6 +37,12 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
         });
     };
 
+    $scope.delete = function() {
+        Letters.delete($scope.letter).success(function() {
+            $scope.cancel();
+        });
+    };
+
     $scope.addCode = function () {
         var modalInstance = $modal.open({
             templateUrl: 'admin/partials/letterEditAddCode',
@@ -56,8 +62,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
 
 
     $scope.openPersonModal = function (assignMode) {
-
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl: 'admin/partials/assign.' + assignMode.toLowerCase(),
             controller: 'assignPersonController',
             resolve: {
@@ -69,22 +74,10 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
                 }
             }
         });
-
-        /*modalInstance.result.then(function (result) {
-         Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
-         $scope.message = result;
-         $scope.reload($scope.itemsPerPage, $scope.currentPage);
-         }).error(function (result) {
-         $scope.message = result;
-         });
-         }, function () {
-
-         });*/
     };
 
     $scope.openLocationModal = function (assignMode) {
-
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl: 'admin/partials/assign.' + assignMode.toLowerCase(),
             controller: 'assignLocationController',
             resolve: {
@@ -96,17 +89,6 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
                 }
             }
         });
-
-        /*modalInstance.result.then(function (result) {
-         Letters.assign(assignMode, currentLetter.id, result).success(function (result) {
-         $scope.message = result;
-         $scope.reload($scope.itemsPerPage, $scope.currentPage);
-         }).error(function (result) {
-         $scope.message = result;
-         });
-         }, function () {
-
-         });*/
     };
 
 

@@ -105,9 +105,11 @@ class LetterController extends \Controller {
             'information' => Input::get('information', [])
         ];
 
-        $this->letterService->create($data);
+        if($this->letterService->create($data)) {
+            return $this->createMessageResponse('letter created');
+        }
 
-        return $this->createMessageResponse('letter created');
+        return $this->createMessageResponse('letter not created', false, 400);
     }
 
 
@@ -144,7 +146,7 @@ class LetterController extends \Controller {
             return $this->createMessageResponse('changes saved');
         }
 
-        return $this->createMessageResponse('changes not saved', false);
+        return $this->createMessageResponse('changes not saved', false, 400);
     }
 
     /**

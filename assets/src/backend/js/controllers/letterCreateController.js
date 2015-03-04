@@ -7,22 +7,22 @@ grimmApp.controller('letterCreateController', ['$scope', '$modal', '$modalInstan
         {
             state: "add",
             code: "absender",
-            date: ""
+            data: ""
         },
         {
             state: "add",
             code: "empfaenger",
-            date: ""
+            data: ""
         },
         {
             state: "add",
             code: "absendeort",
-            date: ""
+            data: ""
         },
         {
             state: "add",
             code: "empf_ort",
-            date: ""
+            data: ""
         }
     ];
 
