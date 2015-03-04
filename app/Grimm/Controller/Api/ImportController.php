@@ -2,19 +2,29 @@
 
 namespace Grimm\Controller\Api;
 
+use Grimm\Queue\QueueJobManager;
 use Queue;
 use Input;
 use Response;
 
 class ImportController extends \Controller {
 
-    protected $queue;
+    protected $queueJobManager;
+
+    function __construct(QueueJobManager $queue)
+    {
+        $this->queueJobManager = $queue;
+    }
+
 
     public function startLetterImport()
     {
-        Queue::push('Grimm\Controller\Queue\Letter@importLetters', array('source' => Input::get('data')));
+        $data = ['source' => Input::get('data')];
+        $handler = 'Grimm\Controller\Queue\Letter@importLetters';
+        $token = $this->queueJobManager->issue($handler, $data);
+        //Queue::push('Grimm\Controller\Queue\Letter@importLetters', array('source' => Input::get('data')));
 
-        return Response::json(array('success' => array('message' => 'Start importing letters.')));
+        return Response::json(array('success' => array('message' => 'Start importing letters. Job-ID: ' . $token)));
     }
 
     public function startLocationImport()

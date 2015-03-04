@@ -5,6 +5,7 @@ namespace Grimm\Controller\Queue;
 use Grimm\Converter\Letter as Converter;
 use Grimm\Models\Letter as Model;
 use Grimm\Models\Letter\Information;
+use Grimm\Queue\QueueJobManager;
 use Queue;
 
 class Letter {
@@ -13,10 +14,15 @@ class Letter {
      * @var Converter
      */
     private $converter;
+    /**
+     * @var QueueJobManager
+     */
+    private $queueJobManager;
 
-    public function __construct(Converter $converter)
+    public function __construct(Converter $converter, QueueJobManager $queueJobManager)
     {
         $this->converter = $converter;
+        $this->queueJobManager = $queueJobManager;
     }
 
     public function importLetters($job, $data)
@@ -28,39 +34,19 @@ class Letter {
 
         $this->converter->setSource(storage_path('upload') . $data['source']);
 
-        $totalRows = $this->converter->totalEntries();
+        $token = $data['queue_job_token'];
 
-        // Check if we have to start later because this is another iteration for timeout protection
-        $last = 0;
-        if (array_key_exists('last', $data) && $data['last'] > 0) {
-            $this->converter->skipTo($data['last']);
-            $last = $data['last'];
-        }
+        $this->queueJobManager->running($token);
 
-        // Process 1000 items per job
-        // TODO: make this somehow configurable
-        $nextEnd = $last + 1000;
+        list($totalRows, $last, $nextEnd) = $this->importRecords($data);
 
-        \Eloquent::unguard();
-
-        //while ($last < $nextEnd)
-        foreach ($this->converter->parse() as $record)
-        {
-            if ($last >= $nextEnd) {
-                break;
-            }
-
-            if ($letter = $this->firstOrCreateAndUpdate($record))
-            {
-                // letter created and/or updated
-            }
-
-            $last++;
-        }
+        $this->queueJobManager->reportProgress($token, 'Imported ' . $last . ' Entries');
 
         if ($nextEnd < $totalRows) {
             $data['last'] = $nextEnd;
-            Queue::push(static::class . '@importLetters', $data);
+            $this->queueJobManager->retain($token, static::class . '@importLetters', $data);
+        } else {
+            $this->queueJobManager->finish($token);
         }
 
         \Eloquent::reguard();
@@ -113,6 +99,42 @@ class Letter {
                 'data' => $data
             )));
         }
+    }
+
+    /**
+     * @param $data
+     * @return array
+     * @throws \Exception
+     */
+    protected function importRecords($data)
+    {
+        $totalRows = $this->converter->totalEntries();
+
+        // Check if we have to start later because this is another iteration for timeout protection
+        $last = 0;
+        if (array_key_exists('last', $data) && $data['last'] > 0) {
+            $this->converter->skipTo($data['last']);
+            $last = $data['last'];
+        }
+
+        // Process 1000 items per job
+        // TODO: make this somehow configurable
+        $nextEnd = $last + 1000;
+
+        \Eloquent::unguard();
+
+        foreach ($this->converter->parse() as $record) {
+            if ($last >= $nextEnd) {
+                break;
+            }
+
+            if ($letter = $this->firstOrCreateAndUpdate($record)) {
+                // letter created and/or updated
+            }
+
+            $last++;
+        }
+        return array($totalRows, $last, $nextEnd);
     }
 }
 

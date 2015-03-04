@@ -54,13 +54,24 @@
 <div class="row">
     <div class="col-md-12">
         <div class="dashboard-statistics">
-            <div class="statistic">
-                <div class="title">
-                    Running tasks
-                </div>
-                <div class="content">
-                    not implemented
-                </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Running Tasks</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Progress</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="task in tasks">
+                            <td>@{{ task.token }}</td>
+                            <td job-progress the-progress="task.progress"></td>
+                            <td>@{{ task.status }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

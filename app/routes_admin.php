@@ -24,6 +24,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'grimm_auth'), function () {
 
     Route::get('mailing/list',          ['before' => 'grimm_access:mailinglist', 'uses' => 'Grimm\Controller\Admin\MailingListController@mailList']);
 
+    Route::get('tasks',                 ['before' => 'grimm_access:import', 'uses' => 'Grimm\Controller\Admin\RunningJobController@getTasks']);
+
     // File administration
     $filesController = 'Grimm\Controller\Admin\Files\Controller';
 
