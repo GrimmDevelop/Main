@@ -98,15 +98,17 @@ class EloquentSearchService implements SearchService {
      * @param $includedRelations
      * @param $filters
      * @param int $perPage
+     * @param null $updatedAfter
      * @return \Illuminate\Pagination\Paginator
      */
-    public function search($includedRelations, $filters, $perPage = 100)
+    public function search($includedRelations, $filters, $perPage = 100, $updatedAfter = null)
     {
         $includedRelations += ['information'];
 
         return $this->filterParser->buildSearchQuery(
             $includedRelations,
-            $filters
+            $filters,
+            $updatedAfter
         )->paginate($perPage);
     }
 
