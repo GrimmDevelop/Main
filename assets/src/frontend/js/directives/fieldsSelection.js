@@ -19,8 +19,8 @@ grimmApp.directive("fieldsSelection", [function () {
             }
 
         },
-        template: "display codes:\n<div class=\"checkbox\" ng-repeat=\"code in codes\" ng-if=\"code != ''\">\n" +
-                  "<label><input type=\"checkbox\" ng-model=\"fieldsTmp[code]\" ng-change=\"toggleField(code)\"> {{ code }}</label></div>",
+        template: "<div class=\"row display-filters\">\n<div class=\"checkbox col-md-3\" ng-repeat=\"(code, name) in codes\" ng-if=\"code != ''\">\n" +
+                  "<label><input type=\"checkbox\" ng-model=\"fieldsTmp[code]\" ng-change=\"toggleField(code)\"> {{ name }}</label></div></div>",
         scope: {
             fields: '=fieldsSelection',
             codes: '=fieldsCodes'

@@ -3,13 +3,14 @@
 @section('body')
     <div class="row">
         <div class="col-md-12" ng-controller="searchController" ng-init="loadFilter('{{ $filter_key }}')">
-            <form role="form" ng-submit="search()">
+            <div class="search-form">
                 <tabset>
-                    <tab heading="filter">
+                    <tab heading="Filter" active="tabstatus.filter">
+                        <form class="search-form" role="form" ng-submit="search()">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <p class="input-group">
-                                    <input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="startDate.date" is-open="startDate.opened" min-date="startDate.minDate" max-date="startDate.maxDate" datepicker-options="dateOptions" close-text="Close" />
+                                    <input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="startDate.date" is-open="startDate.opened" min-date="startDate.minDate" max-date="startDate.maxDate" datepicker-options="dateOptions" close-text="Close" focus-on="filter.start" />
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-default" ng-click="open(startDate, $event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
@@ -25,25 +26,13 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-repeat="field in currentFilter.fields">
-                            <div class="col-md-2 control-label"><select class="form-control" ng-model="field.code" ng-options="code for code in letterInfo.codes"></select></div>
-                            <div class="col-md-2"><select class="form-control" ng-model="field.compare">
-                                <option>equals</option>
-                                <option>contains</option>
-                                <option>starts with</option>
-                                <option>ends with</option>
-                            </select></div>
-                            <div class="col-md-7">
-                                <input type="text" class="form-control" ng-model="field.value" typeahead="value for value in fieldTypeahead($viewValue, field)" />
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-danger" ng-click="removeField(field)" tooltip="remove field"><span class="glyphicon glyphicon-minus"></span></button>
-                            </div>
+                            <field-row field="field" codes="letterInfo.codes" on-remove="removeField(field)"></field-row>
                         </div>
                         <div class="form-group">
-                            <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span> Add Filter</button>
                         </div>
                         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-title="start search">
-                            <span class="glyphicon glyphicon-search"></span>
+                            <span class="glyphicon glyphicon-search"></span> Search
                         </button>
 @if(Sentry::check())
                         <div class="btn-group">
@@ -67,22 +56,56 @@
                             <a href="@{{ sendMail() }}" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span></a>
                         </span>
 @endif
+                        </form>
                     </tab>
-                    <tab heading="display">
+                    <tab heading="Quick Search" active="tabstatus.quicksearch">
+                        <form class="form-horizontal" ng-submit="findByIdentifierOrCode()" name="quicksearchForm">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label" for="letter_id">Letter ID:</label>
+                                <div class="control-group col-md-10">
+                                    <input type="text" class="form-control" name="quicksearchId" ng-model="quicksearch.id" focus-on="quicksearch.Id" />
+                                    <span class="help-block">This will search for letters that currently have the given ID or had this in 1992 or 1997.</span>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error': !quicksearchForm.quicksearchCode.$valid}">
+                                <label class="col-md-2 control-label" for="letter_code">Letter Code:</label>
+                                <div class="control-group col-md-10">
+                                    <input type="text" class="form-control" name="quicksearchCode" ng-model="quicksearch.code" ng-pattern="/[0-9]{8}\.[0-9]{2}/" />
+                                    <span class="help-block" ng-show="!quicksearchForm.quicksearchCode.$valid">Invalid format of the given letter code!</span>
+                                    <span class="help-block">Access a letter directly by its code which has the form <code>yyyymmdd.nn</code> where y are the digits of the year, m the month, d the day and n the order count.</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-2">
+                                    <button type="submit" class="btn btn-primary" ng-disabled="!quicksearchForm.quicksearchCode.$valid"><span class="glyphicon glyphicon-search"></span> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </tab>
+                    <tab heading="Display Properties">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>Display Codes:</p>
+                            </div>
+                        </div>
                         <div fields-selection="displayCodes" fields-codes="letterInfo.codes"></div>
                     </tab>
                 </tabset>
-            </form>
+
+            </div>
+
+            <div class="shortcut-help">
+                <p>Press <kbd>?</kbd> for a list of all available shortcuts!</p>
+            </div>
 
             <div class="result" ng-show="results.total > 0">
 
-                <p>total: @{{ results.total }}</p>
-
                 <div class="row">
-                    <div class="col-md-2" style="margin: 20px 0;">
+                    <div class="col-md-2" style="margin-top: 25px; margin-bottom: 20px;"><p><strong>@{{ results.total }}</strong> Results</p></div>
+                    <div class="col-md-2" style="margin-top: 20px; margin-bottom: 20px;">
                         <select class="form-control" ng-model="itemsPerPage" ng-change="search()" ng-options="option for option in itemsPerPageOptions"></select>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <pagination total-items="results.total" ng-model="currentPage" ng-change="search()" items-per-page="results.per_page"
                             max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
                     </div>
@@ -137,17 +160,23 @@
                 <hr>
 
                 <div class="row">
-                    <div class="col-md-2" style="margin: 20px 0;">
+                    <div class="col-md-2" style="margin-top: 25px; margin-bottom: 20px;"><p><strong>@{{ results.total }}</strong> Results</p></div>
+                    <div class="col-md-2" style="margin-top: 20px; margin-bottom: 20px;">
                         <select class="form-control" ng-model="itemsPerPage" ng-change="search()" ng-options="option for option in itemsPerPageOptions"></select>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <pagination total-items="results.total" ng-model="currentPage" ng-change="search()" items-per-page="results.per_page"
-                            max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
+                                    max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></pagination>
                     </div>
                 </div>
             </div>
-            <div class="result" ng-show="results.total == 0">
-                nothing found
+            <div class="result nothing-found" ng-show="results.total == 0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>No Matches Found!</h3>
+                        <p>There were no results for the given parameters!</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

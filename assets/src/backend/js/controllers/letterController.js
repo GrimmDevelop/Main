@@ -53,7 +53,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     };
 
     Search.codes().success(function (data) {
-        $scope.letterInfo.codes = data;
+        $scope.letterInfo.codes = data.data;
     });
 
     DisplayService.viewsAndDefault('letters').success(function (data) {

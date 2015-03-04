@@ -1,4 +1,4 @@
-grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons) {
+grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', 'focus', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys, focus) {
 
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
@@ -19,6 +19,17 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
 
     $scope.dateCodeBounds = {};
 
+    $scope.quicksearch = {
+        id : null,
+        code: null
+    };
+
+    $scope.tabstatus = {
+        filter: true,
+        quicksearch: false,
+        display: false
+    };
+
     $scope.addField = function () {
         $scope.result = {};
 
@@ -27,7 +38,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
             compare: "equals",
             value: ""
         });
-    }
+    };
 
     $scope.removeField = function (field) {
         $scope.result = {};
@@ -37,18 +48,24 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         if (index > -1) {
             $scope.currentFilter.fields.splice(index, 1);
         }
-    }
+    };
+
+    $scope.removeLastField = function () {
+        $scope.result = {};
+
+        $scope.currentFilter.fields.pop();
+    };
 
     $scope.loadFilters = function () {
         $scope.result = {};
         Search.loadFilters().success(function (data) {
-            $scope.filters = data;
+            $scope.filters = data.data;
 
             if ($scope.filters.length > 0) {
                 // $scope.loadFilter($scope.filters[0]);
             }
         });
-    }
+    };
 
     $scope.loadFilter = function (filter) {
         if (filter != null) {
@@ -56,7 +73,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 if (filter != '') {
                     Search.loadFilter(filter).success(function (data) {
                         if (data != '') {
-                            $scope.currentFilter = data;
+                            $scope.currentFilter = data.data;
                         }
                     });
                 }
@@ -64,19 +81,19 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.currentFilter = filter;
             }
         }
-    }
+    };
 
     $scope.sendMail = function () {
         if ($scope.currentFilter.filter_key != null) {
             return 'mailto:?subject=Grimm%20Database%20-%20Filter&body=Filter%20link:%20' + encodeURIComponent(BASE_URL + '/search/' + $scope.currentFilter.filter_key);
         }
-    }
+    };
 
     $scope.newFilter = function () {
         Search.newFilter($scope.currentFilter).success(function (data) {
             $scope.filters = data;
         });
-    }
+    };
 
     $scope.saveFilter = function () {
         if ($scope.currentFilter.id != null) {
@@ -84,7 +101,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.filters = data;
             });
         }
-    }
+    };
 
     $scope.deleteFilter = function () {
         if ($scope.currentFilter.id != null) {
@@ -95,7 +112,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.filters = data;
             });
         }
-    }
+    };
 
     $scope.publicFilter = function () {
         if ($scope.currentFilter.id != null) {
@@ -103,13 +120,26 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 $scope.loadFilters();
             });
         }
-    }
+    };
 
     $scope.search = function () {
         Search.search($scope.currentFilter.fields, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
             $scope.results = data;
         });
-    }
+    };
+
+    $scope.findByIdentifierOrCode = function() {
+        if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
+            $scope.quicksearch.code = null;
+            Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
+                $scope.results = data;
+            });
+        } else if ($scope.quicksearch.code != null) {
+            Search.findByCode($scope.quicksearch.code).success(function(data) {
+                $scope.results = data;
+            });
+        }
+    };
 
     $scope.viewDistanceMap = function () {
         Search.distanceMap($scope.currentFilter.fields).success(function (data) {
@@ -124,7 +154,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
                 }
             });
         });
-    }
+    };
 
     $scope.fieldTypeahead = function (value, field) {
         if (field.code == '') {
@@ -132,14 +162,14 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         }
 
         return [];
-    }
+    };
 
     $scope.startDate = {};
 
     $scope.endDate = {};
 
     Search.dateRange().success(function(response) {
-        var data = response.d;
+        var data = response.data;
 
         $scope.startDate.minDate = new Date(data.min);
         $scope.startDate.maxDate = new Date(data.max);
@@ -162,9 +192,77 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         date.opened = true;
     };
 
-    Search.codes().success(function(data) {
-        $scope.letterInfo.codes = data;
+    Search.codes(true).success(function(data) {
+        $scope.letterInfo.codes = data.data;
     });
+
+    // Hotkeys
+    hotkeys.add({
+        combo: 'ctrl+alt+n',
+        description: 'Add new field',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            if ($scope.tabIsActive('filter')) {
+                event.preventDefault();
+                $scope.addField();
+            }
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+d',
+        description: 'Delete last field',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            if ($scope.tabIsActive('filter')) {
+                event.preventDefault();
+                $scope.removeLastField();
+            }
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+i',
+        description: 'Enable Quicksearch',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('quicksearch')) {
+                focus('quicksearch.Id');
+            }
+            $scope.tabstatus.quicksearch = true;
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+f',
+        description: 'Search by filters',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('filter')) {
+                focus('filter.start');
+            }
+
+            $scope.tabstatus.filter = true;
+        }
+    });
+
+    $scope.$watch('tabstatus.quicksearch', function(newVal, oldVal) {
+        if (newVal) {
+            focus('quicksearch.Id');
+        }
+    });
+
+    $scope.$watch('tabstatus.filter', function(newVal) {
+        if (newVal) {
+            focus('filter.start');
+        }
+    });
+
+    $scope.tabIsActive = function(tabname) {
+        return !!$scope.tabstatus[tabname];
+    };
 
     $scope.loadFilters();
 }]);
