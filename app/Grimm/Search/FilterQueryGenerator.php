@@ -4,7 +4,7 @@ namespace Grimm\Search;
 
 
 use Grimm\Models\Letter;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Input;
 use Sentry;
 
@@ -116,7 +116,7 @@ class FilterQueryGenerator {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withFromErrors(Builder $query)
     {
@@ -128,7 +128,7 @@ class FilterQueryGenerator {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withToErrors(Builder $query)
     {
@@ -140,7 +140,7 @@ class FilterQueryGenerator {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withSendersErrors(Builder $query)
     {
@@ -149,7 +149,7 @@ class FilterQueryGenerator {
 
     /**
      * @param $query
-     * @return \Illuminate\Database\Query\Builder|static
+     * @return \Illuminate\Database\Eloquent\Builder|static
      */
     protected function withReceiversErrors(Builder $query)
     {
