@@ -2,6 +2,7 @@
 
 namespace Grimm\Converter;
 
+use Exception;
 use Grimm\Contract\Converter;
 use Grimm\Contract\RecordTransformer;
 use XBase\Table;
@@ -11,6 +12,11 @@ class Letter implements Converter {
     protected $cache = null;
     protected $filter;
     protected $source;
+
+    /**
+     * @var \XBase\Table
+     */
+    protected $table;
 
     /**
      * @var RecordTransformer
@@ -33,6 +39,8 @@ class Letter implements Converter {
         }
         $this->source = $source;
         $this->cache = null;
+
+        $this->table = new Table($this->source);
     }
 
     public function setFilter(array $filter)
@@ -40,12 +48,27 @@ class Letter implements Converter {
         $this->filter = $filter;
     }
 
+    public function skipTo($firstIndex)
+    {
+        if ($this->table !== null && $firstIndex > 0) {
+            $this->table->moveTo($firstIndex - 1);
+        }
+    }
+
+    public function totalEntries()
+    {
+        return ($this->table !== null) ? $this->table->recordCount : null;
+    }
+
     public function parse()
     {
-        $table = new Table($this->source);
+        //$table = new Table($this->source);
+        if ($this->table === null) {
+            throw new Exception('Table not loaded');
+        }
 
         $this->cache = array();
-        while ($record = $table->nextRecord())
+        while ($record = $this->table->nextRecord())
         {
             if ($record->isDeleted())
                 continue;
@@ -64,7 +87,7 @@ class Letter implements Converter {
     {
         if (is_null($this->cache))
         {
-            throw new \Exception("cache is null, run parse() first!");
+            throw new Exception("cache is null, run parse() first!");
         }
 
         return $this->cache;

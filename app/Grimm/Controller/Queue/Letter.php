@@ -5,8 +5,9 @@ namespace Grimm\Controller\Queue;
 use Grimm\Converter\Letter as Converter;
 use Grimm\Models\Letter as Model;
 use Grimm\Models\Letter\Information;
+use Queue;
 
-class Letter extends \Controller {
+class Letter {
 
     /**
      * @var Converter
@@ -27,14 +28,39 @@ class Letter extends \Controller {
 
         $this->converter->setSource(storage_path('upload') . $data['source']);
 
+        $totalRows = $this->converter->totalEntries();
+
+        // Check if we have to start later because this is another iteration for timeout protection
+        $last = 0;
+        if (array_key_exists('last', $data) && $data['last'] > 0) {
+            $this->converter->skipTo($data['last']);
+            $last = $data['last'];
+        }
+
+        // Process 1000 items per job
+        // TODO: make this somehow configurable
+        $nextEnd = $last + 1000;
+
         \Eloquent::unguard();
 
+        //while ($last < $nextEnd)
         foreach ($this->converter->parse() as $record)
         {
+            if ($last >= $nextEnd) {
+                break;
+            }
+
             if ($letter = $this->firstOrCreateAndUpdate($record))
             {
                 // letter created and/or updated
             }
+
+            $last++;
+        }
+
+        if ($nextEnd < $totalRows) {
+            $data['last'] = $nextEnd;
+            Queue::push(static::class . '@importLetters', $data);
         }
 
         \Eloquent::reguard();
