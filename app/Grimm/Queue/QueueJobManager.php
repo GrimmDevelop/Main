@@ -11,10 +11,11 @@ class QueueJobManager {
     /**
      * This will push a new job on the queue
      */
-    public function issue($handler, $data)
+    public function issue($title, $handler, $data)
     {
         $token = $this->generateJobId($handler);
         JobStatus::create([
+            'title' => $title,
             'token' => $token,
             'handler' => $handler,
             'progress' => [],

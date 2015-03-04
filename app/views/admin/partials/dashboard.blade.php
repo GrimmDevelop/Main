@@ -60,6 +60,7 @@
                     <thead>
                         <tr>
                             <th>Token</th>
+                            <th>Title</th>
                             <th>Progress</th>
                             <th>Status</th>
                         </tr>
@@ -67,6 +68,7 @@
                     <tbody>
                         <tr ng-repeat="task in tasks">
                             <td>@{{ task.token }}</td>
+                            <td>@{{ task.title }}</td>
                             <td job-progress the-progress="task.progress"></td>
                             <td>@{{ task.status }}</td>
                         </tr>

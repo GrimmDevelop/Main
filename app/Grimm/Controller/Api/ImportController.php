@@ -21,7 +21,7 @@ class ImportController extends \Controller {
     {
         $data = ['source' => Input::get('data')];
         $handler = 'Grimm\Controller\Queue\Letter@importLetters';
-        $token = $this->queueJobManager->issue($handler, $data);
+        $token = $this->queueJobManager->issue('Import Letters', $handler, $data);
         //Queue::push('Grimm\Controller\Queue\Letter@importLetters', array('source' => Input::get('data')));
 
         return Response::json(array('success' => array('message' => 'Start importing letters. Job-ID: ' . $token)));

@@ -1,13 +1,7 @@
 grimmApp.controller('dashboardController', ['$scope', '$interval', '$location', 'BASE_URL', 'Tasks', function ($scope, $interval, $location, BASE_URL, Tasks) {
     var serviceBackend = BASE_URL + '/api/';
 
-    $scope.tasks = [
-        {
-            'token' : '12345adfdg',
-            'progress': [],
-            'status': 1
-        }
-    ];
+    $scope.tasks = [];
 
     Tasks.getTasks().success(function(data) {
         $scope.tasks = data.data;

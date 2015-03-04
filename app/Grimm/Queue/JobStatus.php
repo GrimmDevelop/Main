@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class JobStatus extends Eloquent {
     protected $table = 'job_status';
 
-    protected $fillable = ['token', 'handler', 'progress', 'status'];
+    protected $fillable = ['token', 'handler', 'progress', 'status', 'title'];
 
-    protected $hidden = ['handler'];
+    protected $hidden = ['id', 'handler'];
 
     public function makeRunning()
     {
