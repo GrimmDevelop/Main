@@ -16,7 +16,7 @@
 <div class="row">
     <div class="col-md-12">
         <tabset>
-            <tab heading="Filter">
+            <tab heading="Filter" active="tabstatus.filter">
                 <form role="form" ng-submit="reload()">
                     <div class="form-group row" ng-repeat="field in currentFilter.fields">
                         <field-row field="field" codes="letterInfo.codes" on-remove="removeField(field)"></field-row>
@@ -72,7 +72,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-6 col-md-offset-2">
-                            <button type="submit" class="btn btn-primary"
+                            <button type="submit" class="btn btn-primary" on-focus="filter.apply"
                                     ng-disabled="!quicksearchForm.quicksearchCode.$valid"><span
                                         class="glyphicon glyphicon-search"></span> Search
                             </button>
@@ -80,7 +80,7 @@
                     </div>
                 </form>
             </tab>
-            <tab heading="Display properties">
+            <tab heading="Display properties" active="tabstatus.display">
                 <div class="form-group">
                     <label class="control-label">View:</label>
                     <select ng-model="display.currentView" ng-change="changeView(display.currentView)"
@@ -100,10 +100,14 @@
 
                 <div fields-selection="fields" fields-codes="letterInfo.codes"></div>
             </tab>
-            <tab>
-                <tab-heading style="color: #c7254e;"><span class="glyphicon glyphicon-trash"></span> Trash</tab-heading>
+            <tab active="tabstatus.trashed">
+                <tab-heading class="text-danger">
+                    <span class="glyphicon glyphicon-trash"></span> Trash
+                </tab-heading>
 
-                <button type="button" class="btn btn-default" ng-click="loadTrashedLetters()">Load trashed letters
+                <button type="button" class="btn"
+                        ng-class="{'btn-danger': trashedChanged, 'btn-default': !trashChanged}"
+                        ng-click="loadTrashedLetters()">Reload trash
                 </button>
             </tab>
         </tabset>
@@ -114,32 +118,57 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-2" style="margin: 20px 0;">
-        <select class="form-control" ng-model="itemsPerPage" ng-change="reload()"
-                ng-options="option for option in itemsPerPageOptions"></select>
+<div ng-if="!tabstatus.trashed">
+    <div class="row">
+        <div class="col-md-2" style="margin: 20px 0;">
+            <select class="form-control" ng-model="pagination.itemsPerPage" ng-change="reload()"
+                    ng-options="option for option in pagination.itemsPerPageOptions"></select>
+        </div>
+        <div class="col-md-10">
+            <pagination total-items="letters.total" ng-model="pagination.currentPage" ng-change="reload()"
+                        items-per-page="letters.per_page"
+                        max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                        last-text="&raquo;"
+                        boundary-links="true"></pagination>
+        </div>
     </div>
-    <div class="col-md-10">
-        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()"
-                    items-per-page="letters.per_page"
-                    max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"
-                    boundary-links="true"></pagination>
+
+    <div class="row">
+        <div class="col-md-12" ng-include="display.currentView"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2" style="margin: 20px 0;">
+            <select class="form-control" ng-model="pagination.itemsPerPage" ng-change="reload()"
+                    ng-options="option for option in pagination.itemsPerPageOptions"></select>
+        </div>
+        <div class="col-md-10">
+            <pagination total-items="letters.total" ng-model="pagination.currentPage" ng-change="reload()"
+                        items-per-page="letters.per_page"
+                        max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                        last-text="&raquo;"
+                        boundary-links="true"></pagination>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-12" ng-include="display.currentView"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-2" style="margin: 20px 0;">
-        <select class="form-control" ng-model="itemsPerPage" ng-change="reload()"
-                ng-options="option for option in itemsPerPageOptions"></select>
-    </div>
-    <div class="col-md-10">
-        <pagination total-items="letters.total" ng-model="currentPage" ng-change="reload()"
-                    items-per-page="letters.per_page"
-                    max-size="7" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"
-                    boundary-links="true"></pagination>
+<div class="row" ng-show="tabstatus.trashed">
+    <div class="col-md-12">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="letter in trashedLetters.data" ng-show="letter.deleted_at">
+                <td>@{{ letter.id }}</td>
+                <td>@{{ letter.code }}</td>
+                <td><a href ng-click="restoreLetter(letter)" class="text-danger">restore</a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>

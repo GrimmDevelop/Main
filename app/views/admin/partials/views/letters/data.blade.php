@@ -8,19 +8,15 @@
                 <a href ng-click="editColumn(field, $event)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
                 @{{ letterInfo.codes[field] }}
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="item in letters.data">
-            <td><a href letter-edit="item.id">@{{ item.id }}</a></td>
-            <td>@{{ item.date }}</td>
+        <tr ng-repeat="letter in letters.data" ng-show="!letter.deleted_at">
+            <td><a href letter-edit="letter.id">@{{ letter.id }}</a></td>
+            <td>@{{ letter.date }}</td>
             <td ng-repeat="field in fields">
-                <a href ng-click="editField(item.id, field)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
-                @{{ (item.information|filterCodeAndFill:fields)[field].join(', ') }}
-            </td>
-            <td ng-if="item.deleted_at">
-                <a href ng-click="restoreLetter(item)">restore</a>
+                <a href ng-click="editField(letter.id, field)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
+                @{{ (letter.information|filterCodeAndFill:fields)[field].join(', ') }}
             </td>
         </tr>
     </tbody>
