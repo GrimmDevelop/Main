@@ -54,14 +54,48 @@
 <div class="row">
     <div class="col-md-12">
         <div class="dashboard-statistics">
-            <div class="statistic">
-                <div class="title">
-                    Running tasks
+            <div class="panel panel-default">
+                <div class="panel-heading">Running Tasks</div>
+                <div class="panel-body" ng-if="tasks.length == 0">
+                    <h3 class="text-center">No Running Tasks!</h3>
                 </div>
-                <div class="content">
-                    not implemented
-                </div>
+                <table class="table" ng-if="tasks.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Progress</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="task in tasks">
+                            <td><a href="" ng-click="openTaskDetails(task)">@{{ task.title }}</a></td>
+                            <td job-progress the-progress="task.progress"></td>
+                            <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="100" type="success"></progressbar>
+                                <progressbar ng-if="task.status == 2" class="progress-striped active" value="100" type="warning"></progressbar>
+                                <progressbar ng-if="task.status == 0" class="progress-striped active" value="100" type="info"></progressbar>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="progress-view-modal-content.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Task: @{{ task.token }}</h3>
+    </div>
+    <div class="modal-body">
+        <ul>
+            <li ng-repeat="progress in task.progress">
+                <strong>@{{ progress[0] }}</strong>
+                <code>@{{ progress[1] }}</code>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="close()">Close</button>
+    </div>
+</script>

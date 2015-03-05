@@ -11,15 +11,35 @@ class Location implements Converter {
     protected $cache = null;
     protected $filter = null;
     protected $source = null;
+    protected $limit = -1;
+
+    /**
+     * @var \League\Csv\Reader
+     */
+    protected $csvReader = null;
 
     /**
      * @var RecordTransformer
      */
     protected $recordTransformer;
+    protected $finished = false;
 
     public function __construct(RecordTransformer $recordTransformer)
     {
         $this->recordTransformer = $recordTransformer;
+    }
+
+    public function skipTo($destination)
+    {
+        if ($this->csvReader != null) {
+            $this->csvReader->setOffset($destination);
+        }
+    }
+
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+        $this->csvReader->setLimit($limit);
     }
 
     /**
@@ -35,6 +55,8 @@ class Location implements Converter {
         }
         $this->source = $source;
         $this->cache = null;
+
+        $this->csvReader = Reader::createFromPath($this->source);
     }
 
     /**
@@ -54,10 +76,13 @@ class Location implements Converter {
     {
         $this->cache = array();
 
-        $handle = Reader::createFromPath($this->source);
+        $handle = $this->csvReader;
+        //$handle = Reader::createFromPath($this->source);
         $handle->setDelimiter("\t");
 
         $read = $handle->query();
+
+        $i = 0;
 
         foreach ($read as $record)
         {
@@ -73,7 +98,21 @@ class Location implements Converter {
                 $this->cache[] = $data;
                 yield $data;
             }
+            $i++;
         }
+
+        // Have we read all lines?
+        if ($this->limit > -1 && $i + 1 < $this->limit) {
+            $this->finished = true;
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        return $this->finished;
     }
 
     /**
