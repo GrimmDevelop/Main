@@ -1,4 +1,4 @@
-grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 'Display', 'Letters', 'Search', function ($scope, $modal, MessagesService, DisplayService, Letters, Search) {
+grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 'Display', 'Letters', 'Search', 'hotkeys', 'focus', function ($scope, $modal, MessagesService, DisplayService, Letters, Search, hotkeys, focus) {
 
     $scope.message = null;
     $scope.closeMessage = function () {
@@ -6,10 +6,14 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     };
 
     $scope.letters = [];
+    $scope.trashedLetters = [];
 
-    $scope.itemsPerPage = 25;
-    $scope.currentPage = 1;
-    $scope.itemsPerPageOptions = [10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100, 150];
+    $scope.pagination = {
+        itemsPerPage: 25,
+        currentPage: 1,
+        itemsPerPageOptions: [10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100, 150]
+    };
+
     $scope.showLettersWithErrors = {
         from: false,
         to: false,
@@ -24,15 +28,18 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     };
 
     $scope.quicksearch = {
-        id : null,
+        id: null,
         code: null
     };
 
     $scope.tabstatus = {
         filter: true,
         quicksearch: false,
-        display: false
+        display: false,
+        trashed: false
     };
+
+    $scope.trashedChanged = false;
 
     $scope.currentFilter = {};
     $scope.currentFilter.id = null;
@@ -93,38 +100,117 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     $scope.reload = function () {
         Search.search(
             $scope.currentFilter.fields,
-            $scope.itemsPerPage,
-            $scope.currentPage,
+            $scope.pagination.itemsPerPage,
+            $scope.pagination.currentPage,
             ['information', 'senders', 'receivers', 'from', 'to'],
             $scope.showLettersWithErrors
         ).success(function (data) {
-            $scope.letters = data;
+                $scope.letters = data;
+            });
+    };
+
+    $scope.loadTrashedLetters = function () {
+        Letters.trashed().success(function (response) {
+            $scope.trashedLetters = response;
+            $scope.trashedChanged = false;
         });
     };
 
-    $scope.loadTrashedLetters = function() {
-        Letters.trashed().success(function(response) {
-            $scope.letters = response;
-        });
-    };
-
-    $scope.restoreLetter = function(letter) {
-        Letters.restore(letter).success(function() {
+    $scope.restoreLetter = function (letter) {
+        Letters.restore(letter).success(function () {
             letter.deleted_at = null;
+            $scope.trashedChanged = true;
         });
     };
 
-    $scope.findByIdentifierOrCode = function() {
+    $scope.findByIdentifierOrCode = function () {
         if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
             $scope.quicksearch.code = null;
-            Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
+            Search.findById(parseInt($scope.quicksearch.id)).success(function (data) {
                 $scope.letters = data;
             });
         } else if ($scope.quicksearch.code != null) {
-            Search.findByCode($scope.quicksearch.code).success(function(data) {
+            Search.findByCode($scope.quicksearch.code).success(function (data) {
                 $scope.letters = data;
             });
         }
+    };
+
+    hotkeys.add({
+        combo: 'ctrl+alt+i',
+        description: 'Enable Quicksearch',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function (event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('quicksearch')) {
+                focus('quicksearch.Id');
+            }
+            $scope.tabstatus.quicksearch = true;
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+f',
+        description: 'Search by filters',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function (event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('filter')) {
+                $scope.reload();
+            }
+
+            $scope.tabstatus.filter = true;
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+t',
+        description: 'Display trash',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function (event) {
+            event.preventDefault();
+            if ($scope.tabIsActive('trashed')) {
+                $scope.loadTrashedLetters();
+            }
+
+            $scope.tabstatus.trashed = true;
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+alt+r',
+        description: 'Reload letter list',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function (event) {
+            event.preventDefault();
+            if (!$scope.tabIsActive('trashed')) {
+                $scope.reload();
+            } else {
+                $scope.loadTrashedLetters();
+            }
+        }
+    });
+
+    $scope.$watch('tabstatus.quicksearch', function (newVal, oldVal) {
+        if (newVal) {
+            focus('quicksearch.Id');
+        }
+    });
+
+    $scope.$watch('tabstatus.filter', function (newVal) {
+        if (newVal) {
+            // ...
+        }
+    });
+
+    $scope.$watch('tabstatus.trashed', function (newVal) {
+        if (newVal) {
+            $scope.loadTrashedLetters();
+        }
+    });
+
+    $scope.tabIsActive = function (tabname) {
+        return !!$scope.tabstatus[tabname];
     };
 
     $scope.reload();
