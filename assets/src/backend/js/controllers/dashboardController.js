@@ -1,4 +1,4 @@
-grimmApp.controller('dashboardController', ['$scope', '$interval', '$location', 'BASE_URL', 'Tasks', function ($scope, $interval, $location, BASE_URL, Tasks) {
+grimmApp.controller('dashboardController', ['$scope', '$interval', '$location', '$modal', 'BASE_URL', 'Tasks', function ($scope, $interval, $location, $modal, BASE_URL, Tasks) {
     var serviceBackend = BASE_URL + '/api/';
 
     $scope.tasks = [];
@@ -15,10 +15,6 @@ grimmApp.controller('dashboardController', ['$scope', '$interval', '$location', 
         });
     }, 5000);
 
-    $scope.go = function (path) {
-        $location.path(path);
-    };
-
     $scope.$on('$destroy', function() {
         if (angular.isDefined(intervalTimer)) {
             $interval.cancel(intervalTimer);
@@ -26,7 +22,27 @@ grimmApp.controller('dashboardController', ['$scope', '$interval', '$location', 
         }
     });
 
-    /*$scope.lastOfList = function(list) {
-        return list[list.length - 1];
-    }*/
+    $scope.go = function (path) {
+        $location.path(path);
+    };
+
+    $scope.openTaskDetails = function(task) {
+        var modalInstance = $modal.open({
+            templateUrl: 'progress-view-modal-content.html',
+            controller: 'ProgressModalInstanceCtrl',
+            resolve: {
+                task: function() {
+                    return task;
+                }
+            }
+        });
+    };
+}]);
+
+grimmApp.controller('ProgressModalInstanceCtrl', ['$scope', '$modalInstance', 'task', function($scope, $modalInstance, task) {
+    $scope.task = task;
+
+    $scope.close = function() {
+        $modalInstance.dismiss('cancel');
+    };
 }]);

@@ -69,7 +69,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="task in tasks">
-                            <td>@{{ task.title }}</td>
+                            <td><a href="" ng-click="openTaskDetails(task)">@{{ task.title }}</a></td>
                             <td job-progress the-progress="task.progress"></td>
                             <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="100" type="success"></progressbar>
                                 <progressbar ng-if="task.status == 2" class="progress-striped active" value="100" type="warning"></progressbar>
@@ -82,3 +82,20 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="progress-view-modal-content.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Task: @{{ task.token }}</h3>
+    </div>
+    <div class="modal-body">
+        <ul>
+            <li ng-repeat="progress in task.progress">
+                <strong>@{{ progress[0] }}</strong>
+                <code>@{{ progress[1] }}</code>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="close()">Close</button>
+    </div>
+</script>
