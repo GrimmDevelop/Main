@@ -11,6 +11,12 @@ interface LetterService {
     public function findById($id);
 
     /**
+     * Lists trashed letters
+     * @return \Illuminate\Pagination\Paginator
+     */
+    public function findTrashed();
+
+    /**
      * @param array $data
      * @return mixed
      */

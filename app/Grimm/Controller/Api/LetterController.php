@@ -11,6 +11,7 @@ use Grimm\Assigner\Exceptions\ItemNotFoundException;
 use Grimm\Assigner\Exceptions\ObjectNotFoundException;
 use Grimm\Facades\UserAction;
 use Grimm\Letter\LetterService;
+use Grimm\OutputTransformer\ArrayOutput;
 use Grimm\OutputTransformer\JsonPaginationOutput;
 use Grimm\Search\SearchService;
 use Input;
@@ -36,12 +37,15 @@ class LetterController extends \Controller {
     /**
      * @var JsonPaginationOutput
      */
-    private $paginationOutput;
+    protected $paginationOutput;
+
+    protected $arrayOutput;
 
     public function __construct(
         LetterService $letterService,
         SearchService $searchService,
         JsonPaginationOutput $paginationOutput,
+        ArrayOutput $arrayOutput,
         LetterSender $letterSenderAssigner,
         LetterReceiver $letterReceiverAssigner,
         LetterFrom $letterFromAssigner,
@@ -51,6 +55,7 @@ class LetterController extends \Controller {
         $this->letterService = $letterService;
         $this->searchService = $searchService;
         $this->paginationOutput = $paginationOutput;
+        $this->arrayOutput = $arrayOutput;
 
         $this->assigner['senders'] = $letterSenderAssigner;
         $this->assigner['receivers'] = $letterReceiverAssigner;
@@ -153,7 +158,7 @@ class LetterController extends \Controller {
      * TODO: this has nothing to do here...
      * Assigns an items to an object by given mode
      * @param $mode
-     * @return JsonResponse|\Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function assign($mode)
     {
@@ -214,6 +219,10 @@ class LetterController extends \Controller {
         return $this->createMessageResponse('Letter id not found', false, 404);
     }
 
+    public function trashed() {
+        return $this->createSearchOutput($this->letterService->findTrashed());
+    }
+
     /**
      * @param $result \Illuminate\Pagination\Paginator
      * @return \Illuminate\Http\JsonResponse
@@ -221,6 +230,11 @@ class LetterController extends \Controller {
     protected function createSearchOutput($result)
     {
         return Response::json($this->paginationOutput->transform($result));
+    }
+
+    protected function createArrayOutput($result)
+    {
+        return Response::json($this->arrayOutput->transform($result));
     }
 
     protected function createEntityOutput($result)

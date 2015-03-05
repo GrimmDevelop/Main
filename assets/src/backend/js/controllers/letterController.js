@@ -102,6 +102,12 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
         });
     };
 
+    $scope.loadTrashedLetters = function() {
+        Letters.trashed().success(function(response) {
+            $scope.letters = response;
+        });
+    };
+
     $scope.findByIdentifierOrCode = function() {
         if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
             $scope.quicksearch.code = null;
