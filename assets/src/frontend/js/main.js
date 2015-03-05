@@ -11,7 +11,9 @@ grimmApp.config(['$httpProvider', 'flowFactoryProvider', 'GoogleMapApiProvider'.
         $httpProvider.interceptors.push(['$q', '$rootScope', '$location', 'BASE_URL', function ($q, $rootScope, $location, BASE_URL) {
             return {
                 'request': function (config) {
-                    $rootScope.$broadcast('loading-started');
+                    if (!config.hasOwnProperty('hideIndicator') || !config.hideIndicator) {
+                        $rootScope.$broadcast('loading-started');
+                    }
                     return config || $q.when(config);
                 },
 
