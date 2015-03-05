@@ -98,8 +98,6 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     };
 
     $scope.reload = function () {
-        console.log($scope.pagination.currentPage);
-
         Search.search(
             $scope.currentFilter.fields,
             $scope.pagination.itemsPerPage,
