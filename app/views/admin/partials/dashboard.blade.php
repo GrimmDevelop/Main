@@ -85,7 +85,7 @@
 
 <script type="text/ng-template" id="progress-view-modal-content.html">
     <div class="modal-header">
-        <h3 class="modal-title">Task: @{{ task.token }}</h3>
+        <h3 class="modal-title">Task: @{{ task.title }}</h3>
     </div>
     <div class="modal-body">
         <ul>
