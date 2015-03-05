@@ -132,6 +132,12 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         if ($scope.quicksearch.id != null && $scope.quicksearch.id != '') {
             $scope.quicksearch.code = null;
             Search.findById(parseInt($scope.quicksearch.id)).success(function(data) {
+                if ($scope.displayCodes.indexOf('nr_1992') == -1) {
+                    $scope.displayCodes.push('nr_1992');
+                }
+                if ($scope.displayCodes.indexOf('nr_1997') == -1) {
+                    $scope.displayCodes.push('nr_1997');
+                }
                 $scope.results = data;
             });
         } else if ($scope.quicksearch.code != null) {

@@ -16,7 +16,15 @@ grimmApp.directive("fieldsSelection", [function () {
                 } else {
                     scope.fields.push(code);
                 }
-            }
+            };
+
+            scope.$watch('fields', function(newVal, oldVal) {
+                scope.fieldsTmp = {};
+
+                for (var i = 0; i < scope.fields.length; i++) {
+                    scope.fieldsTmp[scope.fields[i]] = true;
+                }
+            }, true);
 
         },
         template: "<div class=\"row display-filters\">\n<div class=\"checkbox col-md-3\" ng-repeat=\"(code, name) in codes\" ng-if=\"code != ''\">\n" +
