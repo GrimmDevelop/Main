@@ -19,6 +19,14 @@ class EloquentLetterService implements LetterService {
     }
 
     /**
+     * Lists trashed letters
+     * @return \Illuminate\Pagination\Paginator
+     */
+    public function findTrashed() {
+        return Letter::onlyTrashed()->with(['information', 'from', 'to', 'senders', 'receivers'])->paginate(150);
+    }
+
+    /**
      * Returns an information object with given id
      * @param $id
      * @return \Illuminate\Support\Collection|null|\Grimm\Models\Letter\Information
@@ -227,6 +235,19 @@ class EloquentLetterService implements LetterService {
                 'user' => \Sentry::getUser(),
             ]);
 
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * restores trashed letter
+     * @param $id
+     * @return bool
+     */
+    public function restore($id) {
+        if(Letter::onlyTrashed()->where('id', $id)->restore()) {
             return true;
         }
 

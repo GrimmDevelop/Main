@@ -100,6 +100,12 @@
 
                 <div fields-selection="fields" fields-codes="letterInfo.codes"></div>
             </tab>
+            <tab>
+                <tab-heading style="color: #c7254e;"><span class="glyphicon glyphicon-trash"></span> Trash</tab-heading>
+
+                <button type="button" class="btn btn-default" ng-click="loadTrashedLetters()">Load trashed letters
+                </button>
+            </tab>
         </tabset>
 
         <div class="shortcut-help">

@@ -23,7 +23,7 @@ class DisplayController extends \Controller {
             $base = 'partials/';
         }
 
-        $views = ['overview', 'data'];
+        $views = ['data', 'overview'];
 
         return array_map(function ($item) use ($section, $base) {
             return $base . 'views.' . $section . '.' . $item;

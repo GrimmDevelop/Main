@@ -11,6 +11,12 @@ interface LetterService {
     public function findById($id);
 
     /**
+     * Lists trashed letters
+     * @return \Illuminate\Pagination\Paginator
+     */
+    public function findTrashed();
+
+    /**
      * @param array $data
      * @return mixed
      */
@@ -29,4 +35,10 @@ interface LetterService {
      */
     public function delete($idOrModel);
 
+    /**
+     * restores trashed letter
+     * @param $id
+     * @return bool
+     */
+    public function restore($id);
 }
