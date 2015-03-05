@@ -35,4 +35,10 @@ interface LetterService {
      */
     public function delete($idOrModel);
 
+    /**
+     * restores trashed letter
+     * @param $id
+     * @return bool
+     */
+    public function restore($id);
 }

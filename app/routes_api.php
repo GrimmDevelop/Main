@@ -19,6 +19,7 @@ Route::group(['prefix' => 'api'], function()
     Route::get('letters',               ['before' => 'grimm_access:none',   'uses' => 'Grimm\Controller\Api\LetterController@index']);
 
     Route::get('letters/trashed',       ['before' => 'grimm_access:letters.destroy','uses' => 'Grimm\Controller\Api\LetterController@trashed']);
+    Route::post('letters/restore',      ['before' => 'grimm_access:letters.destroy','uses' => 'Grimm\Controller\Api\LetterController@restore']);
     Route::get('letters/{id}',          ['before' => 'grimm_access:none',           'uses' => 'Grimm\Controller\Api\LetterController@show']);
     Route::post('letters',              ['before' => 'grimm_access:letters.create', 'uses' => 'Grimm\Controller\Api\LetterController@store']);
     Route::put('letters/{id}',          ['before' => 'grimm_access:letters.edit',   'uses' => 'Grimm\Controller\Api\LetterController@update']);

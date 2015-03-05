@@ -240,4 +240,17 @@ class EloquentLetterService implements LetterService {
 
         return false;
     }
+
+    /**
+     * restores trashed letter
+     * @param $id
+     * @return bool
+     */
+    public function restore($id) {
+        if(Letter::onlyTrashed()->where('id', $id)->restore()) {
+            return true;
+        }
+
+        return false;
+    }
 }

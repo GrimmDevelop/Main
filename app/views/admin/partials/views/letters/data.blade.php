@@ -8,6 +8,7 @@
                 <a href ng-click="editColumn(field, $event)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
                 @{{ letterInfo.codes[field] }}
             </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -17,6 +18,9 @@
             <td ng-repeat="field in fields">
                 <a href ng-click="editField(item.id, field)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
                 @{{ (item.information|filterCodeAndFill:fields)[field].join(', ') }}
+            </td>
+            <td ng-if="item.deleted_at">
+                <a href ng-click="restoreLetter(item)">restore</a>
             </td>
         </tr>
     </tbody>

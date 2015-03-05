@@ -1,7 +1,11 @@
 
 <table class="table">
     <tr ng-repeat="letter in letters.data">
-        <td><a href letter-edit="letter.id" class="btn btn-default">@{{ letter.id }}</a></td>
+        <td>
+            <a href letter-edit="letter.id" class="btn btn-default">@{{ letter.id }}</a><br>
+            <a href ng-click="restoreLetter(letter)" class="btn btn-warning" ng-if="letter.deleted_at">Restore</a><br>
+            <a href ng-click="destroyLetter(letter)" class="btn btn-danger" ng-if="letter.deleted_at">Destroy</a>
+        </td>
         <td>@{{ letter.date }}</td>
         <td>
             <div ng-repeat="info in letter.information | filterCode:fields">@{{ info.code }} @{{ info.data }}</div>

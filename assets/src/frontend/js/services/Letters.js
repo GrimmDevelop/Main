@@ -79,5 +79,11 @@ grimmApp.service("Letters", ['$http', 'BASE_URL', function ($http, BASE_URL) {
 
     this.trashed = function() {
         return $http.get(serviceBackend + 'letters/trashed');
-    }
+    };
+
+    this.restore = function(letter) {
+        return $http.post(serviceBackend + 'letters/restore', {
+            id: letter.id
+        });
+    };
 }]);

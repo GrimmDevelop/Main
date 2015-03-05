@@ -223,6 +223,14 @@ class LetterController extends \Controller {
         return $this->createSearchOutput($this->letterService->findTrashed());
     }
 
+    public function restore() {
+        if($this->letterService->restore(Input::get('id'))) {
+            return $this->createMessageResponse('Letter successfully restored');
+        }
+
+        return $this->createMessageResponse('Letter id not found', false, 404);
+    }
+
     /**
      * @param $result \Illuminate\Pagination\Paginator
      * @return \Illuminate\Http\JsonResponse
