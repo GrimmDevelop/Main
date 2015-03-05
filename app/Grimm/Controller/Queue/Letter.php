@@ -5,53 +5,23 @@ namespace Grimm\Controller\Queue;
 use Grimm\Converter\Letter as Converter;
 use Grimm\Models\Letter as Model;
 use Grimm\Models\Letter\Information;
+use Grimm\Queue\BaseJob;
 use Grimm\Queue\QueueJobManager;
-use Queue;
 
-class Letter {
+class Letter extends BaseJob {
+    protected $last;
+    protected $totalRows;
+    protected $nextEnd;
 
     /**
      * @var Converter
      */
     private $converter;
-    /**
-     * @var QueueJobManager
-     */
-    private $queueJobManager;
 
     public function __construct(Converter $converter, QueueJobManager $queueJobManager)
     {
+        parent::__construct($queueJobManager);
         $this->converter = $converter;
-        $this->queueJobManager = $queueJobManager;
-    }
-
-    public function importLetters($job, $data)
-    {
-        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source']))
-        {
-            throw new \InvalidArgumentException('Cannot find source file ' . storage_path('upload') . $data['source']);
-        }
-
-        $this->converter->setSource(storage_path('upload') . $data['source']);
-
-        $token = $data['queue_job_token'];
-
-        $this->queueJobManager->running($token);
-
-        list($totalRows, $last, $nextEnd) = $this->importRecords($data);
-
-        $this->queueJobManager->reportProgress($token, 'Imported ' . $last . ' Entries');
-
-        if ($nextEnd < $totalRows) {
-            $data['last'] = $nextEnd;
-            $this->queueJobManager->retain($token, static::class . '@importLetters', $data);
-        } else {
-            $this->queueJobManager->finish($token);
-        }
-
-        \Eloquent::reguard();
-
-        $job->delete();
     }
 
     public function firstOrCreateAndUpdate($record)
@@ -108,23 +78,11 @@ class Letter {
      */
     protected function importRecords($data)
     {
-        $totalRows = $this->converter->totalEntries();
-
-        // Check if we have to start later because this is another iteration for timeout protection
-        $last = 0;
-        if (array_key_exists('last', $data) && $data['last'] > 0) {
-            $this->converter->skipTo($data['last']);
-            $last = $data['last'];
-        }
-
-        // Process 1000 items per job
-        // TODO: make this somehow configurable
-        $nextEnd = $last + 1000;
 
         \Eloquent::unguard();
 
         foreach ($this->converter->parse() as $record) {
-            if ($last >= $nextEnd) {
+            if ($this->last >= $this->nextEnd) {
                 break;
             }
 
@@ -132,9 +90,59 @@ class Letter {
                 // letter created and/or updated
             }
 
-            $last++;
+            $this->last++;
         }
-        return array($totalRows, $last, $nextEnd);
+
+        \Eloquent::reguard();
+    }
+
+    /**
+     * The actual job code
+     * @param $job
+     * @param $data
+     * @return mixed
+     */
+    public function run($job, $data)
+    {
+        $this->importRecords($data);
+    }
+
+    public function preflight($job, $data)
+    {
+        if (!isset($data['source']) || !file_exists(storage_path('upload') . $data['source']))
+        {
+            throw new \InvalidArgumentException('Cannot find source file ' . storage_path('upload') . $data['source']);
+        }
+
+        $this->converter->setSource(storage_path('upload') . $data['source']);
+
+        // Check if we have to start later because this is another iteration for timeout protection
+        $this->last = 0;
+        if (array_key_exists('last', $data) && $data['last'] > 0) {
+            $this->converter->skipTo($data['last']);
+            $this->last = $data['last'];
+            $this->progress('Looked at ' . $this->last . ' Entries');
+        } else {
+            $this->progress('Start processing letter import for ' . $data['source']);
+        }
+
+        $this->totalRows = $this->converter->totalEntries();
+
+        // Process 1000 items per job
+        // TODO: make this somehow configurable
+        $this->nextEnd = $this->last + 1000;
+    }
+
+    public function postflight($job, $data)
+    {
+        if ($this->nextEnd < $this->totalRows) {
+            $data['last'] = $this->nextEnd;
+            $this->retain($data);
+        } else {
+            $this->finish();
+        }
+
+        $job->delete();
     }
 }
 

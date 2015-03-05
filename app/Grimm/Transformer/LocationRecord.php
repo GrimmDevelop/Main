@@ -13,6 +13,11 @@ class LocationRecord implements RecordTransformer {
      */
     public function transform($data)
     {
+        // Check feature class for valid value, otherwise skip this entry
+        if (!$this->isValidRecord($data)) {
+            return null;
+        }
+
         $record = array();
 
         $record['id'] = $data[0];
@@ -35,11 +40,20 @@ class LocationRecord implements RecordTransformer {
         $record['timezone'] = $data[17];
         $record['modification_date'] = $data[18];
 
-        if ($record['feature_class'] != 'P')
+        /*if ($record['feature_class'] != 'P')
         {
             return null;
-        }
+        }*/
 
         return $record;
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    protected function isValidRecord($data)
+    {
+        return $data[6] == 'P';
     }
 }

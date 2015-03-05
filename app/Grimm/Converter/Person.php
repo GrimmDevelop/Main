@@ -13,6 +13,11 @@ class Person implements Converter {
     protected $source = null;
 
     /**
+     * @var \XBase\Table
+     */
+    protected $table;
+
+    /**
      * @var RecordTransformer
      */
     protected $recordTransformer;
@@ -35,6 +40,8 @@ class Person implements Converter {
         }
         $this->source = $source;
         $this->cache = null;
+
+        $this->table = new Table($this->source);
     }
 
     /**
@@ -46,16 +53,31 @@ class Person implements Converter {
         $this->filter = $filter;
     }
 
+    public function skipTo($firstIndex)
+    {
+        if ($this->table !== null && $firstIndex > 0) {
+            $this->table->moveTo($firstIndex - 1);
+        }
+    }
+
+    public function totalEntries()
+    {
+        return ($this->table !== null) ? $this->table->recordCount : null;
+    }
+
     /**
      * Parses given source file
      * @return yield array
      */
     public function parse()
     {
-        $table = new Table($this->source);
+        //$table = new Table($this->source);
+        if ($this->table === null) {
+            throw new Exception('Table not loaded');
+        }
 
         $this->cache = array();
-        while ($record = $table->nextRecord())
+        while ($record = $this->table->nextRecord())
         {
             if ($record->isDeleted())
                 continue;

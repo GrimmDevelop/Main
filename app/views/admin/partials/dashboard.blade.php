@@ -59,7 +59,6 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Token</th>
                             <th>Title</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -67,10 +66,12 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="task in tasks">
-                            <td>@{{ task.token }}</td>
                             <td>@{{ task.title }}</td>
                             <td job-progress the-progress="task.progress"></td>
-                            <td>@{{ task.status }}</td>
+                            <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="100" type="success"></progressbar>
+                                <progressbar ng-if="task.status == 2" class="progress-striped active" value="100" type="warning"></progressbar>
+                                <progressbar ng-if="task.status == 0" class="progress-striped active" value="100" type="info"></progressbar>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
