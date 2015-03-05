@@ -5,9 +5,14 @@ namespace Grimm;
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
 use Grimm\Converter\Person;
+use Grimm\Import\Persistence\LetterRecordPersistence;
+use Grimm\Import\Persistence\PersonRecordPersistence;
 use Grimm\Letter\EloquentLetterService;
 use Grimm\Letter\LetterService;
 use Grimm\Logging\UserActionLogger;
+use Grimm\Queue\QueueJobManager;
+use Grimm\Queue\Jobs\Letter as LetterJob;
+use Grimm\Queue\Jobs\Person as PersonJob;
 use Grimm\Search\EloquentFilterService;
 use Grimm\Search\EloquentSearchService;
 use Grimm\Search\FilterService;
@@ -63,6 +68,22 @@ class BootServiceProvider extends ServiceProvider {
         $this->app->bind(Person::class, function ()
         {
             return new Person($this->app->make(PersonRecord::class));
+        });
+
+        $this->app->bind(LetterJob::class, function() {
+            return new LetterJob(
+                $this->app->make(Letter::class),
+                $this->app->make(QueueJobManager::class),
+                $this->app->make(LetterRecordPersistence::class)
+            );
+        });
+
+        $this->app->bind(PersonJob::class, function() {
+            return new PersonJob(
+                $this->app->make(Person::class),
+                $this->app->make(QueueJobManager::class),
+                $this->app->make(PersonRecordPersistence::class)
+            );
         });
 
         $this->app->bind(UserActionLogger::class, function ()
