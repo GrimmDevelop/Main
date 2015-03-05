@@ -1,6 +1,6 @@
 <?php
 
-namespace Grimm\Controller\Queue;
+namespace Grimm\Queue\Jobs;
 
 use Grimm\Converter\Letter as Converter;
 use Grimm\Models\Letter as Model;

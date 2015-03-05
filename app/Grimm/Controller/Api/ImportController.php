@@ -20,7 +20,7 @@ class ImportController extends \Controller {
     public function startLetterImport()
     {
         $data = ['source' => Input::get('data')];
-        $handler = 'Grimm\Controller\Queue\Letter';
+        $handler = 'Grimm\Queue\Jobs\Letter';
         $token = $this->queueJobManager->issue('Import Letters', $handler, $data);
 
         return Response::json(array('success' => array('message' => 'Start importing letters. Job-ID: ' . $token)));
@@ -29,9 +29,8 @@ class ImportController extends \Controller {
     public function startLocationImport()
     {
         $data = ['source' => Input::get('data')];
-        $handler = 'Grimm\Controller\Queue\Location';
+        $handler = 'Grimm\Queue\Jobs\Location';
         $token = $this->queueJobManager->issue('Import Locations from ' . basename($data['source']), $handler, $data);
-        //Queue::push('Grimm\Controller\Queue\Location@import', array('source' => Input::get('data')));
 
         return Response::json(array('success' => array('message' => 'Start importing geo locations. Job-ID: ' . $token)));
     }
@@ -39,9 +38,8 @@ class ImportController extends \Controller {
     public function startPersonImport()
     {
         $data = ['source' => Input::get('data')];
-        $handler = 'Grimm\Controller\Queue\Person';
+        $handler = 'Grimm\Queue\Jobs\Person';
         $token = $this->queueJobManager->issue('Import Persons from ' . basename($data['source']), $handler, $data);
-        //Queue::push('Grimm\Controller\Queue\Person@import', array('source' => Input::get('data')));
 
         return Response::json(array('success' => array('message' => 'Start importing persons. Job-ID: ' . $token)));
     }

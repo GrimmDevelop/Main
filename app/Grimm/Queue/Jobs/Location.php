@@ -1,6 +1,6 @@
 <?php
 
-namespace Grimm\Controller\Queue;
+namespace Grimm\Queue\Jobs;
 
 use Grimm\Models\Location as Import;
 use Grimm\Converter\Location as Converter;
