@@ -12,6 +12,7 @@ class Location extends BaseJob
 {
     protected $last;
     protected $limit = 1000;
+    protected $total = null;
 
     /**
      * @var Converter
@@ -72,9 +73,9 @@ class Location extends BaseJob
         if (array_key_exists('last', $data) && $data['last'] > 0) {
             $this->converter->skipTo($data['last']);
             $this->last = $data['last'];
-            $this->progress('Imported ' . $this->last . ' Locations');
+            $this->progress('Imported ' . $this->last . ' Locations', round($this->last / $this->converter->total() * 100));
         } else {
-            $this->progress('Start processing location import for ' . $data['source']);
+            $this->progress('Start processing location import for ' . $data['source'], 0);
         }
 
         $this->converter->setLimit($this->limit);

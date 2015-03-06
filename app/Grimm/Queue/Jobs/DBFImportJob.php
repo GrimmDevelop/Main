@@ -61,9 +61,9 @@ trait DBFImportJob {
         if (array_key_exists('last', $data) && $data['last'] > 0) {
             $this->converter->skipTo($data['last']);
             $this->last = $data['last'];
-            $this->progress('Looked at ' . $this->last . ' Entries');
+            $this->progress('Looked at ' . $this->last . ' Entries', round($this->last / $this->converter->total() * 100));
         } else {
-            $this->progress('Start processing job for ' . $data['source']);
+            $this->progress('Start processing job for ' . $data['source'], 0);
         }
 
         $this->totalRows = $this->converter->totalEntries();
