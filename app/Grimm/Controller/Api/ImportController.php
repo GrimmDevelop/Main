@@ -6,6 +6,7 @@ use Grimm\Queue\QueueJobManager;
 use Queue;
 use Input;
 use Response;
+use Sentry;
 
 class ImportController extends \Controller {
 
@@ -21,7 +22,7 @@ class ImportController extends \Controller {
     {
         $data = ['source' => Input::get('data')];
         $handler = 'Grimm\Queue\Jobs\Letter';
-        $token = $this->queueJobManager->issue('Import Letters', $handler, $data);
+        $token = $this->queueJobManager->issue('Import Letters', $handler, $data, Sentry::getUser()->id);
 
         return Response::json(array('success' => array('message' => 'Start importing letters. Job-ID: ' . $token)));
     }
@@ -30,7 +31,8 @@ class ImportController extends \Controller {
     {
         $data = ['source' => Input::get('data')];
         $handler = 'Grimm\Queue\Jobs\Location';
-        $token = $this->queueJobManager->issue('Import Locations from ' . basename($data['source']), $handler, $data);
+        $title = 'Import Locations from ' . basename($data['source']);
+        $token = $this->queueJobManager->issue($title, $handler, $data, Sentry::getUser()->id);
 
         return Response::json(array('success' => array('message' => 'Start importing geo locations. Job-ID: ' . $token)));
     }
@@ -39,7 +41,8 @@ class ImportController extends \Controller {
     {
         $data = ['source' => Input::get('data')];
         $handler = 'Grimm\Queue\Jobs\Person';
-        $token = $this->queueJobManager->issue('Import Persons from ' . basename($data['source']), $handler, $data);
+        $title = 'Import Persons from ' . basename($data['source']);
+        $token = $this->queueJobManager->issue($title, $handler, $data, Sentry::getUser()->id);
 
         return Response::json(array('success' => array('message' => 'Start importing persons. Job-ID: ' . $token)));
     }
