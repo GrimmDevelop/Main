@@ -68,12 +68,18 @@ class Location extends BaseJob
 
         $this->converter->setSource(storage_path('upload') . $data['source']);
 
+        if (!array_key_exists('total', $data)) {
+            $this->total = $this->converter->total();
+        } else {
+            $this->total = $data['total'];
+        }
+
         // Check if we have to start later because this is another iteration for timeout protection
         $this->last = 0;
         if (array_key_exists('last', $data) && $data['last'] > 0) {
             $this->converter->skipTo($data['last']);
             $this->last = $data['last'];
-            $this->progress('Imported ' . $this->last . ' Locations', round($this->last / $this->converter->total() * 100));
+            $this->progress('Imported ' . $this->last . ' Locations', round($this->last / $this->total * 100));
         } else {
             $this->progress('Start processing location import for ' . $data['source'], 0);
         }
@@ -88,6 +94,7 @@ class Location extends BaseJob
             $job->delete();
         } else {
             $data['last'] = $this->last + $this->limit;
+            $data['total'] = $this->total;
             $this->retain($data);
             $job->delete();
         }
