@@ -106,8 +106,16 @@ class Location implements Converter {
     public function total()
     {
         // TODO: optimize this one ...
-        $total = count(file($this->source));
-        return $total < 1 ? 1 : $total;
+        $f = fopen($this->source, 'rb');
+        $lines = 0;
+
+        while (!feof($f)) {
+            $lines += substr_count(fread($f, 8192), "\n");
+        }
+
+        fclose($f);
+
+        return $lines;
     }
 
     /**
