@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class JobStatus extends Eloquent {
     protected $table = 'job_status';
 
-    protected $fillable = ['token', 'handler', 'progress', 'status', 'title', 'user_id'];
+    protected $fillable = ['token', 'handler', 'progress', 'status', 'title', 'user_id', 'percentage'];
 
     protected $hidden = ['id', 'handler', 'user_id'];
 
@@ -24,6 +24,7 @@ class JobStatus extends Eloquent {
 
     public function makeFinished()
     {
+        $this->percentage = 100;
         $this->status = 3;
     }
 

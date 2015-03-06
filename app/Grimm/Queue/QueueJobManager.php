@@ -19,6 +19,7 @@ class QueueJobManager {
             'token' => $token,
             'handler' => $handler,
             'progress' => [],
+            'percentage' => 0,
             'status'   => 0,
             'user_id'  => $user_id
         ]);
@@ -55,10 +56,11 @@ class QueueJobManager {
     /**
      * This is used by the jobs to report progress that can be displayed in the UI
      */
-    public function reportProgress($token, $progress)
+    public function reportProgress($token, $progress, $percentage)
     {
         $job = JobStatus::where('token', $token)->first();
 
+        $job->percentage = (int)$percentage;
         $job->addProgressMessage($progress);
         $job->save();
     }

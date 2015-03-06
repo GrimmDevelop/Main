@@ -73,9 +73,9 @@
                             <td><a href="" ng-click="openTaskDetails(task)">@{{ task.title }}</a></td>
                             <td job-progress the-progress="task.progress"></td>
                             <td>@{{ task.starter.username }}</td>
-                            <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="100" type="success"></progressbar>
-                                <progressbar ng-if="task.status == 2" class="progress-striped active" value="100" type="warning"></progressbar>
-                                <progressbar ng-if="task.status == 0" class="progress-striped active" value="100" type="info"></progressbar>
+                            <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="task.percentage" type="success"></progressbar>
+                                <progressbar ng-if="task.status == 2" class="progress-striped active" value="task.percentage" type="warning"></progressbar>
+                                <progressbar ng-if="task.status == 0" class="progress-striped active" value="task.percentage" type="info"></progressbar>
                             </td>
                         </tr>
                     </tbody>
