@@ -105,8 +105,9 @@ class Location implements Converter {
 
     public function total()
     {
-        // TODO: optimize this one
-        return count($this->csvReader->fetchAll());
+        // TODO: optimize this one ...
+        $total = count(file($this->source));
+        return $total < 1 ? 1 : $total;
     }
 
     /**
