@@ -1,9 +1,54 @@
 grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', 'focus', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys, focus) {
 
-    $scope.currentFilter = {};
-    $scope.currentFilter.id = null;
-    $scope.currentFilter.filter_key = null;
-    $scope.currentFilter.fields = [];
+    /*
+     currentFilter = {
+        type: 'group',
+        properties: {
+            conjunction: 'OR'
+        },
+        fields: [
+            {
+                type: 'field',
+                code: 'empfaenger',
+                compare: 'starts with',
+                value: 'Grimm'
+            },
+            {
+                type: 'group',
+                properties: {
+                    conjunction: 'AND'
+                },
+                fields: [
+                    {
+                        type: 'field',
+                        code: 'absender',
+                        compare: 'starts with',
+                        value: 'Grimm'
+                    },
+                    {
+                        type: 'field',
+                        code: 'absender',
+                        compare: 'ends with',
+                        value: 'Jacob'
+                    }
+                ]
+            }
+        ]
+     }
+     */
+
+    $scope.currentFilter = {
+        id: null,
+        filter_key: null,
+        type: 'group',
+        properties: {
+            operator: 'AND'
+        },
+        fields: []
+    };
+    //$scope.currentFilter.id = null;
+    //$scope.currentFilter.filter_key = null;
+    //$scope.currentFilter.fields = [];
 
     $scope.letterInfo = {
         codes: []

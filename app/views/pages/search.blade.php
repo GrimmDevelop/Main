@@ -25,12 +25,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="form-group row" ng-repeat="field in currentFilter.fields">
-                            <field-row field="field" codes="letterInfo.codes" on-remove="removeField(field)"></field-row>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-primary" ng-click="addField()" tooltip="add field"><span class="glyphicon glyphicon-plus"></span> Add Filter</button>
-                        </div>
+                        <field-group group="currentFilter" codes="letterInfo.codes" on-remove="removeField(field)"></field-group>
                         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-title="start search">
                             <span class="glyphicon glyphicon-search"></span> Search
                         </button>
