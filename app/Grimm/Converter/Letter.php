@@ -103,6 +103,6 @@ class Letter implements Converter {
      */
     public function total()
     {
-        $this->table->getRecordCount();
+        return $this->table->getRecordCount();
     }
 }
