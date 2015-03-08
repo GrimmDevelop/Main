@@ -4,7 +4,7 @@
 namespace Grimm\Search\Filters;
 
 
-use Illuminate\Database\Eloquent\Builder;
+use Grimm\Search\Compiler\FilterCompiler;
 
 class OperatorFilter extends BaseFilter
 {
@@ -32,7 +32,7 @@ class OperatorFilter extends BaseFilter
         $this->filterB = $filterB;
     }
 
-    public function compile(Builder $query)
+    public function compile(FilterCompiler $query)
     {
         $op = $this->operator;
         return $query->where(function ($q) use ($op) {

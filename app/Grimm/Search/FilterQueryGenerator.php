@@ -5,6 +5,7 @@ namespace Grimm\Search;
 
 use Carbon\Carbon;
 use Grimm\Models\Letter;
+use Grimm\Search\Compiler\EloquentFilterCompiler;
 use Grimm\Search\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Input;
@@ -34,7 +35,10 @@ class FilterQueryGenerator {
             }
         }
 
-        $filters->compile($query);
+        $filterCompiler = new EloquentFilterCompiler($query);
+        $filters->compile($filterCompiler);
+
+        $query = $filterCompiler->getCompiled();
 
         if ($updatedAfter !== null) {
             $dateTime = null;

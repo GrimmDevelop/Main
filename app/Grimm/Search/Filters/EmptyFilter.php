@@ -4,11 +4,11 @@
 namespace Grimm\Search\Filters;
 
 
-use Illuminate\Database\Eloquent\Builder;
+use Grimm\Search\Compiler\FilterCompiler;
 
 class EmptyFilter extends BaseFilter {
 
-    public function compile(Builder $query)
+    public function compile(FilterCompiler $query)
     {
         return $query;
     }

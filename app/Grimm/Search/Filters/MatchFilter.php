@@ -4,7 +4,7 @@
 namespace Grimm\Search\Filters;
 
 
-use Illuminate\Database\Eloquent\Builder;
+use Grimm\Search\Compiler\FilterCompiler;
 
 class MatchFilter extends BaseFilter {
 
@@ -40,7 +40,7 @@ class MatchFilter extends BaseFilter {
     }
 
 
-    public function compile(Builder $query)
+    public function compile(FilterCompiler $query)
     {
         list ($comparator, $value) = $this->decodeMatcher();
         return $query->whereHas('information', function($q) use ($comparator, $value) {

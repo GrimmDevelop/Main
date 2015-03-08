@@ -10,16 +10,16 @@ class MatchFilterTest extends TestCase {
 
     public function testSimpleMatch()
     {
-        $q = Letter::query();
 
         $filter = new MatchFilter(new Code('absender'), 'starts with', new FilterValue('abs'));
 
-        $afterQ = $filter->compile($q);
+        $compiler = new \Grimm\Search\Compiler\TestFilterCompiler();
+        $filter->compile($compiler);
 
-        $sql = $afterQ->toSql();
+        $afterQ = $compiler->getCompiled();
 
-        $expected = 'select * from "letters" where "letters"."deleted_at" is null and (select count(*) from "letter_information" where "letter_information"."letter_id" = "letters"."id" and "code" = ? and "data" like ?) >= 1';
+        $expected = ' on information[ code = "absender" data like "abs%"] >= 1';
 
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($expected, $afterQ);
     }
 }

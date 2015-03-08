@@ -2,6 +2,7 @@
 
 
 use Grimm\Models\Letter;
+use Grimm\Search\Compiler\TestFilterCompiler;
 use Grimm\Search\Filters\Code;
 use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
@@ -12,17 +13,19 @@ class OperatorFilterTest extends TestCase {
 
     public function testSimpleOperator()
     {
-        $q = Letter::query();
 
         $filterA = new MatchFilter(new Code('absender'), 'starts with', new FilterValue('Grimm'));
         $filterB = new MatchFilter(new Code('empfaenger'), 'starts with', new FilterValue('Grimm'));
 
         $filter = new OperatorFilter($filterA, 'OR', $filterB);
 
-        $q = $filter->compile($q);
+        $compiler = new TestFilterCompiler();
+        $filter->compile($compiler);
 
-        $expected = 'select * from "letters" where "letters"."deleted_at" is null and (((select count(*) from "letter_information" where "letter_information"."letter_id" = "letters"."id" and "code" = ? and "data" like ?) >= 1) or ((select count(*) from "letter_information" where "letter_information"."letter_id" = "letters"."id" and "code" = ? and "data" like ?) >= 1))';
+        $q = $compiler->getCompiled();
 
-        $this->assertEquals($expected, $q->toSql());
+        $expected = ' and( and( on information[ code = "absender" data like "Grimm%"] >= 1)  or( on information[ code = "empfaenger" data like "Grimm%"] >= 1) ) ';
+
+        $this->assertEquals($expected, $q);
     }
 }
