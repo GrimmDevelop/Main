@@ -81,7 +81,9 @@ class SearchController extends \Controller {
             $filters = new EmptyFilter();
         }
 
-        $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage);
+        $dateRange = Input::get('dateRange', null);
+
+        $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage, null, $dateRange);
 
         return $this->createSearchOutput($result);
     }

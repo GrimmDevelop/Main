@@ -1,7 +1,7 @@
 grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
     var serviceBackend = BASE_URL + '/search';
 
-    this.search = function (filters, perPage, page, _with, onlyWithErrors) {
+    this.search = function (filters, perPage, page, _with, onlyWithErrors, dateRange) {
         var params = {};
 
         params.filters = filters;
@@ -11,6 +11,10 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
 
         if (typeof _with != 'undefined') {
             params.with = _with;
+        }
+
+        if (angular.isArray(dateRange)) {
+            params.dateRange = dateRange
         }
 
         if (typeof onlyWithErrors != 'undefined') {

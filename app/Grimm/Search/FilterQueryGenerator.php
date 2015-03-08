@@ -7,6 +7,10 @@ use Carbon\Carbon;
 use Grimm\Models\Letter;
 use Grimm\Search\Compiler\EloquentFilterCompiler;
 use Grimm\Search\Filters\BaseFilter;
+use Grimm\Search\Filters\FilterValue;
+use Grimm\Search\Filters\LetterField;
+use Grimm\Search\Filters\LetterFilter;
+use Grimm\Search\Filters\OperatorFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Input;
 use Sentry;
@@ -19,13 +23,24 @@ use Sentry;
 class FilterQueryGenerator {
 
     /**
+     * @var DateToCodeConverter
+     */
+    private $dateToCodeConverter;
+
+    function __construct(DateToCodeConverter $dateToCodeConverter)
+    {
+        $this->dateToCodeConverter = $dateToCodeConverter;
+    }
+
+
+    /**
      * Builds the search query containing all requested and filtered letters
      * @param $with
      * @param $filters
      * @param $updatedAfter
      * @return Builder|static
      */
-    public function buildSearchQuery($with, BaseFilter $filters, $updatedAfter)
+    public function buildSearchQuery($with, BaseFilter $filters, $updatedAfter, $dateRange = null)
     {
         $query = Letter::query();
 
@@ -34,11 +49,6 @@ class FilterQueryGenerator {
                 $query->with($load);
             }
         }
-
-        $filterCompiler = new EloquentFilterCompiler($query);
-        $filters->compile($filterCompiler);
-
-        $query = $filterCompiler->getCompiled();
 
         if ($updatedAfter !== null) {
             $dateTime = null;
@@ -53,9 +63,39 @@ class FilterQueryGenerator {
             }
 
             if($dateTime) {
-                $query->where('updated_at', '>=', $dateTime);
+                //$query->where('updated_at', '>=', $dateTime);
+
+                $dateFilter = new LetterFilter(new LetterField('updated_at'), '>=', new FilterValue($dateTime));
+
+                $filters = new OperatorFilter($dateFilter, 'AND', $filters);
             }
         }
+
+        if ($dateRange !== null) {
+            $firstCode  = $this->dateToCodeConverter->convert(Carbon::parse($dateRange[0]));
+            $secondCode = $this->dateToCodeConverter->convert(Carbon::parse($dateRange[1]), .99);
+
+            $rangeFilter = new OperatorFilter(
+                new LetterFilter(
+                    new LetterField('code'),
+                    '>=',
+                    new FilterValue($firstCode)
+                ),
+                'AND',
+                new LetterFilter(
+                    new LetterField('code'),
+                    '<=',
+                    new FilterValue($secondCode)
+                )
+            );
+
+            $filters = new OperatorFilter($rangeFilter, 'AND', $filters);
+        }
+
+        $filterCompiler = new EloquentFilterCompiler($query);
+        $filters->compile($filterCompiler);
+
+        $query = $filterCompiler->getCompiled();
 
         if (Sentry::check()) {
             $query->where(function ($query) {
@@ -82,59 +122,6 @@ class FilterQueryGenerator {
         }
 
         return $query;
-    }
-
-    /**
-     * Build a filter where query and appends it to a given one
-     * @param $query
-     * @param $filter
-     * @return mixed
-     */
-    public function buildWhere($query, $filter)
-    {
-        if ($filter['code'] == '') {
-            return $query;
-        }
-
-        return $query->whereHas('information', function ($q) use ($filter) {
-            $compare = $this->getCompare($filter['compare'], $filter['value']);
-
-            return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
-        });
-    }
-
-    /**
-     * convert's a compare string and a value to a valid mysql form
-     * @param $string
-     * @param $value
-     * @return array
-     */
-    protected function getCompare($string, $value)
-    {
-        switch ($string) {
-            case 'contains':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value%"
-                );
-            case 'starts with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "$value%"
-                );
-            case 'ends with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value"
-                );
-
-            case "equals":
-            default:
-                return array(
-                    'compare' => '=',
-                    'value' => $value
-                );
-        }
     }
 
     /**
