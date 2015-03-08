@@ -5,6 +5,7 @@ namespace Grimm\Search;
 
 use Carbon\Carbon;
 use Grimm\Models\Letter;
+use Grimm\Search\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Input;
 use Sentry;
@@ -23,7 +24,7 @@ class FilterQueryGenerator {
      * @param $updatedAfter
      * @return Builder|static
      */
-    public function buildSearchQuery($with, $filters, $updatedAfter)
+    public function buildSearchQuery($with, BaseFilter $filters, $updatedAfter)
     {
         $query = Letter::query();
 
@@ -33,9 +34,11 @@ class FilterQueryGenerator {
             }
         }
 
-        foreach ($filters as $filter) {
+        /*foreach ($filters as $filter) {
             $this->buildWhere($query, $filter);
-        }
+        }*/
+
+        $filters->compile($query);
 
         if ($updatedAfter !== null) {
             $dateTime = null;

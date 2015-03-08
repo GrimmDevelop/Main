@@ -168,7 +168,8 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     };
 
     $scope.search = function () {
-        Search.search($scope.currentFilter.fields, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
+        console.log($scope.currentFilter);
+        Search.search($scope.currentFilter, $scope.itemsPerPage, $scope.currentPage).success(function (data) {
             $scope.results = data;
         });
     };

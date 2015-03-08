@@ -2,6 +2,11 @@ grimmApp.directive('fieldGroup', ['BASE_URL', function(BASE_URL) {
     return {
         restrict: 'E',
         link: function(scope, element, attrs) {
+            scope.operators = {
+                'OR': 'or',
+                'AND': 'and'
+            };
+
             scope.addField = function() {
                 scope.group.fields.push({
                     code: '',

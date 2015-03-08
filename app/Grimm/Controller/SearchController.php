@@ -5,6 +5,7 @@ namespace Grimm\Controller;
 use Grimm\Auth\Models\User;
 use Grimm\OutputTransformer\ArrayOutput;
 use Grimm\OutputTransformer\JsonPaginationOutput;
+use Grimm\Search\FilterRequestParser;
 use Grimm\Search\FilterService;
 use Grimm\Search\SearchService;
 use Response;
@@ -32,9 +33,14 @@ class SearchController extends \Controller {
      * @var ArrayOutput
      */
     private $arrayOutput;
+    /**
+     * @var FilterRequestParser
+     */
+    private $filterRequestParser;
 
     public function __construct(SearchService $searchService,
                                 FilterService $filterService,
+                                FilterRequestParser $filterRequestParser,
                                 JsonPaginationOutput $paginationOutput,
                                 ArrayOutput $arrayOutput)
     {
@@ -42,6 +48,7 @@ class SearchController extends \Controller {
         $this->filterService = $filterService;
         $this->paginationOutput = $paginationOutput;
         $this->arrayOutput = $arrayOutput;
+        $this->filterRequestParser = $filterRequestParser;
     }
 
     /**
@@ -65,7 +72,9 @@ class SearchController extends \Controller {
     {
         $perPage = abs((int)Input::get('items_per_page', 100));
 
-        $result = $this->searchService->search(Input::get('with', ['information']),Input::get('filters', []), $perPage);
+        $filters = $this->filterRequestParser->parse(Input::get('filters', []));
+
+        $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage);
 
         return $this->createSearchOutput($result);
     }

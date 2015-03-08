@@ -1,7 +1,8 @@
 <div class="well">
     @{{ group.properties.operator }}
-    <div class="form-group row" ng-repeat="field in group.fields">
-        <field-row ng-if="field.type == 'field'" field="field" codes="codes" on-remove="onRemove(field)"></field-row>
+    <select class="form-control" ng-model="group.properties.operator" ng-options="key as value for (key, value) in operators"></select>
+    <div class="form-group row fields" ng-repeat="field in group.fields">
+        <field-row field="field" codes="codes" on-remove="onRemove(field)"></field-row>
         <!--<field-group ng-if="field.type == 'group'" group="field" codes="codes"></field-group>-->
     </div>
     <div class="form-group">
