@@ -70,7 +70,7 @@ trait DBFImportJob {
 
         // Process 1000 items per job
         // TODO: make this somehow configurable
-        $this->nextEnd = $this->last + 1000;
+        $this->nextEnd = $this->last + 500;
     }
 
     public function postflight($job, $data)
