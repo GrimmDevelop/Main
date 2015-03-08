@@ -6,7 +6,7 @@ grimmApp.directive('fieldRow', ['BASE_URL', '$compile', function(BASE_URL, $comp
             element.find('.code-selector').focus();
 
             if (scope.theField.type == 'group') {
-                $compile('<field-group group="theField" codes="codes"></field-group>')(scope, function(cloned, scope) {
+                $compile('<field-group group="theField" not-removable="false" on-remove="onRemove(theField)" codes="codes"></field-group>')(scope, function(cloned, scope) {
                     element.empty();
                     element.append(cloned);
                 });

@@ -34,10 +34,6 @@ class FilterQueryGenerator {
             }
         }
 
-        /*foreach ($filters as $filter) {
-            $this->buildWhere($query, $filter);
-        }*/
-
         $filters->compile($query);
 
         if ($updatedAfter !== null) {

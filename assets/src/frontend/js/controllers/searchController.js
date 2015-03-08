@@ -1,42 +1,5 @@
 grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', 'focus', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys, focus) {
 
-    /*
-     currentFilter = {
-        type: 'group',
-        properties: {
-            conjunction: 'OR'
-        },
-        fields: [
-            {
-                type: 'field',
-                code: 'empfaenger',
-                compare: 'starts with',
-                value: 'Grimm'
-            },
-            {
-                type: 'group',
-                properties: {
-                    conjunction: 'AND'
-                },
-                fields: [
-                    {
-                        type: 'field',
-                        code: 'absender',
-                        compare: 'starts with',
-                        value: 'Grimm'
-                    },
-                    {
-                        type: 'field',
-                        code: 'absender',
-                        compare: 'ends with',
-                        value: 'Jacob'
-                    }
-                ]
-            }
-        ]
-     }
-     */
-
     $scope.currentFilter = {
         id: null,
         filter_key: null,
@@ -46,9 +9,6 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         },
         fields: []
     };
-    //$scope.currentFilter.id = null;
-    //$scope.currentFilter.filter_key = null;
-    //$scope.currentFilter.fields = [];
 
     $scope.letterInfo = {
         codes: []
@@ -73,6 +33,10 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         filter: true,
         quicksearch: false,
         display: false
+    };
+
+    $scope.removeTopGroup = function(group) {
+        console.log('Cannot remove parent group');
     };
 
     $scope.addField = function () {

@@ -1,4 +1,4 @@
-<div class="col-md-2 control-label"><select class="form-control code-selector" ng-model="theField.code" ng-options="key as value for (key, value) in codes"></select></div>
+<div class="col-md-2"><select class="form-control code-selector" ng-model="theField.code" ng-options="key as value for (key, value) in codes"></select></div>
 <div class="col-md-2"><select class="form-control" ng-model="theField.compare">
         <option>equals</option>
         <option>contains</option>

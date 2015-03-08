@@ -6,7 +6,7 @@
             <div class="search-form">
                 <tabset>
                     <tab heading="Filter" active="tabstatus.filter">
-                        <form class="search-form" role="form" ng-submit="search()">
+                        <form class="search-form form-horizontal" role="form" ng-submit="search()">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <p class="input-group">
@@ -25,7 +25,7 @@
                                 </p>
                             </div>
                         </div>
-                        <field-group group="currentFilter" codes="letterInfo.codes" on-remove="removeField(field)"></field-group>
+                        <field-group not-removable="true" group="currentFilter" codes="letterInfo.codes" on-remove="removeTopGroup(group)"></field-group>
                         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-title="start search">
                             <span class="glyphicon glyphicon-search"></span> Search
                         </button>
