@@ -3,7 +3,7 @@
         <button type="button" ng-click="onRemove(group)" class="btn btn-danger btn-xs" tooltip="Remove Group" ng-disabled="notRemovable"><span class="glyphicon glyphicon-remove"></span></button>
     </div>
     <div class="form-group">
-        <label for="operator" class="control-label col-md-2">Junction:</label>
+        <label for="operator" class="control-label col-md-2">Search for letters </label>
         <div class="col-md-10">
             <select class="form-control" name="operator" ng-model="group.properties.operator" ng-options="key as value for (key, value) in operators"></select>
         </div>

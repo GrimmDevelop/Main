@@ -3,8 +3,8 @@ grimmApp.directive('fieldGroup', ['BASE_URL', function(BASE_URL) {
         restrict: 'E',
         link: function(scope, element, attrs) {
             scope.operators = {
-                'OR': 'or',
-                'AND': 'and'
+                'OR': 'matching at least one filter',
+                'AND': 'matching all filters'
             };
 
             scope.addField = function() {
