@@ -16,7 +16,7 @@ use Input;
 use Sentry;
 
 /**
- * TODO: This class does not only smell, it stinks!
+ * TODO: First refactor the marked methods to the new filter structure and then resolve the FilterCompiler by IOC
  * Class FilterQueryGenerator
  * @package Grimm\Search
  */
@@ -63,7 +63,6 @@ class FilterQueryGenerator {
             }
 
             if($dateTime) {
-                //$query->where('updated_at', '>=', $dateTime);
 
                 $dateFilter = new LetterFilter(new LetterField('updated_at'), '>=', new FilterValue($dateTime));
 
@@ -132,7 +131,10 @@ class FilterQueryGenerator {
     {
         return $query->orWhere(function ($query) {
             $query->where('from_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
+            $query->whereHas('information', function($q) {
+                $q->where('code', 'absendeort')->orWhere('code', 'absort_ers');
+            }, '>', 0);
+            //$query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
         });
     }
 
@@ -144,11 +146,15 @@ class FilterQueryGenerator {
     {
         return $query->orWhere(function ($query) {
             $query->where('to_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
+            $query->whereHas('information', function($q) {
+                $q->where('code', 'empf_ort');
+            }, '>', 0);
+            //$query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
         });
     }
 
     /**
+     * TODO: realize this query with the new filter structure
      * @param $query
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
@@ -158,6 +164,7 @@ class FilterQueryGenerator {
     }
 
     /**
+     * TODO: realize this query with the new filter structure
      * @param $query
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
