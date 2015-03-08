@@ -8,7 +8,7 @@ use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
 use Grimm\Search\Filters\OperatorFilter;
 
-class OperatorFilterTest extends TestCase {
+class OperatorFilterTest extends PHPUnit_Framework_TestCase {
 
 
     public function testSimpleOperator()

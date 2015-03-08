@@ -15,21 +15,12 @@ class TestFilterCompiler implements FilterCompiler {
         if ($column instanceof Closure) {
             $compiler = new TestFilterCompiler();
             $column($compiler);
-            /*$this->compiled[] = [
-                'operator'  => $boolean,
-                'fields'    => $compiler->getCompiled()
-            ];*/
+
             $this->compiled .= ' ' . $boolean . '(' . $compiler->getCompiled() . ') ';
         } else {
             $val = ($value === null) ? $operator : $value;
 
             $op = ($value !== null) ? $operator : '=';
-
-            /*$this->compiled[] = [
-                'column'    => $column,
-                'operator'  => $op,
-                'value'     => $val
-            ];*/
 
             $this->compiled .= ' ' . $column . ' ' . $op . ' "' . $val . '"';
         }
@@ -44,15 +35,8 @@ class TestFilterCompiler implements FilterCompiler {
 
     public function whereHas($relation, Closure $callback, $operator = '>=', $count = 1)
     {
-        /*$result = [
-            'relation'  => $relation,
-            'operator'  => $operator,
-            'count'     => $count
-        ];*/
-
         $compiler = new TestFilterCompiler();
         $callback($compiler);
-        //$result['fields'] = $compiler->getCompiled();
 
         $this->compiled .= ' on ' . $relation . '[' . $compiler->getCompiled() . '] ' . $operator . ' ' . $count;
     }

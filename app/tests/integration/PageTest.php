@@ -19,11 +19,11 @@ class PageTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testSearchRedirect()
+	/*public function testSearchRedirect()
 	{
-		$crawler = $this->client->request('GET', '/search');
+		//$crawler = $this->client->request('GET', '/search');
 
-		$this->assertTrue($this->client->getResponse()->isOk());
-	}
+		//$this->assertTrue($this->client->getResponse()->isOk());
+	}*/
 
 }

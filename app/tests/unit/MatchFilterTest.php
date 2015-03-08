@@ -5,7 +5,7 @@ use Grimm\Search\Filters\Code;
 use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
 
-class MatchFilterTest extends TestCase {
+class MatchFilterTest extends PHPUnit_Framework_TestCase {
 
 
     public function testSimpleMatch()

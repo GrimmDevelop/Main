@@ -7,7 +7,7 @@ use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
 use Grimm\Search\Filters\OperatorFilter;
 
-class FilterRequestParserTest extends TestCase
+class FilterRequestParserTest extends PHPUnit_Framework_TestCase
 {
 
     public function testParsesSimpleRequest()
