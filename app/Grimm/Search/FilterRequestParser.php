@@ -4,7 +4,9 @@
 namespace Grimm\Search;
 
 
+use Exception;
 use Grimm\Search\Filters\Code;
+use Grimm\Search\Filters\EmptyFilter;
 use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
 use Grimm\Search\Filters\OperatorFilter;
@@ -64,7 +66,11 @@ class FilterRequestParser {
             throw new InvalidFilterRequestException('Type key is missing!');
         }
         if ($field['type'] == 'field') {
-            return new MatchFilter(new Code($field['code']), $field['compare'], new FilterValue($field['value']));
+            try {
+                return new MatchFilter(new Code($field['code']), $field['compare'], new FilterValue($field['value']));
+            } catch (Exception $e) {
+                return new EmptyFilter();
+            }
         } else {
             return $this->parse($field);
         }

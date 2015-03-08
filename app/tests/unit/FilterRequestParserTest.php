@@ -3,6 +3,7 @@
 
 use Grimm\Search\FilterRequestParser;
 use Grimm\Search\Filters\Code;
+use Grimm\Search\Filters\EmptyFilter;
 use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
 use Grimm\Search\Filters\OperatorFilter;
@@ -184,6 +185,32 @@ class FilterRequestParserTest extends PHPUnit_Framework_TestCase
                 new FilterValue('Kassel')
             )
         );
+
+        $actual = (new FilterRequestParser())->parse($data);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testIncompleteField()
+    {
+        $data = [
+            "id" => null,
+            "filter_key" => null,
+            "type" => "group",
+            "properties" => [
+                "operator" =>"AND"
+            ],
+            "fields" => [
+                [
+                    "code" => "",
+                    "compare" => "equals",
+                    "value" => "",
+                    "type" => "field"
+                ]
+            ]
+        ];
+
+        $expected = new EmptyFilter();
 
         $actual = (new FilterRequestParser())->parse($data);
 
