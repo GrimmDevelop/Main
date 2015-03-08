@@ -8,6 +8,8 @@ use Exception;
 use Grimm\Search\Filters\Code;
 use Grimm\Search\Filters\EmptyFilter;
 use Grimm\Search\Filters\FilterValue;
+use Grimm\Search\Filters\LetterField;
+use Grimm\Search\Filters\LetterFilter;
 use Grimm\Search\Filters\MatchFilter;
 use Grimm\Search\Filters\OperatorFilter;
 
@@ -68,6 +70,12 @@ class FilterRequestParser {
         if ($field['type'] == 'field') {
             try {
                 return new MatchFilter(new Code($field['code']), $field['compare'], new FilterValue($field['value']));
+            } catch (Exception $e) {
+                return new EmptyFilter();
+            }
+        } else if ($field['type'] == 'letterfield') {
+            try {
+                return new LetterFilter(new LetterField($field['code']), $field['compare'], new FilterValue($field['value']));
             } catch (Exception $e) {
                 return new EmptyFilter();
             }

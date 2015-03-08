@@ -1,6 +1,7 @@
 <?php
 
 use Grimm\Models\Letter;
+use Grimm\Search\Compiler\TestFilterCompiler;
 use Grimm\Search\Filters\Code;
 use Grimm\Search\Filters\FilterValue;
 use Grimm\Search\Filters\MatchFilter;
@@ -13,7 +14,7 @@ class MatchFilterTest extends PHPUnit_Framework_TestCase {
 
         $filter = new MatchFilter(new Code('absender'), 'starts with', new FilterValue('abs'));
 
-        $compiler = new \Grimm\Search\Compiler\TestFilterCompiler();
+        $compiler = new TestFilterCompiler();
         $filter->compile($compiler);
 
         $afterQ = $compiler->getCompiled();
