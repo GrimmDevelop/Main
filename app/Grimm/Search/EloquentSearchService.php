@@ -117,7 +117,7 @@ class EloquentSearchService implements SearchService {
      */
     public function getDateRange()
     {
-        $range = $this->letter->selectRaw('MIN(code) as min, MAX(code) as max')->first();
+        $range = $this->letter->selectRaw('MIN(code) as min, MAX(code) as max')->where('valid', 1)->first();
 
         $min = Carbon::createFromFormat("Ymd", substr($range->min, 0, -3));
         $max = Carbon::createFromFormat("Ymd", substr($range->max, 0, -3));
