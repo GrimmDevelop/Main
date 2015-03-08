@@ -2,33 +2,48 @@
 
 namespace Grimm\Import\Persistence;
 
+use Grimm\Import\Validation\LetterValidation;
 use Grimm\Models\Letter as Model;
 use Grimm\Models\Letter\Information;
 
 class LetterRecordPersistence implements RecordPersistence
 {
+    /**
+     * @var LetterValidation
+     */
+    protected $letterValidation;
+
+    public function __construct(LetterValidation $letterValidation)
+    {
+
+        $this->letterValidation = $letterValidation;
+    }
 
     public function persist($record)
     {
-        $letter = Model::find($record['id']);
+        $recordInformation = $record->getInformation();
+        $letter = Model::find($record->getId());
 
         if ($letter == null) {
+            //$recordData = array_filter($record->toArray(), function($key) { return $key != 'information';}, ARRAY_FILTER_USE_KEY);
             $letter = Model::create(array(
-                'id' => $record['id'],
-                'code' => $record['code'],
-                'language' => $record['language'],
-                'date' => $record['date']
+                'id' => $record->getId(),
+                'code' => $record->getCode(),
+                'language' => $record->getLanguage(),
+                'date' => $record->getDate(),
+                'valid' => $this->letterValidation->validate($record)
             ));
         } else {
-            $letter->code = $record['code'];
-            $letter->language = $record['language'];
-            $letter->date = $record['date'];
+            $letter->code = $record->getCode();
+            $letter->language = $record->getLanguage();
+            $letter->date = $record->getDate();
+            $letter->valid = $this->letterValidation->validate($record);
             $letter->save();
         }
 
         $letter->information()->delete();
 
-        foreach ($record['information'] as $index => $value) {
+        foreach ($recordInformation as $index => $value) {
             $this->attachInfoToLetter($letter, $index, $value);
         }
 

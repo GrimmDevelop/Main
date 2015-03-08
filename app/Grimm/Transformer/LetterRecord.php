@@ -3,6 +3,7 @@
 namespace Grimm\Transformer;
 
 use Grimm\Contract\RecordTransformer;
+use Grimm\Import\Records\LetterRecord as TheLetterRecord;
 use XBase\Column;
 use XBase\Record;
 
@@ -23,12 +24,16 @@ class LetterRecord implements RecordTransformer {
         $senders = $this->senders($utf8DataArray['absender']);
         $receivers = $this->receivers($utf8DataArray['empfaenger']);
 
-        $transformedRecord['id'] = (int) $utf8DataArray['nr'];
-        $transformedRecord['code'] = (float) str_replace(',', '.', $utf8DataArray['code']);
-        $transformedRecord['language'] = $utf8DataArray['sprache'];
-        $transformedRecord['date'] = $utf8DataArray['datum'];
+        $id = (int) $utf8DataArray['nr'];
+        $code = /*(float) */floatval(str_replace(',', '.', $utf8DataArray['code']));
+        $newCode = $this->correctCode($code);
+        if ($newCode !== null) {
+            $code = $newCode;
+        }
+        $language = $utf8DataArray['sprache'];
+        $date = $utf8DataArray['datum'];
 
-        $transformedRecord['information'] = array(
+        $information = array(
             'gesehen_12'               => $utf8DataArray['gesehen_12'],
             'absendeort'               => $utf8DataArray['absendeort'],
             'absort_ers'               => $utf8DataArray['absort_ers'],
@@ -89,20 +94,20 @@ class LetterRecord implements RecordTransformer {
             'del'                      => $utf8DataArray['del']
         );
 
-        $transformedRecord['information']['dr'] = array_filter($transformedRecord['information']['dr'], 'strlen');
-        $transformedRecord['information']['konzept'] = array_filter($transformedRecord['information']['konzept'], 'strlen');
-        $transformedRecord['information']['abschrift'] = array_filter($transformedRecord['information']['abschrift'], 'strlen');
-        $transformedRecord['information']['auktkat'] = array_filter($transformedRecord['information']['auktkat'], 'strlen');
-        $transformedRecord['information']['zusatz'] = array_filter($transformedRecord['information']['zusatz'], 'strlen');
+        $information['dr'] = array_filter($information['dr'], 'strlen');
+        $information['konzept'] = array_filter($information['konzept'], 'strlen');
+        $information['abschrift'] = array_filter($information['abschrift'], 'strlen');
+        $information['auktkat'] = array_filter($information['auktkat'], 'strlen');
+        $information['zusatz'] = array_filter($information['zusatz'], 'strlen');
 
-        $transformedRecord['information'] = array_filter($transformedRecord['information']);
+        $information = array_filter($information);
 
-        if ($transformedRecord['id'] == 0)
+        if ($id == 0)
         {
             return null;
         }
 
-        return $transformedRecord;
+        return new TheLetterRecord($id, $code, $language, $date, $information);
     }
 
     /**
@@ -158,5 +163,15 @@ class LetterRecord implements RecordTransformer {
         $errors = (bool) str_contains($string, array("(", ")", "[", "]", ":", "?", ">", "<", ""));
 
         return array($persons, $errors);
+    }
+
+    /**
+     * This converts code of the form yyyymmdd.10n to yyyymmdd.1n
+     * @param $code
+     * @return mixed
+     */
+    protected function correctCode($code)
+    {
+        return preg_replace('/^([0-9]{8}\.1)0([0-9])$/', '$1$2', $code);
     }
 }

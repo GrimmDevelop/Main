@@ -65,7 +65,7 @@
                             <div class="form-group" ng-class="{'has-error': !quicksearchForm.quicksearchCode.$valid}">
                                 <label class="col-md-2 control-label" for="letter_code">Letter Code:</label>
                                 <div class="control-group col-md-10">
-                                    <input type="text" class="form-control" name="quicksearchCode" ng-model="quicksearch.code" ng-pattern="/[0-9]{8}\.[0-9]{2}/" />
+                                    <input type="text" class="form-control" name="quicksearchCode" ng-model="quicksearch.code" ng-pattern="/^[0-9]{8}\.[0-9]{2}$/" />
                                     <span class="help-block" ng-show="!quicksearchForm.quicksearchCode.$valid">Invalid format of the given letter code!</span>
                                     <span class="help-block">Access a letter directly by its code which has the form <code>yyyymmdd.nn</code> where y are the digits of the year, m the month, d the day and n the order count.</span>
                                 </div>
