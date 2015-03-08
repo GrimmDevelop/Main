@@ -52,9 +52,9 @@ class MatchFilter extends BaseFilter {
     {
         switch ($this->matcher) {
             case 'starts with':
-                return ['like', '%'.$this->val->get()];
-            case 'ends with':
                 return ['like', $this->val->get() . '%'];
+            case 'ends with':
+                return ['like', '%' . $this->val->get()];
             case 'contains':
                 return ['like', '%' . $this->val->get() . '%'];
             case 'equals':
