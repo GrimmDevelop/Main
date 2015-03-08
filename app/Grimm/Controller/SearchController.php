@@ -6,7 +6,9 @@ use Grimm\Auth\Models\User;
 use Grimm\OutputTransformer\ArrayOutput;
 use Grimm\OutputTransformer\JsonPaginationOutput;
 use Grimm\Search\FilterRequestParser;
+use Grimm\Search\Filters\EmptyFilter;
 use Grimm\Search\FilterService;
+use Grimm\Search\InvalidFilterRequestException;
 use Grimm\Search\SearchService;
 use Response;
 use URL;
@@ -72,7 +74,12 @@ class SearchController extends \Controller {
     {
         $perPage = abs((int)Input::get('items_per_page', 100));
 
-        $filters = $this->filterRequestParser->parse(Input::get('filters', []));
+        try {
+            $filters = $this->filterRequestParser->parse(Input::get('filters', []));
+        } catch (InvalidFilterRequestException $e) {
+            // TODO: Log errors and hand back to client!
+            $filters = new EmptyFilter();
+        }
 
         $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage);
 
