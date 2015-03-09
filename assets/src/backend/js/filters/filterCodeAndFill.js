@@ -9,7 +9,10 @@ grimmApp.filter('filterCodeAndFill', ['$filter', function ($filter) {
             if(typeof object[item.code] == 'undefined') {
                 object[item.code] = [];
             }
-            object[item.code].push(item.data);
+
+            if(item.data != '') {
+                object[item.code].push(item.data);
+            }
         });
 
         return object;

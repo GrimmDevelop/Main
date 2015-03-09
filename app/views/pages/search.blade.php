@@ -122,7 +122,7 @@
                     <div class="row">
                         <div class="col-md-1">
                             <span tooltip="open letter" style="display: inline-block;">
-                                <a href letter-preview="letter.id" class="btn btn-default">#@{{ letter.id }}</a>
+                                <a href letter-preview="letter.id" codes="letterInfo.codes" class="btn btn-default">#@{{ letter.id }}</a>
                             </span>
                         </div>
                         <div class="col-md-11">
