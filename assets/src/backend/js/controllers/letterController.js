@@ -92,8 +92,6 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
     };
 
     $scope.editField = function (letter, field) {
-        MessagesService.broadcast('success', 'Edit ' + field + " from letter #" + letter.id);
-
         var letterObj = {
             id: letter.id,
             code: letter.code,
@@ -116,7 +114,11 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
             }
         });
 
-        Letters.save(letterObj);
+        Letters.save(letterObj).success(function(response) {
+            MessagesService.broadcast('success', response.message);
+        }).error(function(response) {
+            MessagesService.broadcast('danger', response.message);
+        });
     };
 
     $scope.reload = function () {

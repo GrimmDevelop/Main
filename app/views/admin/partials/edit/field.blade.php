@@ -1,4 +1,4 @@
-<form class="form-horizontal" role="form">
+<form class="form-horizontal" role="form" ng-submit="ok()">
     <div class="modal-header">
         <h3 class="modal-title">Edit @{{ fields[field] }}</h3>
     </div>
@@ -15,7 +15,7 @@
             </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" ng-click="ok()">Ok</button>
+        <button type="submit" class="btn btn-primary">Ok</button>
         <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
     </div>
 </form>
