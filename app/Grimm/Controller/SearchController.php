@@ -83,7 +83,13 @@ class SearchController extends \Controller {
 
         $dateRange = Input::get('dateRange', null);
 
-        $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage, null, $dateRange);
+        if (Sentry::check()) {
+            $withErrors = Input::get('with_errors', []);
+        } else {
+            $withErrors = [];
+        }
+
+        $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage, null, $dateRange, $withErrors);
 
         return $this->createSearchOutput($result);
     }
