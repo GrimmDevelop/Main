@@ -20,6 +20,8 @@ grimmApp.controller('fieldEditController', ['$scope', '$modal', '$modalInstance'
             code: field,
             data: ''
         });
+
+        focus('input.field');
     }
 
     $scope.cancel = function () {
@@ -33,6 +35,4 @@ grimmApp.controller('fieldEditController', ['$scope', '$modal', '$modalInstance'
 
         $modalInstance.close();
     };
-
-    focus('input.field');
 }]);
