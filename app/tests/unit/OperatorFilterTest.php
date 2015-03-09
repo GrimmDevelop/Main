@@ -24,7 +24,7 @@ class OperatorFilterTest extends PHPUnit_Framework_TestCase {
 
         $q = $compiler->getCompiled();
 
-        $expected = ' and( and( on information[ code = "absender" data like "Grimm%"] >= 1)  or( on information[ code = "empfaenger" data like "Grimm%"] >= 1) ) ';
+        $expected = '((on information[ code = "absender" data like "Grimm%"] >= 1) or (on information[ code = "empfaenger" data like "Grimm%"] >= 1))';
 
         $this->assertEquals($expected, $q);
     }

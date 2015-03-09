@@ -19,7 +19,7 @@ class MatchFilterTest extends PHPUnit_Framework_TestCase {
 
         $afterQ = $compiler->getCompiled();
 
-        $expected = ' on information[ code = "absender" data like "abs%"] >= 1';
+        $expected = 'on information[ code = "absender" data like "abs%"] >= 1';
 
         $this->assertEquals($expected, $afterQ);
     }

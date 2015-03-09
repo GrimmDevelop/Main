@@ -16,7 +16,11 @@ class TestFilterCompiler implements FilterCompiler {
             $compiler = new TestFilterCompiler();
             $column($compiler);
 
-            $this->compiled .= ' ' . $boolean . '(' . $compiler->getCompiled() . ') ';
+            if ($this->compiled !== '') {
+                $this->compiled .= ' ' . $boolean . ' ';
+            }
+
+            $this->compiled .= '(' . $compiler->getCompiled() . ')';
         } else {
             $val = ($value === null) ? $operator : $value;
 
@@ -38,7 +42,7 @@ class TestFilterCompiler implements FilterCompiler {
         $compiler = new TestFilterCompiler();
         $callback($compiler);
 
-        $this->compiled .= ' on ' . $relation . '[' . $compiler->getCompiled() . '] ' . $operator . ' ' . $count;
+        $this->compiled .= 'on ' . $relation . '[' . $compiler->getCompiled() . '] ' . $operator . ' ' . $count;
     }
 
     public function getCompiled()
