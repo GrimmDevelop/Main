@@ -217,5 +217,65 @@ class FilterRequestParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testParsesFirstFieldThenNestedGroup()
+    {
+        $data = [
+            'id' => null,
+            'filter_key' => null,
+            'type' => 'group',
+            'properties' => [
+                'operator' => 'OR'
+            ],
+            'fields' => [
+                [
+                    'type' => 'field',
+                    'code' => 'empf_ort',
+                    'compare' => 'contains',
+                    'value' => 'Kassel'
+                ],
+                [
+                    'type' => 'group',
+                    'properties' => [
+                        'operator' => 'AND'
+                    ],
+                    'fields' => [
+                        [
+                            'type' => 'field',
+                            'code' => 'empfaenger',
+                            'compare' => 'starts with',
+                            'value' => 'Grimm'
+                        ],
+                        [
+                            'type' => 'field',
+                            'code' => 'absendeort',
+                            'compare' => 'contains',
+                            'value' => 'Hanau'
+                        ]
+                    ]
+                ]
+            ]
+        ];
 
+        $expected = new OperatorFilter(
+            new MatchFilter(
+                new Code('empf_ort'),
+                'contains',
+                new FilterValue('Kassel')
+            ),
+            'OR',
+            new OperatorFilter(
+                new MatchFilter(new Code('empfaenger'), 'starts with', new FilterValue('Grimm')),
+                'AND',
+                new MatchFilter(
+                    new Code('absendeort'),
+                    'contains',
+                    new FilterValue('Hanau')
+                )
+            )
+        );
+
+        $actual = (new FilterRequestParser())->parse($data);
+
+        $this->assertEquals($expected, $actual);
+    }
 }

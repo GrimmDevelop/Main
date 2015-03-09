@@ -12,6 +12,7 @@ use Grimm\Search\Filters\LetterField;
 use Grimm\Search\Filters\LetterFilter;
 use Grimm\Search\Filters\MatchFilter;
 use Grimm\Search\Filters\OperatorFilter;
+use SplStack;
 
 class FilterRequestParser {
 
@@ -22,31 +23,65 @@ class FilterRequestParser {
             throw new InvalidFilterRequestException('The filters must be enclosed in a group!');
         }
 
+        $parserStack = new SplStack();
+
         $this->validateGroup($json);
 
         $operator = strtoupper($json['properties']['operator']);
 
-        $fields = $json['fields'];
+        $stackItem = new FilterParserStackItem($json['fields'], $operator);
+        $parserStack->push($stackItem);
 
-        $this->validateFields($fields);
+        $result = null;
 
-        $currentFilter = null;
+        while (!$parserStack->isEmpty()) {
+            $stackItem = $parserStack->top();
+            $this->validateFields($stackItem->fields);
 
-        foreach ($fields as $field) {
-            $parsedField = $this->parseField($field);
+            while (count($stackItem->fields) > 0) {
+                $field = $stackItem->fields[0];
 
-            if ($currentFilter !== null) {
-                $currentFilter = new OperatorFilter(
-                    $currentFilter,
-                    $operator,
-                    $parsedField
-                );
+                if ($field['type'] == 'group') {
+
+                    try {
+                        // If it is a valid group, push it on the stack, remove it from the fields and start parsing
+                        $this->validateGroup($field);
+                        $operator = strtoupper($field['properties']['operator']);
+
+                        $parserStack->push(new FilterParserStackItem($field['fields'], $operator));
+                        array_splice($stackItem->fields, 0, 1);
+                        continue 2;
+                    } catch (InvalidFilterRequestException $e) {
+                        dd($e);
+                    }
+                } else {
+                    $filter = $this->parseField($field);
+                    if ($stackItem->filter !== null) {
+                        $stackItem->filter = new OperatorFilter($stackItem->filter, $stackItem->operator, $filter);
+                    } else {
+                        $stackItem->filter = $filter;
+                    }
+                    array_splice($stackItem->fields, 0, 1);
+                }
+            }
+
+            $oldTop = $parserStack->pop();
+            if (!$parserStack->isEmpty()) {
+                $newTop = $parserStack->top();
+                if ($newTop->filter !== null) {
+                    $newTop->filter = new OperatorFilter(
+                        $newTop->filter,
+                        $newTop->operator,
+                        $oldTop->filter
+                    );
+                } else {
+                    $newTop->filter = $oldTop->filter;
+                }
             } else {
-                $currentFilter = $parsedField;
+                $result = $oldTop->filter;
             }
         }
-
-        return $currentFilter;
+        return $result;
     }
 
     private function validateGroup($json)
@@ -58,7 +93,7 @@ class FilterRequestParser {
 
     private function validateFields($fields)
     {
-        if (!is_array($fields) || count($fields) == 0) {
+        if (!is_array($fields)) {
             throw new InvalidFilterRequestException('Invalid field structure in group');
         }
     }
@@ -80,7 +115,7 @@ class FilterRequestParser {
                 return new EmptyFilter();
             }
         } else {
-            return $this->parse($field);
+            throw new InvalidFilterRequestException('Invalid field type');
         }
     }
 }
