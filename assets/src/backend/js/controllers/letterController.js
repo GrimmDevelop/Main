@@ -23,8 +23,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
 
     $scope.display = {
         currentView: null,
-        views: [],
-        shortEdit: false
+        views: []
     };
 
     $scope.quicksearch = {
@@ -87,9 +86,9 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
 
     $scope.fields = ['absendeort', 'absort_ers', 'absender', 'empf_ort', 'empfaenger', 'dr', 'hs'];
 
-    $scope.editColumn = function (field) {
+    /*$scope.editColumn = function (field) {
         MessagesService.broadcast('success', 'Edit complete column ' + field);
-    };
+    };*/
 
     $scope.editField = function (letter, field) {
         var letterObj = {
