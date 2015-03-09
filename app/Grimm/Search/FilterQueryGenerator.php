@@ -50,7 +50,7 @@ class FilterQueryGenerator {
             $dateTime = null;
 
             try {
-                $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', $updatedAfter);
+                $dateTime = Carbon::parse($updatedAfter);
             } catch (\InvalidArgumentException $e) {
                 try {
                     $dateTime = Carbon::createFromFormat('Y-m-d', $updatedAfter);
