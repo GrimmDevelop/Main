@@ -11,7 +11,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="letter in letters.data" ng-show="!letter.deleted_at">
-            <td><a href letter-edit="letter.id">@{{ letter.id }}</a></td>
+            <td><a href letter-edit="letter.id" codes="letterInfo.codes">@{{ letter.id }}</a></td>
             <td>@{{ letter.date }}</td>
             <td ng-repeat="field in fields" field-edit="letter" fields="letterInfo.codes" field="field" on-save="editField(letter, field)">
                 @{{ (letter.information|filterCodeAndFill:fields)[field].join(', ') }}

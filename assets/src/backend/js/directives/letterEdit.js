@@ -4,10 +4,13 @@ grimmApp.directive("letterEdit", ['$modal', function ($modal) {
         link: function (scope, element, attrs) {
             element.on('click', function () {
                 $modal.open({
-                    templateUrl: 'admin/partials/letterEdit',
+                    templateUrl: 'admin/partials/letters.edit',
                     controller: 'letterEditController',
                     size: 'lg',
                     resolve: {
+                        codes: function() {
+                            return scope.codes;
+                        },
                         id: function () {
                             return scope.letterId;
                         }
@@ -16,7 +19,8 @@ grimmApp.directive("letterEdit", ['$modal', function ($modal) {
             });
         },
         scope: {
-            letterId: '=letterEdit'
+            letterId: '=letterEdit',
+            codes: '='
         }
     };
 }]);

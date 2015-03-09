@@ -26,7 +26,7 @@
         <hr>
 
         <div class="form-group" ng-repeat="info in letter.information|orderObjectBy:'code'" ng-class="info.state == 'add' ? 'info-add' : (info.state == 'remove' ? 'info-remove' : '')">
-            <label class="col-sm-2 control-label">@{{ info.code }}</label>
+            <label class="col-sm-2 control-label">@{{ codes[info.code] }}</label>
             <div class="col-sm-8">
                 <input class="form-control" type="text" ng-model="info.data" ng-readonly="info.state == 'remove'">
             </div>

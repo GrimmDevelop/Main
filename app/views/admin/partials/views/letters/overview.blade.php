@@ -2,7 +2,7 @@
 <table class="table">
     <tr ng-repeat="letter in letters.data" ng-show="!letter.deleted_at">
         <td>
-            <a href letter-edit="letter.id" class="btn btn-default">@{{ letter.id }}</a><br>
+            <a href letter-edit="letter.id" codes="letterInfo.codes" class="btn btn-default">@{{ letter.id }}</a><br>
         </td>
         <td>@{{ letter.date }}</td>
         <td>

@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="info in letter.information">
-                <td>@{{ info.code }}</td>
+                <td>@{{ codes[info.code] }}</td>
                 <td>@{{ info.data }}</td>
             </tr>
         </tbody>
@@ -53,6 +53,6 @@
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="ok()">OK</button>
 @if(Sentry::check() and Sentry::getUser()->hasAccess('users.edit'))
-    <button class="btn btn-warning" letter-edit="letter.id">Edit</button>
+    <button class="btn btn-warning" letter-edit="letter.id" codes="codes">Edit</button>
 @endif
 </div>
