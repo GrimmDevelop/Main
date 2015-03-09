@@ -1,4 +1,4 @@
-grimmApp.controller('fieldEditController', ['$scope', '$modal', '$modalInstance', 'focus', 'object', 'fields', 'field', 'onSave', function ($scope, $modal, $modalInstance, focus, object, fields, field, onSave) {
+grimmApp.controller('fieldEditController', ['$scope', '$modal', '$modalInstance', 'hotkeys', 'focus', 'object', 'fields', 'field', 'onSave', function ($scope, $modal, $modalInstance, hotkeys, focus, object, fields, field, onSave) {
 
     // Object.create() is introduced in ES5 (IE9+)
     $scope.object = Object.create(object);
@@ -35,4 +35,13 @@ grimmApp.controller('fieldEditController', ['$scope', '$modal', '$modalInstance'
 
         $modalInstance.close();
     };
+
+    hotkeys.add({
+        combo: 'ctrl+alt+a',
+        description: 'Add field',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+        callback: function(event) {
+            $scope.addField();
+        }
+    });
 }]);
