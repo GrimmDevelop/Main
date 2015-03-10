@@ -40,12 +40,15 @@ class EloquentClusterService implements ClusterService {
 
     public function publish()
     {
-        // TODO: Implement publish() method.
+        /** @var \Grimm\Cluster\Subscriber $subscriber */
+        foreach($this->subscribers() as $subscriber) {
+            $this->notify($subscriber);
+        }
     }
 
     public function notify(Subscriber $subscriber)
     {
-        // TODO: Implement notify() method.
+        $subscriber->notify();
     }
 
     /**

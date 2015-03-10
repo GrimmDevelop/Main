@@ -57,10 +57,7 @@ class ClusterController extends \Controller {
      */
     public function publish()
     {
-        /** @var \Grimm\Cluster\Subscriber $subscriber */
-        foreach($this->clusterService->subscribers() as $subscriber) {
-            $subscriber->notify();
-        }
+
     }
 
     public function subscribe()

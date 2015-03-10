@@ -2,6 +2,7 @@
 
 namespace Grimm\Cluster;
 
+use Carbon\Carbon;
 use Guzzle\Http\Client;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -18,5 +19,7 @@ class EloquentSubscriber extends Eloquent implements Subscriber {
         $response = $client->post($this->address);
 
         dd($response);
+
+        $this->last_notification = Carbon::now();
     }
 }
