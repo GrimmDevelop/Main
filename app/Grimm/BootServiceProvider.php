@@ -2,6 +2,9 @@
 
 namespace Grimm;
 
+use Grimm\Cluster\ClusterService;
+use Grimm\Cluster\EloquentClusterService;
+use Grimm\Cluster\Subscriber;
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
 use Grimm\Converter\Person;
@@ -9,7 +12,11 @@ use Grimm\Import\Persistence\LetterRecordPersistence;
 use Grimm\Import\Persistence\PersonRecordPersistence;
 use Grimm\Letter\EloquentLetterService;
 use Grimm\Letter\LetterService;
+use Grimm\Location\EloquentLocationService;
+use Grimm\Location\LocationService;
 use Grimm\Logging\UserActionLogger;
+use Grimm\Person\EloquentPersonService;
+use Grimm\Person\PersonService;
 use Grimm\Queue\QueueJobManager;
 use Grimm\Queue\Jobs\Letter as LetterJob;
 use Grimm\Queue\Jobs\Person as PersonJob;
@@ -101,6 +108,22 @@ class BootServiceProvider extends ServiceProvider {
 
         $this->app->bind(LetterService::class, function() {
             return $this->app->make(EloquentLetterService::class);
+        });
+
+        $this->app->bind(PersonService::class, function() {
+            return $this->app->make(EloquentPersonService::class);
+        });
+
+        $this->app->bind(LocationService::class, function() {
+            return $this->app->make(EloquentLocationService::class);
+        });
+
+        $this->app->bind(ClusterService::class, function() {
+            return $this->app->make(EloquentClusterService::class);
+        });
+
+        $this->app->bind(Subscriber::class, function() {
+            return $this->app->make(EloquentSubscriber::class);
         });
     }
 

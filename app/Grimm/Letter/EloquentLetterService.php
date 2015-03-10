@@ -2,6 +2,7 @@
 
 namespace Grimm\Letter;
 
+use Carbon\Carbon;
 use Event;
 use Grimm\Models\Letter;
 use Grimm\Models\Letter\Information;
@@ -24,6 +25,20 @@ class EloquentLetterService implements LetterService {
      */
     public function findTrashed() {
         return Letter::onlyTrashed()->with(['information', 'from', 'to', 'senders', 'receivers'])->paginate(150);
+    }
+
+    /**
+     * Counts letters
+     * @param null $updated_after
+     * @return int
+     */
+    public function count($updated_after = null)
+    {
+        if($updated_after !== null) {
+            return Letter::where('updated_at', '>=', Carbon::parse($updated_after))->count();
+        }
+
+        return Letter::count();
     }
 
     /**

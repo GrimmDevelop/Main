@@ -1,8 +1,8 @@
 <?php
 
-namespace Grimm\Letter;
+namespace Grimm\Location;
 
-interface LetterService {
+interface LocationService {
 
     /**
      * @param int $id
@@ -11,13 +11,13 @@ interface LetterService {
     public function findById($id);
 
     /**
-     * Lists trashed letters
+     * Lists trashed persons
      * @return \Illuminate\Pagination\Paginator
      */
     public function findTrashed();
 
     /**
-     * Counts letter updated after given date
+     * Counts person updated after given date
      * @param null $updated_after
      * @return int
      */
@@ -43,7 +43,7 @@ interface LetterService {
     public function delete($idOrModel);
 
     /**
-     * restores trashed letter
+     * restores trashed person
      * @param $id
      * @return bool
      */
