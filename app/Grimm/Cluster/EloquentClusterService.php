@@ -68,16 +68,16 @@ class EloquentClusterService implements ClusterService {
 
     public function publish()
     {
-        /** @var \Grimm\Cluster\Subscriber $subscriber */
+        /** @var Subscriber $subscriber */
         foreach ($this->subscribers() as $subscriber)
         {
-            $this->notify($subscriber);
+            echo $this->notify($subscriber);
         }
     }
 
     public function notify(Subscriber $subscriber)
     {
-        $subscriber->notify();
+        return $subscriber->notify();
     }
 
     /**
@@ -98,7 +98,7 @@ class EloquentClusterService implements ClusterService {
         return $this->subscriberService->create([
             'secret'  => $subscriberSecret,
             'address' => $address
-        ]);
+        ]) !== null;
     }
 
     /**
@@ -107,7 +107,7 @@ class EloquentClusterService implements ClusterService {
      */
     public function removeSubscriber($subscriberSecret)
     {
-        return $this->subscriberService->where('secret', $subscriberSecret)->delete();
+        return $this->subscriberService->where('secret', $subscriberSecret)->delete() > 0;
     }
 
     /**
@@ -125,5 +125,14 @@ class EloquentClusterService implements ClusterService {
         }
 
         return false;
+    }
+
+    /**
+     * @param $subscriberSecret
+     * @return bool
+     */
+    public function hasSubscriber($subscriberSecret)
+    {
+        return $this->subscriberService->where('secret', $subscriberSecret)->first() !== null;
     }
 }

@@ -3,7 +3,7 @@
 namespace Grimm\Cluster;
 
 use Carbon\Carbon;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class EloquentSubscriber extends Eloquent implements Subscriber {
@@ -18,9 +18,15 @@ class EloquentSubscriber extends Eloquent implements Subscriber {
 
         $response = $client->post($this->getAddress());
 
-        dd($response);
+        if ($response->getBody()->getContents() == 1)
+        {
+            $this->last_notification = Carbon::now();
+            $this->save();
 
-        $this->last_notification = Carbon::now();
+            return true;
+        }
+
+        return false;
     }
 
     public function getSecret()

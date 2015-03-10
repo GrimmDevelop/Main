@@ -62,4 +62,5 @@ Route::group(['prefix' => 'api'], function()
     Route::get('cluster/changes',       ['before' => 'grimm_access:none',           'uses' => 'Grimm\Controller\Api\ClusterController@changes']);
     Route::post('cluster/publish',      ['before' => 'grimm_access:cluster.publish','uses' => 'Grimm\Controller\Api\ClusterController@publish']);
     Route::post('cluster/subscribe',    ['before' => 'grimm_access:none',           'uses' => 'Grimm\Controller\Api\ClusterController@subscribe']);
+    Route::post('cluster/unsubscribe',  ['before' => 'grimm_access:none',           'uses' => 'Grimm\Controller\Api\ClusterController@unsubscribe']);
 });

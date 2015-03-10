@@ -16,6 +16,12 @@ interface ClusterService {
      */
     public function subscribers();
 
+    /**
+     * @param $subscriberSecret
+     * @return bool
+     */
+    public function hasSubscriber($subscriberSecret);
+
     public function publish();
 
     public function notify(Subscriber $subscriber);

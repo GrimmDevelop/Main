@@ -132,4 +132,22 @@ class TestClusterService implements ClusterService {
             }
         }
     }
+
+    /**
+     * @param $subscriberSecret
+     * @return bool
+     */
+    public function hasSubscriber($subscriberSecret)
+    {
+        /** @var Subscriber $subscriber */
+        foreach ($this->all() as $subscriber)
+        {
+            if ($subscriber->getSecret() == $subscriberSecret)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

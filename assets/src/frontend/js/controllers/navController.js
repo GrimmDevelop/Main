@@ -12,6 +12,8 @@ grimmApp.controller('navController', ['$scope', '$interval', 'Cluster', function
     });
 
     $scope.publish = function() {
-        console.log('publishing');
+        Cluster.publish().success(function(response) {
+            console.log(response);
+        });
     };
 }]);
