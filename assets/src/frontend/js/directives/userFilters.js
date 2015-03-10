@@ -7,7 +7,8 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
                 showFilterNameInput: false,
                 nameInput: '',
                 changed: false,
-                filter_search: ''
+                filter_search: '',
+                publicUrl: ''
             };
 
             scope.savedFilters = [];
@@ -49,6 +50,13 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
                 scope.filters = filter.filters;
 
                 scope.directiveStatus.changed = false;
+
+                if (scope.selectedFilter.filter_key != null) {
+                    scope.directiveStatus.publicUrl = BASE_URL + '/search/' + scope.selectedFilter.filter_key;
+                } else {
+                    scope.directiveStatus.publicUrl = '';
+                }
+
             };
 
             scope.sendMail = function () {
@@ -63,9 +71,20 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
                 } else {
                     Search.publicFilter(scope.selectedFilter).success(function(data) {
                         scope.selectedFilter.filter_key = data.data.filter_key;
+
+                        scope.directiveStatus.publicUrl = BASE_URL + '/search/' + scope.selectedFilter.filter_key;
+
                         scope.sendMail();
                     });
                 }
+            };
+
+            scope.publishFilter = function() {
+                Search.publicFilter(scope.selectedFilter).success(function(data) {
+                    scope.selectedFilter.filter_key = data.data.filter_key;
+
+                    scope.directiveStatus.publicUrl = BASE_URL + '/search/' + scope.selectedFilter.filter_key;
+                });
             };
 
             scope.saveFilter = function() {
@@ -102,6 +121,7 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
                     scope.selectedFilter = data.data;
                     scope.selectedFilter.shared = true;
                     scope.filters = scope.selectedFilter.filters;
+                    scope.directiveStatus.publicUrl = BASE_URL + '/search/' + scope.selectedFilter.filter_key;
                 });
             }
         },

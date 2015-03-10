@@ -27,6 +27,12 @@
 
     <div ng-if="selectedFilter.name">
         <h4 class="col-md-12">Filter: @{{ selectedFilter.name }} <span ng-if="selectedFilter.shared">(Shared)</span></h4>
+        <div class="col-md-12" style="margin-bottom: 10px;">
+            <div class="input-group">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-link"></span></span>
+                <input type="text" class="form-control" placeholder="Publish filter to see link" ng-model="directiveStatus.publicUrl" readonly tooltip-append-to-body="true" tooltip-placement="right" tooltip="Public URL to share the filter" />
+            </div>
+        </div>
         <div class="col-md-3" ng-if="!selectedFilter.shared">
             <p>Aktionen:</p>
         </div>
@@ -41,9 +47,9 @@
                         tooltip="Delete Filter" tooltip-append-to-body="true" title="Delete this Filter"><span class="glyphicon glyphicon-trash"></span>
                 </button>
                 <ul class="dropdown-menu">
+                    <li ng-if="selectedFilter.filter_key == null"><a href="#" ng-click="publishFilter()"><span class="glyphicon glyphicon-link"></span> Publish Filter</a></li>
                     <li><a href="#" ng-click="sendMailForFilter()"><span
                                     class="glyphicon glyphicon-envelope"></span> Share Filter via E-Mail</a></li>
-                    <li><a href="{{ url('search') }}/@{{ selectedFilter.filter_key }}" target="_blank"><span class="glyphicon glyphicon-link"></span> Permalink</a></li>
                 </ul>
                 <button type="button" class="btn btn-default"
                         tooltip="Share Filter" tooltip-append-to-body="true" title="Share Filter" dropdown-toggle>
