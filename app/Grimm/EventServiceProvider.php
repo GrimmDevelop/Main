@@ -2,6 +2,11 @@
 
 namespace Grimm;
 
+use Event;
+use Grimm\Letter\LetterCopy;
+use Grimm\Models\Letter;
+use Illuminate\Support\ServiceProvider;
+
 class EventServiceProvider extends ServiceProvider {
 
     /**
@@ -18,20 +23,7 @@ class EventServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        \Event::listen('letter.created', function ()
-        {
 
-        });
-
-        \Event::listen('letter.saved', function ()
-        {
-
-        });
-
-        \Event::listen('letter.deleted', function ()
-        {
-
-        });
     }
 
     /**
