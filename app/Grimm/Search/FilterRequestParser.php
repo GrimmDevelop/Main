@@ -38,30 +38,34 @@ class FilterRequestParser {
             $stackItem = $parserStack->top();
             $this->validateFields($stackItem->fields);
 
-            while (count($stackItem->fields) > 0) {
-                $field = $stackItem->fields[0];
+            if (count($stackItem->fields) == 0 && $stackItem->filter == null) {
+                $stackItem->filter = new EmptyFilter();
+            } else {
+                while (count($stackItem->fields) > 0) {
+                    $field = $stackItem->fields[0];
 
-                if ($field['type'] == 'group') {
+                    if ($field['type'] == 'group') {
 
-                    try {
-                        // If it is a valid group, push it on the stack, remove it from the fields and start parsing
-                        $this->validateGroup($field);
-                        $operator = strtoupper($field['properties']['operator']);
+                        try {
+                            // If it is a valid group, push it on the stack, remove it from the fields and start parsing
+                            $this->validateGroup($field);
+                            $operator = strtoupper($field['properties']['operator']);
 
-                        $parserStack->push(new FilterParserStackItem($field['fields'], $operator));
-                        array_splice($stackItem->fields, 0, 1);
-                        continue 2;
-                    } catch (InvalidFilterRequestException $e) {
-                        dd($e);
-                    }
-                } else {
-                    $filter = $this->parseField($field);
-                    if ($stackItem->filter !== null) {
-                        $stackItem->filter = new OperatorFilter($stackItem->filter, $stackItem->operator, $filter);
+                            $parserStack->push(new FilterParserStackItem($field['fields'], $operator));
+                            array_splice($stackItem->fields, 0, 1);
+                            continue 2;
+                        } catch (InvalidFilterRequestException $e) {
+                            dd($e);
+                        }
                     } else {
-                        $stackItem->filter = $filter;
+                        $filter = $this->parseField($field);
+                        if ($stackItem->filter !== null) {
+                            $stackItem->filter = new OperatorFilter($stackItem->filter, $stackItem->operator, $filter);
+                        } else {
+                            $stackItem->filter = $filter;
+                        }
+                        array_splice($stackItem->fields, 0, 1);
                     }
-                    array_splice($stackItem->fields, 0, 1);
                 }
             }
 

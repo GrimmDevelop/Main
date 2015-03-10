@@ -278,4 +278,23 @@ class FilterRequestParserTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testParsesEmptyRequest()
+    {
+        $data = [
+            'type' => 'group',
+            'properties' => [
+                'operator' => 'AND'
+            ],
+            'fields' => []
+        ];
+
+        $expected = new EmptyFilter();
+
+        $actual = (new FilterRequestParser())->parse($data);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+
 }

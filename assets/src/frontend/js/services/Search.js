@@ -74,8 +74,9 @@ grimmApp.service("Search", ['$http', 'BASE_URL', function ($http, BASE_URL) {
         return $http.get(serviceBackend + '/filters/' + key);
     };
 
-    this.newFilter = function (filter) {
+    this.newFilter = function (name, filter) {
         return $http.post(serviceBackend + '/filters', {
+            name: name,
             filter: filter
         });
     };

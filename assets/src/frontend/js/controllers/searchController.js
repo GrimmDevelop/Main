@@ -1,13 +1,15 @@
-grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', 'focus', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys, focus) {
+grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search', 'Letters', 'Locations', 'Persons', 'hotkeys', 'focus', '$rootScope', function ($scope, $modal, BASE_URL, Search, Letters, Locations, Persons, hotkeys, focus, $rootScope) {
 
     $scope.currentFilter = {
         id: null,
         filter_key: null,
-        type: 'group',
-        properties: {
-            operator: 'AND'
-        },
-        fields: []
+        filter: {
+            type: 'group',
+            properties: {
+                operator: 'AND'
+            },
+            fields: []
+        }
     };
 
     $scope.letterInfo = {
@@ -35,6 +37,14 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
         display: false
     };
 
+    $scope.savedFilters = {
+        showFilterNameInput: false
+    };
+
+    $scope.fieldChanged = function() {
+        $rootScope.$broadcast('filters.changed');
+    };
+
     $scope.removeTopGroup = function(group) {
         console.log('Cannot remove parent group');
     };
@@ -42,97 +52,34 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     $scope.addField = function () {
         $scope.result = {};
 
-        $scope.currentFilter.fields.push({
+        $scope.currentFilter.filter.fields.push({
             code: "",
             compare: "equals",
             value: ""
         });
+        $scope.fieldChanged();
     };
 
     $scope.removeField = function (field) {
         $scope.result = {};
 
-        var index = $scope.currentFilter.fields.indexOf(field);
+        var index = $scope.currentFilter.filter.fields.indexOf(field);
 
         if (index > -1) {
-            $scope.currentFilter.fields.splice(index, 1);
+            $scope.currentFilter.filter.fields.splice(index, 1);
         }
+        $scope.fieldChanged();
     };
 
     $scope.removeLastField = function () {
         $scope.result = {};
 
-        $scope.currentFilter.fields.pop();
-    };
-
-    $scope.loadFilters = function () {
-        $scope.result = {};
-        Search.loadFilters().success(function (data) {
-            $scope.filters = data.data;
-
-            if ($scope.filters.length > 0) {
-                // $scope.loadFilter($scope.filters[0]);
-            }
-        });
-    };
-
-    $scope.loadFilter = function (filter) {
-        if (filter != null) {
-            if (typeof filter == 'string') {
-                if (filter != '') {
-                    Search.loadFilter(filter).success(function (data) {
-                        if (data != '') {
-                            $scope.currentFilter = data.data;
-                        }
-                    });
-                }
-            } else {
-                $scope.currentFilter = filter;
-            }
-        }
-    };
-
-    $scope.sendMail = function () {
-        if ($scope.currentFilter.filter_key != null) {
-            return 'mailto:?subject=Grimm%20Database%20-%20Filter&body=Filter%20link:%20' + encodeURIComponent(BASE_URL + '/search/' + $scope.currentFilter.filter_key);
-        }
-    };
-
-    $scope.newFilter = function () {
-        Search.newFilter($scope.currentFilter).success(function (data) {
-            $scope.filters = data;
-        });
-    };
-
-    $scope.saveFilter = function () {
-        if ($scope.currentFilter.id != null) {
-            Search.saveFilter($scope.currentFilter).success(function (data) {
-                $scope.filters = data;
-            });
-        }
-    };
-
-    $scope.deleteFilter = function () {
-        if ($scope.currentFilter.id != null) {
-            Search.deleteFilter($scope.currentFilter).success(function (data) {
-                $scope.currentFilter.id = null;
-                $scope.currentFilter.public_key = null;
-                $scope.currentFilter.fields = [];
-                $scope.filters = data;
-            });
-        }
-    };
-
-    $scope.publicFilter = function () {
-        if ($scope.currentFilter.id != null) {
-            Search.publicFilter($scope.currentFilter).success(function (data) {
-                $scope.loadFilters();
-            });
-        }
+        $scope.currentFilter.filter.fields.pop();
+        $scope.fieldChanged();
     };
 
     $scope.search = function () {
-        Search.search($scope.currentFilter, $scope.itemsPerPage, $scope.currentPage, undefined, undefined, [$scope.startDate.date, $scope.endDate.date]).success(function (data) {
+        Search.search($scope.currentFilter.filter, $scope.itemsPerPage, $scope.currentPage, undefined, undefined, [$scope.startDate.date, $scope.endDate.date]).success(function (data) {
             $scope.results = data;
         });
     };
@@ -157,7 +104,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     };
 
     $scope.viewDistanceMap = function () {
-        Search.distanceMap($scope.currentFilter.fields).success(function (data) {
+        Search.distanceMap($scope.currentFilter.filter.fields).success(function (data) {
             $modal.open({
                 templateUrl: 'partials/distanceMap',
                 controller: 'distanceMapController',
@@ -214,7 +161,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     // Hotkeys
     hotkeys.add({
         combo: 'ctrl+alt+n',
-        description: 'Add new field',
+        description: 'Add new field to outermost group',
         allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
         callback: function(event) {
             if ($scope.tabIsActive('filter')) {
@@ -226,7 +173,7 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
 
     hotkeys.add({
         combo: 'ctrl+alt+d',
-        description: 'Delete last field',
+        description: 'Delete last field from outermost group',
         allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
         callback: function(event) {
             if ($scope.tabIsActive('filter')) {
@@ -278,6 +225,4 @@ grimmApp.controller('searchController', ['$scope', '$modal', 'BASE_URL', 'Search
     $scope.tabIsActive = function(tabname) {
         return !!$scope.tabstatus[tabname];
     };
-
-    $scope.loadFilters();
 }]);

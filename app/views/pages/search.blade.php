@@ -2,11 +2,17 @@
 
 @section('body')
     <div class="row">
-        <div class="col-md-12" ng-controller="searchController" ng-init="loadFilter('{{ $filter_key }}')">
+        <div class="col-md-12" ng-controller="searchController">
             <div class="search-form">
                 <tabset>
                     <tab heading="Filter" active="tabstatus.filter">
                         <form class="search-form form-horizontal" role="form" ng-submit="search()">
+                            <div class="row">
+                                @if (Sentry::check())
+                                    <div class="col-md-9">
+                                        @else
+                                            <div class="col-md-12">
+                                @endif
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <p class="input-group">
@@ -25,32 +31,22 @@
                                 </p>
                             </div>
                         </div>
-                        <field-group not-removable="true" group="currentFilter" codes="letterInfo.codes" on-remove="removeTopGroup(group)"></field-group>
-                        <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-title="start search">
-                            <span class="glyphicon glyphicon-search"></span> Search
-                        </button>
-@if(Sentry::check())
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default" ng-repeat="filter in filters" ng-class="{ 'active': currentFilter.id == filter.id }" ng-click="loadFilter(filter)">@{{ $index + 1  }}</button>
-                            <button type="button" class="btn btn-default" ng-click="newFilter()" data-toggle="tooltip" title="save as new filter" ng-disabled="currentFilter.fields.length == 0">+</button>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default"
-                                ng-click="saveFilter()" ng-disabled="currentFilter.id == null"
-                                data-toggle="tooltip" title="save current filter"><span class="glyphicon glyphicon-floppy-disk"></span></button>
-                            <button type="button" class="btn btn-default"
-                                ng-click="deleteFilter()" ng-disabled="currentFilter.id == null"
-                                data-toggle="tooltip" title="delete current filter"><span class="glyphicon glyphicon-trash"></span></button>
-                            <button type="button" class="btn btn-default"
-                                ng-click="publicFilter()" ng-disabled="currentFilter.id == null || currentFilter.filter_key != null"
-                                data-toggle="tooltip" title="public filter"><span class="glyphicon glyphicon-share-alt"></span></button>
+                        <field-group not-removable="true" group="currentFilter.filter" codes="letterInfo.codes" on-remove="removeTopGroup(group)" on-change="fieldChanged()"></field-group>
+                        <div class="row">
+                            <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-title="start search">
+                                <span class="glyphicon glyphicon-search"></span> Search
+                            </button>
                         </div>
 
-                        <span class="btn-group" ng-show="currentFilter.id != null && currentFilter.filter_key != null">
-                            <a href="{{ url('search') }}/@{{ currentFilter.filter_key }}" target="_blank" class="btn btn-default">{{ url('search') }}/@{{ currentFilter.filter_key }}</a>
-                            <a href="@{{ sendMail() }}" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span></a>
-                        </span>
-@endif
+                        </div>
+                            </div>
+                                @if(Sentry::check())
+                                    <div class="col-md-3">
+                                    <user-filters filters="currentFilter.filter"></user-filters>
+                                    </div>
+                                @endif
+                            </div>
                         </form>
                     </tab>
                     <tab heading="Quick Search" active="tabstatus.quicksearch">

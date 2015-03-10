@@ -146,7 +146,7 @@ class SearchController extends \Controller {
     }
 
     /**
-     * publishes an unpublished filter and returns the URL
+     * publishes an unpublished filter and returns the token
      * @return null|string
      */
     public function publicFilter()
@@ -157,7 +157,8 @@ class SearchController extends \Controller {
             $token = $this->filterService->publishFilter($user, $filter);
 
             if ($token !== null) {
-                return URL::to('search/' . $token);
+                $response = ['filter_key' => $token];
+                return $this->createJsonResponse($response);
             }
         }
 
@@ -172,8 +173,9 @@ class SearchController extends \Controller {
     {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
+            $name = Input::get('name');
 
-            $this->filterService->newFilter($user, $filter);
+            $this->filterService->newFilter($name, $user, $filter);
 
             // TODO: maybe include error message
             return $this->loadFilters();

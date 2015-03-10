@@ -14,6 +14,7 @@ grimmApp.directive('fieldGroup', ['BASE_URL', function(BASE_URL) {
                     value: '',
                     type: 'field'
                 });
+                scope.onChange();
             };
 
             scope.addGroup = function() {
@@ -24,6 +25,7 @@ grimmApp.directive('fieldGroup', ['BASE_URL', function(BASE_URL) {
                     },
                     fields: []
                 });
+                scope.onChange();
             };
 
             scope.onFieldRemove = function(field) {
@@ -33,6 +35,11 @@ grimmApp.directive('fieldGroup', ['BASE_URL', function(BASE_URL) {
                     scope.group.fields.splice(index, 1);
                 }
             };
+
+            scope.removeHandler = function(field) {
+                scope.onChange();
+                scope.onRemove(field);
+            }
         },
         templateUrl: BASE_URL+'/partials/fieldGroup',
         scope: {
