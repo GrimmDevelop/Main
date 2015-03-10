@@ -55,7 +55,8 @@
     <div class="col-md-12">
         <div class="dashboard-statistics">
             <div class="panel panel-default">
-                <div class="panel-heading">Running Tasks</div>
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-tasks"></span> Running Tasks</h3></div>
                 <div class="panel-body" ng-if="tasks.length == 0">
                     <h3 class="text-center">No Running Tasks!</h3>
                 </div>

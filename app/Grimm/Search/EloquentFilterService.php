@@ -21,8 +21,9 @@ class EloquentFilterService implements FilterService {
         foreach ($filters as $filter) {
             $tmp = [];
             $tmp['id'] = $filter->id;
+            $tmp['name'] = $filter->name;
             $tmp['filter_key'] = $filter->filter_key;
-            $tmp['fields'] = json_decode($filter->fields);
+            $tmp['filters'] = json_decode($filter->fields);
             $result[] = $tmp;
         }
         return $result;
@@ -38,8 +39,9 @@ class EloquentFilterService implements FilterService {
         if ($filter = Filter::where('filter_key', $key)->first()) {
             $tmp = [];
             $tmp['id'] = null;
+            $tmp['name'] = $filter->name;
             $tmp['filter_key'] = $filter->filter_key;
-            $tmp['fields'] = json_decode($filter->fields);
+            $tmp['filters'] = json_decode($filter->fields);
             return $tmp;
         }
         return null;
@@ -71,18 +73,20 @@ class EloquentFilterService implements FilterService {
 
     /**
      * Creates a new filter and returns the new filter list
+     * @param $name
      * @param User $user
      * @param array $filter
      * @return mixed
      */
-    public function newFilter(User $user, array $filter)
+    public function newFilter($name, User $user, array $filter)
     {
         if (empty($filter['fields'])) {
             return false;
         }
 
         $user->filters()->save(new Filter([
-            'fields' => json_encode($filter['fields'])
+            'name'   => $name,
+            'fields' => json_encode($filter)
         ]));
 
         return true;
@@ -101,7 +105,7 @@ class EloquentFilterService implements FilterService {
             return false;
         }
 
-        $filterObj->fields = json_encode(($filter['fields']));
+        $filterObj->fields = json_encode(($filter['filters']));
         $filterObj->save();
 
         return true;

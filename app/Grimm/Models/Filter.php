@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Filter extends Model {
     protected $table = 'filters';
 
-    protected $fillable = ['filter_key', 'fields'];
+    protected $fillable = ['filter_key', 'fields', 'name'];
 
     public function user()
     {

@@ -13,8 +13,11 @@ use Grimm\Logging\UserActionLogger;
 use Grimm\Queue\QueueJobManager;
 use Grimm\Queue\Jobs\Letter as LetterJob;
 use Grimm\Queue\Jobs\Person as PersonJob;
+use Grimm\Search\Compiler\EloquentFilterCompiler;
+use Grimm\Search\DateToCodeConverter;
 use Grimm\Search\EloquentFilterService;
 use Grimm\Search\EloquentSearchService;
+use Grimm\Search\FilterQueryGenerator;
 use Grimm\Search\FilterService;
 use Grimm\Search\SearchService;
 use Grimm\Transformer\LetterRecord;
@@ -89,6 +92,13 @@ class BootServiceProvider extends ServiceProvider {
         $this->app->bind(UserActionLogger::class, function ()
         {
             return new UserActionLogger();
+        });
+
+        $this->app->bind(FilterQueryGenerator::class, function() {
+            return new FilterQueryGenerator(
+                $this->app->make(DateToCodeConverter::class),
+                new EloquentFilterCompiler(\Grimm\Models\Letter::query())
+            );
         });
 
         $this->app->bind(SearchService::class, function() {
