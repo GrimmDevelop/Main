@@ -6,8 +6,9 @@
             <div class="search-form">
                 <tabset>
                     <tab heading="Filter" active="tabstatus.filter">
-                        <form class="search-form form-horizontal" role="form" ng-submit="search()">
+
                             <div class="row">
+                                <form class="search-form form-horizontal" role="form" ng-submit="search()">
                                 @if (Sentry::check())
                                     <div class="col-md-9">
                                         @else
@@ -41,13 +42,14 @@
 
                         </div>
                             </div>
+                        </form>
                                 @if(Sentry::check())
                                     <div class="col-md-3">
                                     <user-filters filters="currentFilter.filter"></user-filters>
                                     </div>
                                 @endif
                             </div>
-                        </form>
+
                     </tab>
                     <tab heading="Quick Search" active="tabstatus.quicksearch">
                         <form class="form-horizontal" ng-submit="findByIdentifierOrCode()" name="quicksearchForm">

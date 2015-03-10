@@ -6,7 +6,8 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
             scope.directiveStatus = {
                 showFilterNameInput: false,
                 nameInput: '',
-                changed: false
+                changed: false,
+                filter_search: ''
             };
 
             scope.savedFilters = [];
@@ -16,6 +17,7 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
             scope.onNewFilterInput = function(ev) {
                 if (ev.keyCode == 13) {
                     ev.preventDefault();
+                    ev.stopPropagation();
                     scope.newFilter();
                     return false;
                 }
@@ -30,10 +32,12 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
                 Search.newFilter(filterName, scope.filters).success(function(data) {
                     scope.savedFilters = data.data;
                     scope.directiveStatus.nameInput = '';
+                    scope.directiveStatus.filter_search = '';
                 });
             };
 
             scope.loadFilters = function () {
+                scope.filter_search = '';
                 Search.loadFilters().success(function (data) {
                     scope.savedFilters = data.data;
                 });
@@ -78,6 +82,7 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
                     Search.deleteFilter(scope.selectedFilter).success(function(data) {
                         scope.selectedFilter = null;
                         scope.savedFilters = data.data;
+                        scope.directiveStatus.filter_search = '';
                     });
                 }
             };
