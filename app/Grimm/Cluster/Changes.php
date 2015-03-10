@@ -11,12 +11,9 @@ class Changes implements JsonableInterface {
 
     protected $persons;
 
-    protected $locations;
-
-    public function __construct($letters, $persons, $locations) {
+    public function __construct($letters, $persons) {
         $this->letters = abs((int)$letters);
         $this->persons = abs((int)$persons);
-        $this->locations = abs((int)$locations);
     }
 
     public function getLetters() {
@@ -27,12 +24,8 @@ class Changes implements JsonableInterface {
         return $this->persons;
     }
 
-    public function getLocations() {
-        return $this->locations;
-    }
-
     public function getTotal() {
-        return $this->getLetters() + $this->getPersons() + $this->getLocations();
+        return $this->getLetters() + $this->getPersons();
     }
 
     /**
@@ -46,7 +39,6 @@ class Changes implements JsonableInterface {
         return json_encode([
             'letters' => $this->getLetters(),
             'persons' => $this->getPersons(),
-            'locations' => $this->getLocations(),
             'total' => $this->getTotal()
         ], $options);
     }

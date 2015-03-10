@@ -38,9 +38,8 @@ class EloquentClusterService implements ClusterService {
     {
         $letters = $this->letterService->count($since);
         $persons = $this->personService->count($since);
-        $locations = $this->locationService->count($since);
 
-        return new Changes($letters, $persons, $locations);
+        return new Changes($letters, $persons);
     }
 
     /**
