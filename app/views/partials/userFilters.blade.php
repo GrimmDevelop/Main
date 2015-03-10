@@ -25,12 +25,12 @@
         </div>
     </div>
 
-    <div ng-if="selectedFilter.id">
-        <h4 class="col-md-12">Filter: @{{ selectedFilter.name }}</h4>
-        <div class="col-md-3">
+    <div ng-if="selectedFilter.name">
+        <h4 class="col-md-12">Filter: @{{ selectedFilter.name }} <span ng-if="selectedFilter.shared">(Shared)</span></h4>
+        <div class="col-md-3" ng-if="!selectedFilter.shared">
             <p>Aktionen:</p>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9" ng-if="!selectedFilter.shared">
             <div class="btn-group" dropdown>
                 <button type="button" class="btn" ng-class="{'btn-warning': directiveStatus.changed, 'btn-default': !directiveStatus.changed}"
                         ng-click="saveFilter()" ng-disabled="selectedFilter.id == null"

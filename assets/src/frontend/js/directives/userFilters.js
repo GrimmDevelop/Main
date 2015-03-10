@@ -94,10 +94,21 @@ grimmApp.directive('userFilters', ['BASE_URL', 'Search', function(BASE_URL, Sear
             });
 
             scope.loadFilters();
+
+            // Load shared filter
+            if (scope.shared && scope.shared != '') {
+                console.log('Load Shared', scope.shared);
+                Search.loadFilter(scope.shared).success(function(data) {
+                    scope.selectedFilter = data.data;
+                    scope.selectedFilter.shared = true;
+                    scope.filters = scope.selectedFilter.filters;
+                });
+            }
         },
         templateUrl: BASE_URL + '/partials/userFilters',
         scope: {
-            filters: '='
+            filters: '=',
+            shared: '@'
         }
     };
 }]);
