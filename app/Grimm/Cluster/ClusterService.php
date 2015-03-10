@@ -14,6 +14,10 @@ interface ClusterService {
      */
     public function subscribers();
 
+    public function publish();
+
+    public function notify(Subscriber $subscriber);
+
     /**
      * @return mixed
      */

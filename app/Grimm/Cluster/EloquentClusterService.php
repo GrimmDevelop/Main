@@ -7,11 +7,27 @@ use Carbon\Carbon;
 class EloquentClusterService implements ClusterService {
 
     /**
+     * @var Subscriber
+     */
+    private $subscriberService;
+
+    public function __construct(Subscriber $subscriberService)
+    {
+        $this->subscriberService = $subscriberService;
+    }
+
+    /**
      * @return \Carbon\Carbon
      */
     public function latestNotification()
     {
-        return Carbon::parse(Subscriber::selectRaw('MIN(last_notification)')->where('approved', 1)->first());
+        $result = $this->subscriberService->selectRaw('MIN(last_notification) as latest')->where('approved', 1)->first();
+
+        if(!$result->latest) {
+            return "0000-00-00 00:00:00";
+        }
+
+        return Carbon::parse($result->latest);
     }
 
     /**
@@ -20,6 +36,16 @@ class EloquentClusterService implements ClusterService {
     public function subscribers()
     {
         return Subscriber::where('approved', 1)->get();
+    }
+
+    public function publish()
+    {
+        // TODO: Implement publish() method.
+    }
+
+    public function notify(Subscriber $subscriber)
+    {
+        // TODO: Implement notify() method.
     }
 
     /**
@@ -38,7 +64,7 @@ class EloquentClusterService implements ClusterService {
     public function addSubscriber($subscriberSecret, $address)
     {
         return Subscriber::create([
-            'secret' => $subscriberSecret,
+            'secret'  => $subscriberSecret,
             'address' => $address
         ]);
     }
@@ -56,7 +82,8 @@ class EloquentClusterService implements ClusterService {
      * @param $subscriberSecret
      * @return mixed|void
      */
-    public function approveSubscriber($subscriberSecret) {
+    public function approveSubscriber($subscriberSecret)
+    {
 
     }
 }

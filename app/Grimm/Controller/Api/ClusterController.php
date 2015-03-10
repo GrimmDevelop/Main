@@ -38,7 +38,7 @@ class ClusterController extends \Controller {
      */
     public function changes()
     {
-        $since = Input::get('since', Carbon::now()->format('Y-m-d H:i:s'));
+        $since = $this->clusterService->latestNotification();
 
         $letters = $this->letterService->count($since);
         $persons = $this->personService->count($since);
@@ -68,7 +68,6 @@ class ClusterController extends \Controller {
         $secret = Input::get('secret');
         $address = Input::get('address');
 
-        // TODO: Save subscriber
-        $this->clusterService->addSubscriber();
+        $this->clusterService->addSubscriber($secret, $address);
     }
 }

@@ -15,7 +15,7 @@ class EloquentSubscriber extends Eloquent implements Subscriber {
     {
         $client = new Client();
 
-        $response = $client->post($this->attributes['address']);
+        $response = $client->post($this->address);
 
         dd($response);
     }

@@ -4,6 +4,7 @@ namespace Grimm;
 
 use Grimm\Cluster\ClusterService;
 use Grimm\Cluster\EloquentClusterService;
+use Grimm\Cluster\EloquentSubscriber;
 use Grimm\Cluster\Subscriber;
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
