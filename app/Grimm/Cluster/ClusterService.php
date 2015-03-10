@@ -4,6 +4,8 @@ namespace Grimm\Cluster;
 
 interface ClusterService {
 
+    public function changes($since);
+
     /**
      * @return \Carbon\Carbon
      */

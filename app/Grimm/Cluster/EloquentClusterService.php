@@ -3,6 +3,9 @@
 namespace Grimm\Cluster;
 
 use Carbon\Carbon;
+use Grimm\Letter\LetterService;
+use Grimm\Location\LocationService;
+use Grimm\Person\PersonService;
 
 class EloquentClusterService implements ClusterService {
 
@@ -10,10 +13,34 @@ class EloquentClusterService implements ClusterService {
      * @var Subscriber
      */
     private $subscriberService;
+    /**
+     * @var LetterService
+     */
+    private $letterService;
+    /**
+     * @var PersonService
+     */
+    private $personService;
+    /**
+     * @var LocationService
+     */
+    private $locationService;
 
-    public function __construct(Subscriber $subscriberService)
+    public function __construct(Subscriber $subscriberService, LetterService $letterService, PersonService $personService, LocationService $locationService)
     {
         $this->subscriberService = $subscriberService;
+        $this->letterService = $letterService;
+        $this->personService = $personService;
+        $this->locationService = $locationService;
+    }
+
+    public function changes($since)
+    {
+        $letters = $this->letterService->count($since);
+        $persons = $this->personService->count($since);
+        $locations = $this->locationService->count($since);
+
+        return new Changes($letters, $persons, $locations);
     }
 
     /**
@@ -23,7 +50,8 @@ class EloquentClusterService implements ClusterService {
     {
         $result = $this->subscriberService->selectRaw('MIN(last_notification) as latest')->where('approved', 1)->first();
 
-        if(!$result->latest) {
+        if (!$result->latest)
+        {
             return "0000-00-00 00:00:00";
         }
 
@@ -35,13 +63,14 @@ class EloquentClusterService implements ClusterService {
      */
     public function subscribers()
     {
-        return Subscriber::where('approved', 1)->get();
+        return $this->subscriberService->where('approved', 1)->get();
     }
 
     public function publish()
     {
         /** @var \Grimm\Cluster\Subscriber $subscriber */
-        foreach($this->subscribers() as $subscriber) {
+        foreach ($this->subscribers() as $subscriber)
+        {
             $this->notify($subscriber);
         }
     }
@@ -56,7 +85,7 @@ class EloquentClusterService implements ClusterService {
      */
     public function unapprovedSubscribers()
     {
-        return Subscriber::where('approved', 0)->get();
+        return $this->subscriberService->where('approved', 0)->get();
     }
 
     /**
@@ -66,7 +95,7 @@ class EloquentClusterService implements ClusterService {
      */
     public function addSubscriber($subscriberSecret, $address)
     {
-        return Subscriber::create([
+        return $this->subscriberService->create([
             'secret'  => $subscriberSecret,
             'address' => $address
         ]);
@@ -78,15 +107,23 @@ class EloquentClusterService implements ClusterService {
      */
     public function removeSubscriber($subscriberSecret)
     {
-        return Subscriber::where('secret', $subscriberSecret)->delete();
+        return $this->subscriberService->where('secret', $subscriberSecret)->delete();
     }
 
     /**
      * @param $subscriberSecret
-     * @return mixed|void
+     * @return bool
      */
     public function approveSubscriber($subscriberSecret)
     {
+        /** @var Subscriber $subscriber */
+        if($subscriber = $this->subscriberService->where('secret', $subscriberSecret)->first())
+        {
+            $subscriber->approve();
 
+            return $subscriber->isApproved();
+        }
+
+        return false;
     }
 }

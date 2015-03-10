@@ -13,23 +13,12 @@ use Response;
 class ClusterController extends \Controller {
 
     /**
-     * @var LetterService
+     * @var ClusterService
      */
-    protected $letterService;
-    /**
-     * @var PersonService
-     */
-    protected $personService;
-    /**
-     * @var LocationService
-     */
-    protected $locationService;
+    protected $clusterService;
 
-    public function __construct(LetterService $letterService, PersonService $personService, LocationService $locationService, ClusterService $clusterService)
+    public function __construct(ClusterService $clusterService)
     {
-        $this->letterService = $letterService;
-        $this->personService = $personService;
-        $this->locationService = $locationService;
         $this->clusterService = $clusterService;
     }
 
@@ -40,16 +29,7 @@ class ClusterController extends \Controller {
     {
         $since = $this->clusterService->latestNotification();
 
-        $letters = $this->letterService->count($since);
-        $persons = $this->personService->count($since);
-        $locations = $this->locationService->count($since);
-
-        return Response::json([
-            'letters'   => $letters,
-            'persons'   => $persons,
-            'locations' => $locations,
-            'total'     => $letters + $persons + $locations
-        ]);
+        return Response::json($this->clusterService->changes($since));
     }
 
     /**
