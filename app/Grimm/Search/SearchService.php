@@ -32,9 +32,11 @@ interface SearchService {
      * @param $filters
      * @param int $perPage
      * @param \DateTime $updatedAfter
+     * @param array $dateRange
+     * @param $withErrors
      * @return \Illuminate\Pagination\Paginator
      */
-    public function search($includedRelations, $filters, $perPage = 100, $updatedAfter = null);
+    public function search($includedRelations, $filters, $perPage = 100, $updatedAfter = null, $dateRange = null, $withErrors = []);
 
     /**
      * @return \Grimm\Values\DateRange

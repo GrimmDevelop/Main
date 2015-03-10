@@ -6,7 +6,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">code:</label>
             <div class="col-sm-10">
-                <select class="form-control" ng-model="code" ng-options="item for item in codes"></select>
+                <select class="form-control" ng-model="code" ng-options="key as value for (key, value) in codes"></select>
             </div>
         </div>
     </form>

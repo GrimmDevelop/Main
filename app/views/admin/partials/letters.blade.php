@@ -87,11 +87,6 @@
                             ng-options="item for item in display.views"></select>
                 </div>
 
-                <div class="checkbox">
-                    <label><input type="checkbox" ng-model="display.shortEdit"/> Show edit button in columns and fields <span
-                                class="glyphicon glyphicon-pencil"></span></label>
-                </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <p>Display Codes:</p>
