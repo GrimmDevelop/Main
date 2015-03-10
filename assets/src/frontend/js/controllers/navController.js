@@ -7,7 +7,7 @@ grimmApp.controller('navController', ['$scope', '$interval', 'Cluster', function
     };
 
     var loadChanges = function() {
-        Cluster.haveChanges('2014-01-01').success(function (response) {
+        Cluster.haveChanges().success(function (response) {
             $scope.changes = response;
         });
     }
