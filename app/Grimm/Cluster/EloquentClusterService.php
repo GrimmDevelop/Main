@@ -31,18 +31,32 @@ class EloquentClusterService implements ClusterService {
     }
 
     /**
+     * @param $subscriberSecret
+     * @param $address
      * @return mixed
      */
-    public function addSubscriber()
+    public function addSubscriber($subscriberSecret, $address)
     {
-        // Subscriber::create();
+        return Subscriber::create([
+            'secret' => $subscriberSecret,
+            'address' => $address
+        ]);
     }
 
     /**
+     * @param $subscriberSecret
      * @return mixed
      */
-    public function removeSubscriber($address, $scubscriberSecret)
+    public function removeSubscriber($subscriberSecret)
     {
-        // TODO: Implement removeSubscriber() method.
+        return Subscriber::where('secret', $subscriberSecret)->delete();
+    }
+
+    /**
+     * @param $subscriberSecret
+     * @return mixed|void
+     */
+    public function approveSubscriber($subscriberSecret) {
+
     }
 }

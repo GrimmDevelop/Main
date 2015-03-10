@@ -9,7 +9,7 @@ class EloquentSubscriber extends Eloquent implements Subscriber {
 
     protected $table = 'subscribers';
 
-    protected $fillable = ['address', 'approved'];
+    protected $fillable = ['secret', 'address', 'approved'];
 
     public function notify()
     {

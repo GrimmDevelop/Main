@@ -20,12 +20,21 @@ interface ClusterService {
     public function unapprovedSubscribers();
 
     /**
+     * @param $subscriberSecret
+     * @param $address
      * @return mixed
      */
-    public function addSubscriber();
+    public function addSubscriber($subscriberSecret, $address);
 
     /**
+     * @param $subscriberSecret
      * @return mixed
      */
-    public function removeSubscriber();
+    public function removeSubscriber($subscriberSecret);
+
+    /**
+     * @param $subscriberSecret
+     * @return mixed
+     */
+    public function approveSubscriber($subscriberSecret);
 }

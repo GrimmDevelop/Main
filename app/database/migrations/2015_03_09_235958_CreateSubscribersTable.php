@@ -16,6 +16,8 @@ class CreateSubscribersTable extends Migration {
 		{
 			$table->increments('id');
 
+            $table->string('secret')->unique();
+
             $table->string('address');
             $table->boolean('approved')->default(false);
 
