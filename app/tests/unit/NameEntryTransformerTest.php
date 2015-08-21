@@ -3,7 +3,7 @@
 use Grimm\Transformer\NameEntry;
 use Grimm\Values\NameSet;
 
-class NameEntryTransformerTest extends TestCase {
+class NameEntryTransformerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @return NameEntryTransformer

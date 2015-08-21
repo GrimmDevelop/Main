@@ -1,5 +1,6 @@
-grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance', 'Letters', 'id', function ($scope, $modal, $modalInstance, Letters, id) {
+grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance', 'Letters', 'codes', 'id', function ($scope, $modal, $modalInstance, Letters, codes, id) {
 
+    $scope.codes = codes;
     $scope.letter = {};
 
     $scope.cancel = function () {
@@ -45,7 +46,7 @@ grimmApp.controller('letterEditController', ['$scope', '$modal', '$modalInstance
 
     $scope.addCode = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'admin/partials/letterEditAddCode',
+            templateUrl: 'admin/partials/letters.editAddCode',
             controller: 'letterEditAddCodeController'
         });
 
@@ -101,7 +102,7 @@ grimmApp.controller('letterEditAddCodeController', ['$scope', '$modalInstance', 
 
     $scope.codes = [];
 
-    Search.codes().success(function (data) {
+    Search.codes(true).success(function (data) {
         $scope.codes = data.data;
     });
 

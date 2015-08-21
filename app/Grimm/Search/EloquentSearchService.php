@@ -5,6 +5,7 @@ namespace Grimm\Search;
 use Carbon\Carbon;
 use Grimm\Models\Letter;
 use Grimm\Values\DateRange;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class EloquentSearchService implements SearchService {
@@ -99,17 +100,51 @@ class EloquentSearchService implements SearchService {
      * @param $filters
      * @param int $perPage
      * @param null $updatedAfter
+     * @param null $dateRange
+     * @param $withErrors
      * @return \Illuminate\Pagination\Paginator
      */
-    public function search($includedRelations, $filters, $perPage = 100, $updatedAfter = null)
+    public function search($includedRelations, $filters, $perPage = 100, $updatedAfter = null, $dateRange = null, $withErrors = [])
     {
         $includedRelations += ['information'];
 
-        return $this->filterParser->buildSearchQuery(
-            $includedRelations,
+        $query = $this->filterParser->buildSearchQuery(
             $filters,
-            $updatedAfter
-        )->paginate($perPage);
+            $updatedAfter,
+            $dateRange
+        );
+
+        foreach ($includedRelations as $load) {
+            if (in_array($load, ['information', 'senders', 'receivers', 'from', 'to'])) {
+                $query->with($load);
+            }
+        }
+
+        if (count($withErrors) > 0) {
+            $query->where(function ($query) use ($withErrors) {
+                foreach ($withErrors as $error) {
+                    switch ($error) {
+                        case "from":
+                            $this->withFromErrors($query);
+                            break;
+
+                        case "to":
+                            $this->withToErrors($query);
+                            break;
+
+                        case "senders":
+                            $this->withSendersErrors($query);
+                            break;
+
+                        case "receivers":
+                            $this->withReceiversErrors($query);
+                            break;
+                    }
+                }
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**
@@ -117,7 +152,7 @@ class EloquentSearchService implements SearchService {
      */
     public function getDateRange()
     {
-        $range = $this->letter->selectRaw('MIN(code) as min, MAX(code) as max')->first();
+        $range = $this->letter->selectRaw('MIN(code) as min, MAX(code) as max')->where('valid', 1)->first();
 
         $min = Carbon::createFromFormat("Ymd", substr($range->min, 0, -3));
         $max = Carbon::createFromFormat("Ymd", substr($range->max, 0, -3));
@@ -132,5 +167,53 @@ class EloquentSearchService implements SearchService {
     protected function translateCode($code)
     {
         return ucfirst($code);
+    }
+
+    /**
+     * @param $query
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    protected function withFromErrors(Builder $query)
+    {
+        return $query->orWhere(function ($query) {
+            $query->where('from_id', null);
+            $query->whereHas('information', function($q) {
+                $q->where('code', 'absendeort')->orWhere('code', 'absort_ers');
+            }, '>', 0);
+        });
+    }
+
+    /**
+     * @param $query
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    protected function withToErrors(Builder $query)
+    {
+        return $query->orWhere(function ($query) {
+            $query->where('to_id', null);
+            $query->whereHas('information', function($q) {
+                $q->where('code', 'empf_ort');
+            }, '>', 0);
+        });
+    }
+
+    /**
+     * TODO: realize this query with the new filter structure
+     * @param $query
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    protected function withSendersErrors(Builder $query)
+    {
+        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
+    }
+
+    /**
+     * TODO: realize this query with the new filter structure
+     * @param $query
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    protected function withReceiversErrors(Builder $query)
+    {
+        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
     }
 }

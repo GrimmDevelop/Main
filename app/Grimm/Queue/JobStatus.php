@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class JobStatus extends Eloquent {
     protected $table = 'job_status';
 
-    protected $fillable = ['token', 'handler', 'progress', 'status', 'title'];
+    protected $fillable = ['token', 'handler', 'progress', 'status', 'title', 'user_id', 'percentage'];
 
-    protected $hidden = ['id', 'handler'];
+    protected $hidden = ['id', 'handler', 'user_id'];
 
     public function makeRunning()
     {
@@ -24,6 +24,7 @@ class JobStatus extends Eloquent {
 
     public function makeFinished()
     {
+        $this->percentage = 100;
         $this->status = 3;
     }
 
@@ -43,5 +44,10 @@ class JobStatus extends Eloquent {
     public function setProgressAttribute($value)
     {
         $this->attributes['progress'] = json_encode($value);
+    }
+
+    public function starter()
+    {
+        return $this->belongsTo('Grimm\Auth\Models\User', 'user_id');
     }
 }

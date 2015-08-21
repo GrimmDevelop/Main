@@ -1,4 +1,4 @@
-grimmApp.controller('personPreviewController', ['$scope', '$interval', '$modalInstance', 'person', function ($scope, $interval, $modalInstance, person) {
+grimmApp.controller('personPreviewController', ['$scope', '$interval', '$modalInstance', 'Letters', function ($scope, $interval, $modalInstance, Letters) {
     $scope.person = person;
 
     $scope.ok = function () {

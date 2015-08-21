@@ -11,7 +11,7 @@ class Location implements Converter {
     protected $cache = null;
     protected $filter = null;
     protected $source = null;
-    protected $limit = -1;
+    protected $limit = - 1;
 
     /**
      * @var \League\Csv\Reader
@@ -49,8 +49,7 @@ class Location implements Converter {
      */
     public function setSource($source)
     {
-        if (!file_exists($source))
-        {
+        if (!file_exists($source)) {
             throw new \InvalidArgumentException('Invalid source (file not found)');
         }
         $this->source = $source;
@@ -84,27 +83,39 @@ class Location implements Converter {
 
         $i = 0;
 
-        foreach ($read as $record)
-        {
-            if (count($record) < 19)
-            {
+        foreach ($read as $record) {
+            if (count($record) < 19) {
                 continue;
             }
 
             $data = $this->recordTransformer->transform($record);
 
-            if ($data != null)
-            {
+            if ($data != null) {
                 $this->cache[] = $data;
                 yield $data;
             }
-            $i++;
+            $i ++;
         }
 
         // Have we read all lines?
-        if ($this->limit > -1 && $i + 1 < $this->limit) {
+        if ($this->limit > - 1 && $i + 1 < $this->limit) {
             $this->finished = true;
         }
+    }
+
+    public function total()
+    {
+        // TODO: optimize this one ...
+        $f = fopen($this->source, 'rb');
+        $lines = 0;
+
+        while (!feof($f)) {
+            $lines += substr_count(fread($f, 8192), "\n");
+        }
+
+        fclose($f);
+
+        return $lines;
     }
 
     /**
@@ -122,8 +133,7 @@ class Location implements Converter {
      */
     public function toArray()
     {
-        if (is_null($this->cache))
-        {
+        if (is_null($this->cache)) {
             throw new \Exception("cache is null, run parse() first!");
         }
 

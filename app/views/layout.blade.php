@@ -15,7 +15,7 @@
 <body>
     <div class="loading-indicator" loading-indicator style="display: none;"><img src="{{ url('assets/img/loader.gif') }}"></div>
 
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-default" role="navigation" ng-controller="navController">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -56,6 +56,7 @@
                 </ul>
                 <ul class="nav navbar-nav pull-right">
 @if(Sentry::check())
+                    <li ng-show="changes.total"><a href ng-click="publish()"><span class="glyphicon glyphicon-cloud-upload"></span> Publish <span class="badge">@{{ changes.total }}</span></a></li>
                     <p class="navbar-text">{{ Sentry::getUser()->username  }}</p>
                     <li><a href="{{ url('logout') }}">{{ trans('menu.logout') }}</a></li>
 @else

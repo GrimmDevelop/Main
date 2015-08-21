@@ -5,7 +5,10 @@ namespace Grimm\Controller;
 use Grimm\Auth\Models\User;
 use Grimm\OutputTransformer\ArrayOutput;
 use Grimm\OutputTransformer\JsonPaginationOutput;
+use Grimm\Search\FilterRequestParser;
+use Grimm\Search\Filters\EmptyFilter;
 use Grimm\Search\FilterService;
+use Grimm\Search\InvalidFilterRequestException;
 use Grimm\Search\SearchService;
 use Response;
 use URL;
@@ -32,9 +35,14 @@ class SearchController extends \Controller {
      * @var ArrayOutput
      */
     private $arrayOutput;
+    /**
+     * @var FilterRequestParser
+     */
+    private $filterRequestParser;
 
     public function __construct(SearchService $searchService,
                                 FilterService $filterService,
+                                FilterRequestParser $filterRequestParser,
                                 JsonPaginationOutput $paginationOutput,
                                 ArrayOutput $arrayOutput)
     {
@@ -42,6 +50,7 @@ class SearchController extends \Controller {
         $this->filterService = $filterService;
         $this->paginationOutput = $paginationOutput;
         $this->arrayOutput = $arrayOutput;
+        $this->filterRequestParser = $filterRequestParser;
     }
 
     /**
@@ -65,7 +74,22 @@ class SearchController extends \Controller {
     {
         $perPage = abs((int)Input::get('items_per_page', 100));
 
-        $result = $this->searchService->search(Input::get('with', ['information']),Input::get('filters', []), $perPage);
+        try {
+            $filters = $this->filterRequestParser->parse(Input::get('filters', []));
+        } catch (InvalidFilterRequestException $e) {
+            // TODO: Log errors and hand back to client!
+            $filters = new EmptyFilter();
+        }
+
+        $dateRange = Input::get('dateRange', null);
+
+        if (Sentry::check()) {
+            $withErrors = Input::get('with_errors', []);
+        } else {
+            $withErrors = [];
+        }
+
+        $result = $this->searchService->search(Input::get('with', ['information']),$filters, $perPage, null, $dateRange, $withErrors);
 
         return $this->createSearchOutput($result);
     }
@@ -122,7 +146,7 @@ class SearchController extends \Controller {
     }
 
     /**
-     * publishes an unpublished filter and returns the URL
+     * publishes an unpublished filter and returns the token
      * @return null|string
      */
     public function publicFilter()
@@ -133,7 +157,8 @@ class SearchController extends \Controller {
             $token = $this->filterService->publishFilter($user, $filter);
 
             if ($token !== null) {
-                return URL::to('search/' . $token);
+                $response = ['filter_key' => $token];
+                return $this->createJsonResponse($response);
             }
         }
 
@@ -148,8 +173,9 @@ class SearchController extends \Controller {
     {
         if ($user = Sentry::getUser()) {
             $filter = Input::get('filter', []);
+            $name = Input::get('name');
 
-            $this->filterService->newFilter($user, $filter);
+            $this->filterService->newFilter($name, $user, $filter);
 
             // TODO: maybe include error message
             return $this->loadFilters();

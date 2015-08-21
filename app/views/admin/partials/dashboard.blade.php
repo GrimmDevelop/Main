@@ -55,7 +55,8 @@
     <div class="col-md-12">
         <div class="dashboard-statistics">
             <div class="panel panel-default">
-                <div class="panel-heading">Running Tasks</div>
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-tasks"></span> Running Tasks</h3></div>
                 <div class="panel-body" ng-if="tasks.length == 0">
                     <h3 class="text-center">No Running Tasks!</h3>
                 </div>
@@ -64,6 +65,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Progress</th>
+                            <th>Starter</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -71,9 +73,10 @@
                         <tr ng-repeat="task in tasks">
                             <td><a href="" ng-click="openTaskDetails(task)">@{{ task.title }}</a></td>
                             <td job-progress the-progress="task.progress"></td>
-                            <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="100" type="success"></progressbar>
-                                <progressbar ng-if="task.status == 2" class="progress-striped active" value="100" type="warning"></progressbar>
-                                <progressbar ng-if="task.status == 0" class="progress-striped active" value="100" type="info"></progressbar>
+                            <td>@{{ task.starter.username }}</td>
+                            <td><progressbar ng-if="task.status == 1" class="progress-striped active" value="task.percentage" type="success"></progressbar>
+                                <progressbar ng-if="task.status == 2" class="progress-striped active" value="task.percentage" type="warning"></progressbar>
+                                <progressbar ng-if="task.status == 0" class="progress-striped active" value="task.percentage" type="info"></progressbar>
                             </td>
                         </tr>
                     </tbody>

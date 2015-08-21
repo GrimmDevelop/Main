@@ -5,17 +5,15 @@
             <th sorting-column="'id'" on-sort="reload()">ID</th>
             <th sorting-column="'code'" on-sort="reload()">Date</th>
             <th ng-repeat="field in fields" sorting-column="field" on-sort="reload()">
-                <a href ng-click="editColumn(field, $event)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
                 @{{ letterInfo.codes[field] }}
             </th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="letter in letters.data" ng-show="!letter.deleted_at">
-            <td><a href letter-edit="letter.id">@{{ letter.id }}</a></td>
+            <td><a href letter-edit="letter.id" codes="letterInfo.codes">@{{ letter.id }}</a></td>
             <td>@{{ letter.date }}</td>
-            <td ng-repeat="field in fields">
-                <a href ng-click="editField(letter.id, field)" ng-show="display.shortEdit"><span class="glyphicon glyphicon-pencil"></span></a>
+            <td ng-repeat="field in fields" field-edit="letter" fields="letterInfo.codes" field="field" on-save="editField(letter, field)">
                 @{{ (letter.information|filterCodeAndFill:fields)[field].join(', ') }}
             </td>
         </tr>

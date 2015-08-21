@@ -2,6 +2,10 @@
 
 namespace Grimm;
 
+use Grimm\Cluster\ClusterService;
+use Grimm\Cluster\EloquentClusterService;
+use Grimm\Cluster\EloquentSubscriber;
+use Grimm\Cluster\Subscriber;
 use Grimm\Converter\Letter;
 use Grimm\Converter\Location;
 use Grimm\Converter\Person;
@@ -9,12 +13,19 @@ use Grimm\Import\Persistence\LetterRecordPersistence;
 use Grimm\Import\Persistence\PersonRecordPersistence;
 use Grimm\Letter\EloquentLetterService;
 use Grimm\Letter\LetterService;
+use Grimm\Location\EloquentLocationService;
+use Grimm\Location\LocationService;
 use Grimm\Logging\UserActionLogger;
+use Grimm\Person\EloquentPersonService;
+use Grimm\Person\PersonService;
 use Grimm\Queue\QueueJobManager;
 use Grimm\Queue\Jobs\Letter as LetterJob;
 use Grimm\Queue\Jobs\Person as PersonJob;
+use Grimm\Search\Compiler\EloquentFilterCompiler;
+use Grimm\Search\DateToCodeConverter;
 use Grimm\Search\EloquentFilterService;
 use Grimm\Search\EloquentSearchService;
+use Grimm\Search\FilterQueryGenerator;
 use Grimm\Search\FilterService;
 use Grimm\Search\SearchService;
 use Grimm\Transformer\LetterRecord;
@@ -91,6 +102,13 @@ class BootServiceProvider extends ServiceProvider {
             return new UserActionLogger();
         });
 
+        $this->app->bind(FilterQueryGenerator::class, function() {
+            return new FilterQueryGenerator(
+                $this->app->make(DateToCodeConverter::class),
+                new EloquentFilterCompiler(\Grimm\Models\Letter::query())
+            );
+        });
+
         $this->app->bind(SearchService::class, function() {
             return $this->app->make(EloquentSearchService::class);
         });
@@ -101,6 +119,22 @@ class BootServiceProvider extends ServiceProvider {
 
         $this->app->bind(LetterService::class, function() {
             return $this->app->make(EloquentLetterService::class);
+        });
+
+        $this->app->bind(PersonService::class, function() {
+            return $this->app->make(EloquentPersonService::class);
+        });
+
+        $this->app->bind(LocationService::class, function() {
+            return $this->app->make(EloquentLocationService::class);
+        });
+
+        $this->app->bind(ClusterService::class, function() {
+            return $this->app->make(EloquentClusterService::class);
+        });
+
+        $this->app->bind(Subscriber::class, function() {
+            return $this->app->make(EloquentSubscriber::class);
         });
     }
 

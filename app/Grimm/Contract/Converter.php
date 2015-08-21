@@ -8,6 +8,11 @@ use Illuminate\Support\Contracts\JsonableInterface;
 interface Converter extends JsonableInterface, ArrayableInterface {
 
     /**
+     * @return int
+     */
+    public function total();
+
+    /**
      * Sets source for parser
      * @param string $source
      * @throws \InvalidArgumentException

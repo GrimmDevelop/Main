@@ -11,6 +11,9 @@ grimmApp.directive("letterPreview", ['$modal', 'Letters', function ($modal, Lett
                         resolve: {
                             letter: function () {
                                 return data;
+                            },
+                            codes: function() {
+                                return scope.codes;
                             }
                         }
                     });
@@ -18,7 +21,8 @@ grimmApp.directive("letterPreview", ['$modal', 'Letters', function ($modal, Lett
             });
         },
         scope: {
-            letterId: '=letterPreview'
+            letterId: '=letterPreview',
+            codes: '='
         }
     };
 }]);
