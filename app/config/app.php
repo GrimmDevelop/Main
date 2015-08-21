@@ -113,7 +113,8 @@ return array(
 
         'GrimmTools\Assets\AssetsServiceProvider',
 
-		'Grimm\BootServiceProvider',
+        'Grimm\BootServiceProvider',
+        'Grimm\EventServiceProvider',
 	),
 
 	/*

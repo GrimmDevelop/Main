@@ -51,7 +51,7 @@ class LetterValidationTest extends TestCase {
     {
         $code = '18511236.11';
         $newCode = preg_replace('/^([0-9]{8}\.1)0([0-9])$/', '$1$2', $code);
-        var_dump($newCode);
+        // var_dump($newCode);
     }
 
 
