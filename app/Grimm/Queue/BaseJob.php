@@ -61,10 +61,10 @@ abstract class BaseJob
         $this->postflight($job, $data);
     }
 
-    public function progress($message)
+    public function progress($message, $percentage)
     {
         if ($this->token !== null) {
-            $this->queueJobManager->reportProgress($this->token, $message);
+            $this->queueJobManager->reportProgress($this->token, $message, $percentage);
         }
     }
 

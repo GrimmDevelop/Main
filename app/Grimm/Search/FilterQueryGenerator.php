@@ -5,43 +5,52 @@ namespace Grimm\Search;
 
 use Carbon\Carbon;
 use Grimm\Models\Letter;
+use Grimm\Search\Compiler\FilterCompiler;
+use Grimm\Search\Filters\BaseFilter;
+use Grimm\Search\Filters\FilterValue;
+use Grimm\Search\Filters\LetterField;
+use Grimm\Search\Filters\LetterFilter;
+use Grimm\Search\Filters\OperatorFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Input;
-use Sentry;
 
 /**
- * TODO: This class does not only smell, it stinks!
  * Class FilterQueryGenerator
  * @package Grimm\Search
  */
 class FilterQueryGenerator {
 
     /**
+     * @var DateToCodeConverter
+     */
+    private $dateToCodeConverter;
+
+    /**
+     * @var FilterCompiler
+     */
+    private $filterCompiler;
+
+    function __construct(DateToCodeConverter $dateToCodeConverter, FilterCompiler $filterCompiler)
+    {
+        $this->dateToCodeConverter = $dateToCodeConverter;
+        $this->filterCompiler = $filterCompiler;
+    }
+
+
+    /**
      * Builds the search query containing all requested and filtered letters
-     * @param $with
-     * @param $filters
+     * @param BaseFilter $filters
      * @param $updatedAfter
+     * @param null $dateRange
      * @return Builder|static
      */
-    public function buildSearchQuery($with, $filters, $updatedAfter)
+    public function buildSearchQuery(BaseFilter $filters, $updatedAfter, $dateRange = null)
     {
-        $query = Letter::query();
-
-        foreach ($with as $load) {
-            if (in_array($load, ['information', 'senders', 'receivers', 'from', 'to'])) {
-                $query->with($load);
-            }
-        }
-
-        foreach ($filters as $filter) {
-            $this->buildWhere($query, $filter);
-        }
 
         if ($updatedAfter !== null) {
             $dateTime = null;
 
             try {
-                $dateTime = Carbon::createFromFormat('Y-m-d h:i:s', $updatedAfter);
+                $dateTime = Carbon::parse($updatedAfter);
             } catch (\InvalidArgumentException $e) {
                 try {
                     $dateTime = Carbon::createFromFormat('Y-m-d', $updatedAfter);
@@ -50,129 +59,36 @@ class FilterQueryGenerator {
             }
 
             if($dateTime) {
-                $query->where('updated_at', '>=', $dateTime);
+
+                $dateFilter = new LetterFilter(new LetterField('updated_at'), '>=', new FilterValue($dateTime));
+
+                $filters = new OperatorFilter($dateFilter, 'AND', $filters);
             }
         }
 
-        if (Sentry::check()) {
-            $query->where(function ($query) {
-                foreach (Input::get('with_errors', []) as $error) {
-                    switch ($error) {
-                        case "from":
-                            $this->withFromErrors($query);
-                            break;
+        if ($dateRange !== null) {
+            $firstCode  = $this->dateToCodeConverter->convert(Carbon::parse($dateRange[0]));
+            $secondCode = $this->dateToCodeConverter->convert(Carbon::parse($dateRange[1]), .99);
 
-                        case "to":
-                            $this->withToErrors($query);
-                            break;
+            $rangeFilter = new OperatorFilter(
+                new LetterFilter(
+                    new LetterField('code'),
+                    '>=',
+                    new FilterValue($firstCode)
+                ),
+                'AND',
+                new LetterFilter(
+                    new LetterField('code'),
+                    '<=',
+                    new FilterValue($secondCode)
+                )
+            );
 
-                        case "senders":
-                            $this->withSendersErrors($query);
-                            break;
-
-                        case "receivers":
-                            $this->withReceiversErrors($query);
-                            break;
-                    }
-                }
-            });
+            $filters = new OperatorFilter($rangeFilter, 'AND', $filters);
         }
 
-        return $query;
-    }
+        $filters->compile($this->filterCompiler);
 
-    /**
-     * Build a filter where query and appends it to a given one
-     * @param $query
-     * @param $filter
-     * @return mixed
-     */
-    public function buildWhere($query, $filter)
-    {
-        if ($filter['code'] == '') {
-            return $query;
-        }
-
-        return $query->whereHas('information', function ($q) use ($filter) {
-            $compare = $this->getCompare($filter['compare'], $filter['value']);
-
-            return $q->where('code', $filter['code'])->where('data', $compare['compare'], $compare['value']);
-        });
-    }
-
-    /**
-     * convert's a compare string and a value to a valid mysql form
-     * @param $string
-     * @param $value
-     * @return array
-     */
-    protected function getCompare($string, $value)
-    {
-        switch ($string) {
-            case 'contains':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value%"
-                );
-            case 'starts with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "$value%"
-                );
-            case 'ends with':
-                return array(
-                    'compare' => 'like',
-                    'value' => "%$value"
-                );
-
-            case "equals":
-            default:
-                return array(
-                    'compare' => '=',
-                    'value' => $value
-                );
-        }
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Eloquent\Builder|static
-     */
-    protected function withFromErrors(Builder $query)
-    {
-        return $query->orWhere(function ($query) {
-            $query->where('from_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and (letter_information.code = "absendeort" or letter_information.code = "absort_ers") and data != "") > 0');
-        });
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Eloquent\Builder|static
-     */
-    protected function withToErrors(Builder $query)
-    {
-        return $query->orWhere(function ($query) {
-            $query->where('to_id', null);
-            $query->whereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "empf_ort" and data != "") > 0');
-        });
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Eloquent\Builder|static
-     */
-    protected function withSendersErrors(Builder $query)
-    {
-        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "senders" and data != "") != (select count(*) from letter_sender where letters.id = letter_sender.letter_id)');
-    }
-
-    /**
-     * @param $query
-     * @return \Illuminate\Database\Eloquent\Builder|static
-     */
-    protected function withReceiversErrors(Builder $query)
-    {
-        return $query->orWhereRaw('(select count(*) from letter_information where letters.id = letter_information.letter_id and letter_information.code = "receivers" and data != "") != (select count(*) from letter_receiver where letters.id = letter_receiver.letter_id)');
+        return $this->filterCompiler->getCompiled();
     }
 }

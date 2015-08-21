@@ -35,11 +35,12 @@ interface FilterService {
 
     /**
      * Creates a new filter and returns the new filter list
+     * @param $name
      * @param User $user
      * @param array $filter
      * @return mixed
      */
-    public function newFilter(User $user, array $filter);
+    public function newFilter($name, User $user, array $filter);
 
     /**
      * Updates a filter an returns the new filter list

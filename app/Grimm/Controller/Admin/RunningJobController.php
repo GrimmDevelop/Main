@@ -23,6 +23,6 @@ class RunningJobController extends \Controller {
 
     public function getTasks()
     {
-        return Response::json($this->arrayOutput->transform(JobStatus::where('status', '<', 3)->get()->toArray()));
+        return Response::json($this->arrayOutput->transform(JobStatus::with('starter')->where('status', '<', 3)->get()->toArray()));
     }
 }

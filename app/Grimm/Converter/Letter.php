@@ -97,4 +97,12 @@ class Letter implements Converter {
     {
         return json_encode($this->toArray(), $options);
     }
+
+    /**
+     * @return int
+     */
+    public function total()
+    {
+        return $this->table->getRecordCount();
+    }
 }

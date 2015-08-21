@@ -17,6 +17,13 @@ interface LetterService {
     public function findTrashed();
 
     /**
+     * Counts letter updated after given date
+     * @param null $updated_after
+     * @return int
+     */
+    public function count($updated_after = null);
+
+    /**
      * @param array $data
      * @return mixed
      */

@@ -11,7 +11,7 @@ class QueueJobManager {
     /**
      * This will push a new job on the queue
      */
-    public function issue($title, $handler, $data)
+    public function issue($title, $handler, $data, $user_id)
     {
         $token = $this->generateJobId($handler);
         JobStatus::create([
@@ -19,7 +19,9 @@ class QueueJobManager {
             'token' => $token,
             'handler' => $handler,
             'progress' => [],
-            'status'   => 0
+            'percentage' => 0,
+            'status'   => 0,
+            'user_id'  => $user_id
         ]);
         $data['queue_job_token'] = $token;
         Queue::push($handler, $data);
@@ -54,10 +56,11 @@ class QueueJobManager {
     /**
      * This is used by the jobs to report progress that can be displayed in the UI
      */
-    public function reportProgress($token, $progress)
+    public function reportProgress($token, $progress, $percentage)
     {
         $job = JobStatus::where('token', $token)->first();
 
+        $job->percentage = (int)$percentage;
         $job->addProgressMessage($progress);
         $job->save();
     }

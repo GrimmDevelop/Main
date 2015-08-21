@@ -23,8 +23,7 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
 
     $scope.display = {
         currentView: null,
-        views: [],
-        shortEdit: false
+        views: []
     };
 
     $scope.quicksearch = {
@@ -87,14 +86,38 @@ grimmApp.controller('letterController', ['$scope', '$modal', 'MessagesService', 
 
     $scope.fields = ['absendeort', 'absort_ers', 'absender', 'empf_ort', 'empfaenger', 'dr', 'hs'];
 
-    $scope.editColumn = function (field, event) {
+    /*$scope.editColumn = function (field) {
         MessagesService.broadcast('success', 'Edit complete column ' + field);
-        event.preventDefault();
-        event.stopPropagation();
-    };
+    };*/
 
-    $scope.editField = function (letterId, field) {
-        MessagesService.broadcast('success', 'Edit ' + field + " from letter #" + letterId);
+    $scope.editField = function (letter, field) {
+        var letterObj = {
+            id: letter.id,
+            code: letter.code,
+            date: letter.date,
+            information: []
+        };
+
+        letter.information.forEach(function(value, index) {
+            if(value.code == field) {
+                if(value.state == 'add' && value.data == '') {
+                    return;
+                }
+
+                letterObj.information.push({
+                    id: value.state == 'add' ? null : value.id,
+                    code: value.code,
+                    data: value.data,
+                    state: value.data != '' ? value.state : 'remove'
+                });
+            }
+        });
+
+        Letters.save(letterObj).success(function(response) {
+            MessagesService.broadcast('success', response.message);
+        }).error(function(response) {
+            MessagesService.broadcast('danger', response.message);
+        });
     };
 
     $scope.reload = function () {
