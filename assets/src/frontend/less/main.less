@@ -1,16 +1,16 @@
-
 @import "bootstrap.less";
-
 @import "filebrowser";
-
 @import "signin";
-
 @import "api";
-
 @import "../../../theme_components/bower/angular-hotkeys/build/hotkeys.min.css";
 
-.angular-google-map-container { height: 400px; }
-.angular-google-map.extended .angular-google-map-container { height: 600px; }
+.angular-google-map-container {
+    height: 400px;
+}
+
+.angular-google-map.extended .angular-google-map-container {
+    height: 600px;
+}
 
 @dashboard-title-bg: @navbar-default-bg;
 @dashboard-border-color: @navbar-default-border;
@@ -54,8 +54,8 @@
     padding-top: 5px;
 
     hr.letter-separator {
-      margin-top: 40px;
-      margin-bottom: 60px;
+        margin-top: 40px;
+        margin-bottom: 60px;
     }
 }
 
@@ -65,6 +65,7 @@
     border: 2px solid @alert-success-bg;
     border-radius: @alert-border-radius;
 }
+
 .info-remove {
     padding-top: 3px;
     padding-bottom: 3px;
@@ -126,13 +127,13 @@
 }
 
 .user-filters {
-    position:relative;
+    position: relative;
     height: 100%;
     .new-filter .form-control:first-child {
         border-top-left-radius: 0;
     }
 
-    .new-filter .input-group-btn:last-child>.btn {
+    .new-filter .input-group-btn:last-child > .btn {
         border-top-right-radius: 0;
     }
 
